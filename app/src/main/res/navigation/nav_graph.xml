@@ -1,0 +1,12 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.iberdrola.practicas2026.DanielFJ.presentation.InvoiceFragment"
+        android:label="Main Fragment"
+        tools:layout="@layout/fragment_main"/>
+</navigation>
