@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="19dp"
+    android:height="19dp"
+    android:viewportWidth="19"
+    android:viewportHeight="19"
+    android:tint="?attr/colorControlNormal"
+    android:autoMirrored="true">
+
+    <group
+        android:pivotX="9.5"
+        android:pivotY="9.5"
+        android:translateX="-9">
+
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M9.28,3.23 L10.76,1.75 19,10 l-8.24,8.24 -1.48,-1.48 L16.05,10 z"/>
+    </group>
+
+</vector>
