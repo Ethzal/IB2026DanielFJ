@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.iberdrola.practicas2026.DanielFJ.data.InvoiceDetail
 import com.iberdrola.practicas2026.DanielFJ.databinding.FragmentInvoiceBinding
 import kotlinx.coroutines.launch
@@ -93,7 +93,7 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
     }
 
     private fun mostrarDialogoNoDisponible() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Información")
             .setMessage("Esta factura aún no está disponible.")
             .setPositiveButton("Aceptar") { dialog, _ -> dialog.dismiss() }

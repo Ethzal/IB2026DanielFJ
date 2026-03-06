@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.IB2026DanielFJ" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+    <style name="Theme.IB2026DanielFJ" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Principal -->
+        <item name="colorPrimary">@color/brand_green</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color, etc. -->
-        <item name="android:statusBarColor">@color/purple_700</item>
-        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Color de fondo de pantalla (Pantallas) -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- Color de superficie (Tarjetas y contenedores) -->
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/text_main</item>
+        <item name="colorPrimaryContainer">@color/brand_green</item>
+        <item name="colorSecondaryContainer">@color/brand_green_light</item>
+
+        <!-- Color para bordes (Tu CardView usa esto) -->
+        <item name="colorOutline">@color/brand_green</item>
+
+        <!-- Barra de estado -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
