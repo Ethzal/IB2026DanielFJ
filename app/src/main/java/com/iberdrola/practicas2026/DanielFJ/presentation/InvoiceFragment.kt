@@ -78,6 +78,7 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
             }
         }
 
+        // Switch
         binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
             // 1. Cambiamos colores del switch según el modo
             val color = if (isChecked) R.color.white else R.color.text_pagada
@@ -91,6 +92,11 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
 
             // 3. Acción
             viewModel.toggleMode(isChecked)
+        }
+
+        // Back button
+        binding.btnBack.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 

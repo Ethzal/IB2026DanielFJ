@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "IB2026 DanielFJ"
 include(":app")
- 
+include(":domain")
+include(":data")
+include(":core")
+include(":presentation")
