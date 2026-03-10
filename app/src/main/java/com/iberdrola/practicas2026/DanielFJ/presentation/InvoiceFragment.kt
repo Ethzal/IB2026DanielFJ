@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.getValue
+import com.google.android.material.snackbar.Snackbar
 
 @AndroidEntryPoint
 class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
@@ -39,6 +40,13 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rvInvoices.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.switchMode.isChecked = viewModel.usarMocksLocales
+        binding.switchMode.text = if (binding.switchMode.isChecked) "Local" else "Remoto"
+        binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
+            binding.switchMode.text = if (isChecked) "Local" else "Remoto"
+            viewModel.toggleMode(isChecked)
+        }
 
         // Decidir si usar mocks locales
         viewModel.usarMocksLocales = true
@@ -69,6 +77,21 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
                 }
             }
         }
+
+        binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
+            // 1. Cambiamos colores del switch según el modo
+            val color = if (isChecked) R.color.white else R.color.text_pagada
+
+            binding.switchMode.thumbTintList = requireContext().getColorStateList(color)
+            binding.switchMode.trackTintList = requireContext().getColorStateList(if (isChecked) R.color.gray else R.color.bg_pagada)
+
+            // 2. Feedback
+            binding.switchMode.text = if (isChecked) "Local" else "Remoto"
+            showModeChangedSnackbar(isChecked)
+
+            // 3. Acción
+            viewModel.toggleMode(isChecked)
+        }
     }
 
     private fun llenarUltimaFactura(factura: InvoiceDetail) {
@@ -97,6 +120,15 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
             .setTitle("Información")
             .setMessage("Esta factura aún no está disponible.")
             .setPositiveButton("Aceptar") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun showModeChangedSnackbar(isLocal: Boolean) {
+        val message = if (isLocal) "Modo Local: Cargando mocks..." else "Modo Remoto: Conectando a API..."
+
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+            .setBackgroundTint(requireContext().getColor(R.color.brand_green))
+            .setTextColor(requireContext().getColor(R.color.white))
             .show()
     }
 

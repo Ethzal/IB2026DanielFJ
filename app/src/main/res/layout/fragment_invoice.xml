@@ -26,6 +26,20 @@
             android:drawablePadding="@dimen/spacing_s"
             app:drawableTint="@color/brand_green" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/local"
+            android:layoutDirection="rtl"
+            android:checked="true"
+            android:textColor="@color/text_main"
+            android:switchPadding="@dimen/spacing_m"
+            app:thumbTint="@color/white"
+            app:trackTint="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

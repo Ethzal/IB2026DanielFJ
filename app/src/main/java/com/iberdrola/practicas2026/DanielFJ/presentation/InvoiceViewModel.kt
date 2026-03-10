@@ -13,7 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class InvoiceViewModel @Inject constructor() : ViewModel() {
+class InvoiceViewModel @Inject constructor(
+    //private val api: InvoiceApi
+) : ViewModel() {
 
     // Manejo de estados de la UI
     sealed class UiState {
@@ -31,19 +33,16 @@ class InvoiceViewModel @Inject constructor() : ViewModel() {
     fun fetchFacturas() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-
             try {
                 if (usarMocksLocales) {
-                    // Delay aleatorio entre 1 y 3 segundos
-                    val tiempoEspera = (1000..3000).random().toLong()
-                    delay(tiempoEspera)
+                    delay((1000..3000).random().toLong())
                     _uiState.value = UiState.Success(getLocalMock())
                 } else {
-                    delay(500)
-                    _uiState.value = UiState.Success(getLocalMock())
+                    //val response = api.getRemoteInvoices()
+                    //_uiState.value = UiState.Success(response)
                 }
-            } catch (_: Exception) {
-                _uiState.value = UiState.Error("Error al cargar facturas")
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Error al cargar: ${e.message}")
             }
         }
     }
@@ -63,4 +62,9 @@ class InvoiceViewModel @Inject constructor() : ViewModel() {
             InvoiceItem("F4", "6 de noviembre", "Factura Luz", 150.43, "Pagada")
         )
     )
+
+    fun toggleMode(useLocal: Boolean) {
+        usarMocksLocales = useLocal
+        fetchFacturas() // Recargamos automáticamente al cambiar el modo
+    }
 }
