@@ -1,4 +1,4 @@
-package com.iberdrola.practicas2026.DanielFJ.presentation
+package com.iberdrola.practicas2026.presentation.ui.invoice
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -7,7 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
-import com.iberdrola.practicas2026.DanielFJ.R
+import com.iberdrola.practicas2026.presentation.R
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

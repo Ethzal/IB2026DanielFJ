@@ -1,11 +1,11 @@
-package com.iberdrola.practicas2026.DanielFJ.presentation
+package com.iberdrola.practicas2026.presentation.ui.invoice
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.iberdrola.practicas2026.DanielFJ.R
-import com.iberdrola.practicas2026.DanielFJ.data.InvoiceItem
-import com.iberdrola.practicas2026.DanielFJ.databinding.ItemInvoiceBinding // ¡Importante!
+import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.domain.model.InvoiceItem
+import com.iberdrola.practicas2026.presentation.databinding.ItemInvoiceBinding
 import java.util.Locale
 
 class InvoiceAdapter(

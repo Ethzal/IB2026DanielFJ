@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IB2026DanielFJ">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name="com.iberdrola.practicas2026.presentation.ui.invoice.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.IB2026DanielFJ">
             <intent-filter>

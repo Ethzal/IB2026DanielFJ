@@ -1,4 +1,4 @@
-package com.iberdrola.practicas2026.DanielFJ.data
+package com.iberdrola.practicas2026.domain.model
 
 data class InvoiceDetail(
     val id: String, val type: String, val amount: Double,

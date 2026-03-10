@@ -1,10 +1,10 @@
-package com.iberdrola.practicas2026.DanielFJ.presentation
+package com.iberdrola.practicas2026.presentation.ui.invoice
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.iberdrola.practicas2026.DanielFJ.data.InvoiceDetail
-import com.iberdrola.practicas2026.DanielFJ.data.InvoiceItem
-import com.iberdrola.practicas2026.DanielFJ.data.InvoiceResponse
+import com.iberdrola.practicas2026.domain.model.InvoiceItem
+import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import com.iberdrola.practicas2026.domain.model.InvoiceDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

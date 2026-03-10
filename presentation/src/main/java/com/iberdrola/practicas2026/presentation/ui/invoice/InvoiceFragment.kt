@@ -1,7 +1,7 @@
-package com.iberdrola.practicas2026.DanielFJ.presentation
+package com.iberdrola.practicas2026.presentation.ui.invoice
 
 import androidx.fragment.app.Fragment
-import com.iberdrola.practicas2026.DanielFJ.R
+import com.iberdrola.practicas2026.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,13 +12,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.iberdrola.practicas2026.DanielFJ.data.InvoiceDetail
-import com.iberdrola.practicas2026.DanielFJ.databinding.FragmentInvoiceBinding
+import com.iberdrola.practicas2026.domain.model.InvoiceDetail
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.getValue
 import com.google.android.material.snackbar.Snackbar
+import com.iberdrola.practicas2026.presentation.databinding.FragmentInvoiceBinding
 
 @AndroidEntryPoint
 class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
