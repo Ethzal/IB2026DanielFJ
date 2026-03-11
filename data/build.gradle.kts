@@ -59,7 +59,7 @@ dependencies {
 
     // OkHttp & Retromock
 //    implementation(libs.okhttp)
-//    implementation(libs.retromock)
+    implementation(libs.retromock)
 
     // Room
     implementation(libs.androidx.room.runtime)

@@ -1,9 +1,13 @@
 package com.iberdrola.practicas2026.data.remote
 
-import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import co.infinum.retromock.meta.Mock
+import co.infinum.retromock.meta.MockResponse
 import retrofit2.http.GET
 
 interface InvoiceApi {
-    @GET("invoices.json")
-    suspend fun getRemoteInvoices(): InvoiceResponse
+
+    @Mock
+    @MockResponse(body = "invoices.json")
+    @GET("getInvoices")
+    suspend fun getInvoices(): InvoiceResponseDto
 }

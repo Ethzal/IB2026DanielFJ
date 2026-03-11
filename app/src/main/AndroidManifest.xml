@@ -10,6 +10,7 @@
         android:name=".MyApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.IB2026DanielFJ">
         <activity
             android:name="com.iberdrola.practicas2026.presentation.ui.invoice.MainActivity"
