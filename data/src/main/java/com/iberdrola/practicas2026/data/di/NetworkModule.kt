@@ -1,4 +1,4 @@
-package com.iberdrola.practicas2026.core.di
+package com.iberdrola.practicas2026.data.di
 
 import com.iberdrola.practicas2026.data.remote.InvoiceApi
 import dagger.Module
@@ -13,10 +13,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Provides // CORREGIDO: Eliminado JBRApi
+    private const val BASE_URL = "https://francisco-pacheco.com/api/"
+
+    @Provides
     @Singleton
     fun provideRetrofit(): Retrofit = Retrofit.Builder()
-        .baseUrl("https://tu-url-de-mockable.io/")
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

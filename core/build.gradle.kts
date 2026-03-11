@@ -17,13 +17,7 @@ android {
 
 dependencies {
 
-    implementation(project(":data"))
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    // Retrofit (Lo necesita el NetworkModule)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
 }
