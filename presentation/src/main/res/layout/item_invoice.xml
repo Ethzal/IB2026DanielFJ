@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingTop="@dimen/spacing_m">
+
+    <!-- Lado Izquierdo -->
+    <TextView
+        android:id="@+id/tvItemDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="8 de marzo"
+        style="@style/TextAppearance.App.BodyPrimary"
+        android:textSize="@dimen/text_size_m"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvItemType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Factura Luz"
+        style="@style/TextAppearance.App.BodySecondary"
+        android:layout_marginTop="@dimen/spacing_xs"
+        app:layout_constraintTop_toBottomOf="@id/tvItemDate"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvItemStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        tools:text="Pendiente de Pago"
+        tools:background="@drawable/bg_pill_pendient"
+        tools:textColor="@color/text_pendient"
+        style="@style/TextAppearance.App.Pill"
+        app:layout_constraintTop_toBottomOf="@id/tvItemType"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- Lado Derecho -->
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="@dimen/icon_size_s"
+        android:layout_height="@dimen/icon_size_s"
+        android:contentDescription="@string/flecha"
+        android:src="@drawable/ic_arrow_info"
+        app:tint="@color/text_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dividerItem"/>
+
+    <TextView
+        android:id="@+id/tvItemAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="20,00 €"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_m"
+        android:layout_marginEnd="@dimen/spacing_s"
+        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dividerItem"/>
+
+    <!-- Separador inferior -->
+    <View
+        android:id="@+id/dividerItem"
+        style="@style/Widget.App.Divider"
+        android:layout_marginTop="@dimen/spacing_m"
+        app:layout_constraintTop_toBottomOf="@id/tvItemStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

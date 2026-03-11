@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espaciados (Márgenes y Paddings) -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_s">8dp</dimen>
+    <dimen name="spacing_m">16dp</dimen>
+    <dimen name="spacing_l">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+
+    <!-- Tamaños de Texto -->
+    <dimen name="text_size_xs">11sp</dimen>
+    <dimen name="text_size_s">12sp</dimen>
+    <dimen name="text_size_m">14sp</dimen>
+    <dimen name="text_size_l">16sp</dimen>
+    <dimen name="text_size_xl">18sp</dimen>
+    <dimen name="text_size_xxl">24sp</dimen>
+    <dimen name="text_size_amount">28sp</dimen>
+
+    <!-- Tamaños de Iconos -->
+    <dimen name="icon_size_s">24dp</dimen>
+    <dimen name="icon_size_m">35dp</dimen>
+
+    <!-- Elementos UI (Bordes, Radios, Líneas) -->
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="stroke_width_default">1dp</dimen>
+    <dimen name="stroke_width_thick">2dp</dimen>
+    <dimen name="corner_radius_default">16dp</dimen>
+    <dimen name="corner_radius_button">20dp</dimen>
+
+    <!-- Skeleton (Shimmer) -->
+    <dimen name="shimmer_card_height">180dp</dimen>
+    <dimen name="shimmer_title_width">150dp</dimen>
+    <dimen name="shimmer_item_height">60dp</dimen>
+</resources>

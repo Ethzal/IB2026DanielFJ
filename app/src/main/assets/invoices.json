@@ -1,0 +1,47 @@
+{
+  "ultima_factura": {
+    "id": "F001",
+    "tipo": "Factura Luz",
+    "importe": 20.00,
+    "fecha_inicio": "01 feb. 2024",
+    "fecha_fin": "04 mar. 2024",
+    "estado": "Pendiente de Pago"
+  },
+  "historico":[
+    {
+      "id": "F002",
+      "fecha": "8 de marzo",
+      "tipo": "Factura Luz",
+      "importe": 20.00,
+      "estado": "Pendiente de Pago"
+    },
+    {
+      "id": "F003",
+      "fecha": "6 de febrero",
+      "tipo": "Factura Luz",
+      "importe": 20.10,
+      "estado": "Pendiente de Pago"
+    },
+    {
+      "id": "F004",
+      "fecha": "6 de noviembre",
+      "tipo": "Factura Luz",
+      "importe": 150.43,
+      "estado": "Pagada"
+    },
+    {
+      "id": "F005",
+      "fecha": "3 de febrero",
+      "tipo": "Factura Gas",
+      "importe": 13.10,
+      "estado": "Pendiente de Pago"
+    },
+    {
+      "id": "F006",
+      "fecha": "16 de noviembre",
+      "tipo": "Factura Gas",
+      "importe": 69.69,
+      "estado": "Pagada"
+    }
+  ]
+}

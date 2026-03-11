@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.iberdrola.practicas2026.DanielFJ.presentation.InvoiceFragment"
+        android:name="com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceFragment"
         android:label="Main Fragment"
-        tools:layout="@layout/fragment_main"/>
+        tools:layout="@layout/fragment_invoice"/>
 </navigation>

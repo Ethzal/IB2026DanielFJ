@@ -1,24 +1,21 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.iberdrola.practicas2026.DanielFJ"
+    namespace = "com.iberdrola.practicas2026.data"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.iberdrola.practicas2026.DanielFJ"
         minSdk = 29
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -30,16 +27,10 @@ android {
             )
         }
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
@@ -49,16 +40,31 @@ android {
 
 dependencies {
 
-    implementation(project(":presentation"))
-    implementation(project(":data"))
+    implementation(project(":domain"))
 
     // Base
-    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.fragment)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+//    implementation(libs.converter.scalars)
+//    implementation(libs.converter.gson)
+
+    // OkHttp & Retromock
+//    implementation(libs.okhttp)
+    implementation(libs.retromock)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // Tests
     testImplementation(libs.junit)
