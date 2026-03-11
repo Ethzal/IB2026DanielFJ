@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -37,6 +38,7 @@ android {
         }
     }
     buildFeatures {
+        compose = true
         viewBinding = true
     }
 }
@@ -54,6 +56,19 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.shimmer)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Compose
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    // Integration con ViewModel y Navigation
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Hilt
     implementation(libs.hilt.android)
