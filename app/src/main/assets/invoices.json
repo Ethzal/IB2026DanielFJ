@@ -28,6 +28,20 @@
       "tipo": "Factura Luz",
       "importe": 150.43,
       "estado": "Pagada"
+    },
+    {
+      "id": "F005",
+      "fecha": "3 de febrero",
+      "tipo": "Factura Gas",
+      "importe": 13.10,
+      "estado": "Pendiente de Pago"
+    },
+    {
+      "id": "F006",
+      "fecha": "16 de noviembre",
+      "tipo": "Factura Gas",
+      "importe": 69.69,
+      "estado": "Pagada"
     }
   ]
 }

@@ -57,6 +57,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.benchmark.common)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.fragment)
 

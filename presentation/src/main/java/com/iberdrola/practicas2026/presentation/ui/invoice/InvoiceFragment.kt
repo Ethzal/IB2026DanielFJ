@@ -78,6 +78,16 @@ class InvoiceFragment : Fragment(R.layout.fragment_invoice) {
             }
         }
 
+        // TabLayout
+        binding.tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
+                val type = if (tab?.position == 0) "Factura Luz" else "Factura Gas"
+                viewModel.filterInvoicesByType(type)
+            }
+            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+        })
+
         // Switch
         binding.switchMode.setOnCheckedChangeListener { _, isChecked ->
             // 1. Cambiamos colores del switch según el modo

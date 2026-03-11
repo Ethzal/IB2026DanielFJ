@@ -22,6 +22,8 @@ class InvoiceViewModel @Inject constructor(
         data class Error(val msg: String) : UiState()
     }
 
+    private var originalResponse: InvoiceResponse? = null
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -30,15 +32,29 @@ class InvoiceViewModel @Inject constructor(
     fun fetchFacturas() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-
             getInvoicesUseCase(usarMocksLocales)
-                .catch { e ->
-                    _uiState.value = UiState.Error("Error al cargar: ${e.message}")
-                }
+                .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error") }
                 .collect { response ->
-                    _uiState.value = UiState.Success(response)
+                    originalResponse = response
+                    filterInvoicesByType("Factura Luz")
                 }
         }
+    }
+
+    fun filterInvoicesByType(type: String) {
+        val data = originalResponse ?: return
+
+        val filteredHistory = data.history.filter { it.type == type }
+
+        val filteredLastInvoice = if (data.lastInvoice.type == type) {
+            data.lastInvoice
+        } else {
+            null
+        }
+
+        _uiState.value = UiState.Success(
+            data.copy(history = filteredHistory)
+        )
     }
 
     fun toggleMode(useLocal: Boolean) {
