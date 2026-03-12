@@ -12,12 +12,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.InvoiceItem
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
@@ -37,6 +39,7 @@ fun InvoiceScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val isLocal by viewModel.usarMocksLocales.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var showNotAvailableDialog by remember { mutableStateOf(false) }
 
@@ -63,8 +66,8 @@ fun InvoiceScreen(
                     scope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
                         snackbarHostState.showSnackbar(
-                            if (isLocal) "Modo Local: Cargando mocks..."
-                            else "Modo Remoto: Conectando a API..."
+                            if (isLocal) context.getString(R.string.modo_local_cargando_mocks)
+                            else context.getString(R.string.modo_remoto_conectando_a_api)
                         )
                     }
                 }
@@ -151,7 +154,9 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (InvoiceItem) -> Unit) {
 
         item {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 32.dp, bottom = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp, bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

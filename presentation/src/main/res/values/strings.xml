@@ -14,4 +14,6 @@
     <string name="atras"><u>Atrás</u></string>
     <string name="flecha">Flecha</string>
     <string name="local">Local</string>
+    <string name="modo_local_cargando_mocks">Modo Local: Cargando mocks...</string>
+    <string name="modo_remoto_conectando_a_api">Modo Remoto: Conectando a API...</string>
 </resources>
