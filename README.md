@@ -49,13 +49,13 @@ El proyecto utiliza una estructura de **Clean Architecture** para desacoplar la 
 
 ## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Toolbox.webp" alt="Toolbox" width="25" height="25" /> Stack Tecnológico
 
-| Componente | Tecnología / Librería                   |
-| :--- |:----------------------------------------|
-| **Lenguaje** | Kotlin                                  |
+| Componente                    | Tecnología / Librería                   |
+|:------------------------------|:----------------------------------------|
+| **Lenguaje**                  | Kotlin                                  |
 | **Inyección de Dependencias** | Dagger Hilt                             |
-| **Networking** | Retrofit 2, OkHttp 4, Retromock         |
-| **Persistencia** | Room Database                           |
-| **Asincronía** | Coroutines & Kotlin Flow                |
-| **Interfaz de Usuario** | XML, Fragments, ViewBinding, Material 3 |
-| **Carga Visual** | Shimmer Animation (Compose)                                  |
-| **Navegación** | Navigation Compose            |
+| **Networking**                | Retrofit 2, OkHttp 4, Retromock         |
+| **Persistencia**              | Room Database                           |
+| **Asincronía**                | Coroutines & Kotlin Flow                |
+| **Interfaz de Usuario**       | XML, Fragments, ViewBinding, Material 3 |
+| **Carga Visual**              | Shimmer Animation (Compose)             |
+| **Navegación**                | Navigation Compose                      |
