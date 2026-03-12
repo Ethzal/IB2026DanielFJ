@@ -1,0 +1,99 @@
+package com.iberdrola.practicas2026.presentation.composables.common
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.domain.model.InvoiceItem
+import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
+import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
+import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
+import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
+import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
+import java.util.Locale
+
+@Composable
+fun StatusPill(status: String) {
+    val isPaid = status == "Pagada"
+    val backgroundColor = if (isPaid) BgPaid else BgPending
+    val textColor = if (isPaid) TextPaid else TextPending
+
+    Surface(
+        color = backgroundColor,
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+        Text(
+            text = status,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+            color = textColor
+        )
+    }
+}
+
+@Composable
+fun InvoiceRow(invoice: InvoiceItem, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(top = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = invoice.date,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = invoice.type,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+                StatusPill(status = invoice.status)
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = TextSecondary
+                )
+                Spacer(Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_info),
+                    contentDescription = null,
+                    tint = TextSecondary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        HorizontalDivider(thickness = 1.dp, color = Color(0xFFEEEEEE))
+    }
+}
