@@ -38,6 +38,21 @@ fun InvoiceScreen(
     val scope = rememberCoroutineScope()
     val isLocal by viewModel.usarMocksLocales.collectAsStateWithLifecycle()
 
+    var showNotAvailableDialog by remember { mutableStateOf(false) }
+
+    if (showNotAvailableDialog) {
+        AlertDialog(
+            onDismissRequest = { showNotAvailableDialog = false },
+            title = { Text("Información") },
+            text = { Text("Esta factura aún no está disponible para su visualización.") },
+            confirmButton = {
+                TextButton(onClick = { showNotAvailableDialog = false }) {
+                    Text("Aceptar")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             InvoiceHeader(
@@ -99,7 +114,7 @@ fun InvoiceScreen(
                 is InvoiceViewModel.UiState.Success -> {
                     InvoiceList(
                         data = state.data,
-                        onInvoiceClick = { /* Mostrar Diálogo "No disponible" */ }
+                        onInvoiceClick = { showNotAvailableDialog = true }
                     )
                 }
 
