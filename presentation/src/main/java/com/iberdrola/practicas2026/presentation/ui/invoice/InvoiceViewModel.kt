@@ -1,5 +1,8 @@
 package com.iberdrola.practicas2026.presentation.ui.invoice
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
@@ -15,7 +18,7 @@ import javax.inject.Inject
 class InvoiceViewModel @Inject constructor(
     private val getInvoicesUseCase: GetInvoicesUseCase
 ) : ViewModel() {
-
+    
     sealed class UiState {
         object Loading : UiState()
         data class Success(val data: InvoiceResponse) : UiState()
@@ -27,13 +30,20 @@ class InvoiceViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
-    var usarMocksLocales: Boolean = true
+    private val _usarMocksLocales = MutableStateFlow(true)
+    val usarMocksLocales: StateFlow<Boolean> = _usarMocksLocales
+
+    init {
+        fetchFacturas()
+    }
 
     fun fetchFacturas() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            getInvoicesUseCase(usarMocksLocales)
-                .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error") }
+            getInvoicesUseCase(_usarMocksLocales.value)
+                .catch { e ->
+                    _uiState.value = UiState.Error(e.message ?: "Error de conexión")
+                }
                 .collect { response ->
                     originalResponse = response
                     filterInvoicesByType("Factura Luz")
@@ -58,7 +68,7 @@ class InvoiceViewModel @Inject constructor(
     }
 
     fun toggleMode(useLocal: Boolean) {
-        usarMocksLocales = useLocal
+        _usarMocksLocales.value = useLocal
         fetchFacturas()
     }
 }
