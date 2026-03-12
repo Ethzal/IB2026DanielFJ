@@ -5,6 +5,7 @@ import com.iberdrola.practicas2026.data.remote.InvoiceApi
 import com.iberdrola.practicas2026.data.di.LocalApi
 import com.iberdrola.practicas2026.data.di.RemoteApi
 import com.iberdrola.practicas2026.data.local.InvoiceEntity
+import com.iberdrola.practicas2026.data.remote.InvoiceItemDto
 import com.iberdrola.practicas2026.domain.model.*
 import com.iberdrola.practicas2026.domain.repository.InvoiceRepository
 import com.iberdrola.practicas2026.data.remote.InvoiceResponseDto
@@ -20,32 +21,90 @@ class InvoiceRepositoryImpl @Inject constructor(
 ) : InvoiceRepository {
 
     override suspend fun getInvoices(isLocal: Boolean): Flow<InvoiceResponse> = flow {
-        try {
-            val dto: InvoiceResponseDto = if (isLocal) {
-                delay((1000..3000).random().toLong())
-                apiLocal.getInvoices()
-            } else {
+        if (isLocal) {
+            // MODO LOCAL
+            delay((1000..3000).random().toLong())
+            val dto = apiLocal.getInvoices()
+            emit(mapDtoToDomain(dto))
+        } else {
+            // MODO REMOTO: Red -> Room -> UI
+            try {
                 val remoteDto = apiRemote.getInvoices()
 
-                remoteDto.history?.let { list ->
-                    val entities = list.map {
-                        InvoiceEntity(
-                            it.id ?: "",
-                            it.date ?: "",
-                            it.type ?: "",
-                            it.amount ?: 0.0,
-                            it.status ?: ""
-                        )
-                    }
-                    dao.saveInvoices(entities)
+                // Preparamos la lista para Room
+                val entities = mutableListOf<InvoiceEntity>()
+
+                // 1. Guardamos la última factura
+                remoteDto.lastInvoice?.let {
+                    entities.add(InvoiceEntity(
+                        id = it.id ?: "LAST_INV_ID",
+                        date = "",
+                        type = it.type ?: "",
+                        amount = it.amount ?: 0.0,
+                        status = it.status ?: "",
+                        isLastInvoice = true,
+                        startDate = it.startDate ?: "",
+                        endDate = it.endDate ?: ""
+                    ))
                 }
-                remoteDto
+
+                // 2. Guardamos el historial
+                remoteDto.history?.forEach {
+                    entities.add(InvoiceEntity(
+                        id = it.id ?: "",
+                        date = it.date ?: "",
+                        type = it.type ?: "",
+                        amount = it.amount ?: 0.0,
+                        status = it.status ?: "",
+                        isLastInvoice = false
+                    ))
+                }
+
+                dao.clearInvoices()
+                dao.saveInvoices(entities)
+
+            } catch (e: Exception) {
+                println("ERROR REMOTO: ${e.message}")
             }
 
-            emit(mapDtoToDomain(dto))
-        } catch (e: Exception) {
-            throw e
+            // LEER DE ROOM
+            val dbInvoices = dao.getAllInvoices()
+
+            if (dbInvoices.isEmpty()) {
+                throw Exception("No hay datos en caché y la red falló")
+            }
+
+            val lastEntity = dbInvoices.find { it.isLastInvoice }
+            val historyEntities = dbInvoices.filter { !it.isLastInvoice }
+
+            emit(InvoiceResponse(
+                lastInvoice = InvoiceDetail(
+                    id = lastEntity?.id ?: "",
+                    type = lastEntity?.type ?: "",
+                    amount = lastEntity?.amount ?: 0.0,
+                    startDate = lastEntity?.startDate ?: "",
+                    endDate = lastEntity?.endDate ?: "",
+                    status = lastEntity?.status ?: ""
+                ),
+                history = historyEntities.map {
+                    InvoiceItem(it.id, it.date, it.type, it.amount, it.status)
+                }
+            ))
         }
+    }
+
+    // Función auxiliar para crear el detalle desde la primera entidad de Room
+    private fun mapEntityToDetail(entity: InvoiceEntity?): InvoiceDetail {
+        return entity?.let {
+            InvoiceDetail(
+                id = it.id,
+                type = it.type,
+                amount = it.amount,
+                startDate = "",
+                endDate = "",
+                status = it.status
+            )
+        } ?: InvoiceDetail("", "", 0.0, "", "", "")
     }
 
     private fun mapDtoToDomain(dto: InvoiceResponseDto): InvoiceResponse {
@@ -69,4 +128,22 @@ class InvoiceRepositoryImpl @Inject constructor(
             } ?: emptyList()
         )
     }
+
+    // Mappers: Entity -> Domain
+    fun InvoiceEntity.toDomain() = InvoiceItem(
+        id = id,
+        date = date,
+        type = type,
+        amount = amount,
+        status = status
+    )
+
+    // Mappers: DTO -> Entity
+    fun InvoiceItemDto.toEntity() = InvoiceEntity(
+        id = id ?: "",
+        date = date ?: "",
+        type = type ?: "",
+        amount = amount ?: 0.0,
+        status = status ?: ""
+    )
 }

@@ -6,5 +6,8 @@ data class InvoiceEntity(
     val date: String,
     val type: String,
     val amount: Double,
-    val status: String
+    val status: String,
+    val isLastInvoice: Boolean = false,
+    val startDate: String = "",
+    val endDate: String = ""
 )
