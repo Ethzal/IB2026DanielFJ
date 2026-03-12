@@ -16,4 +16,10 @@
     <string name="local">Local</string>
     <string name="modo_local_cargando_mocks">Modo Local: Cargando mocks...</string>
     <string name="modo_remoto_conectando_a_api">Modo Remoto: Conectando a API...</string>
+    <string name="hola_daniel">Hola, Daniel</string>
+    <string name="c_miguel_de_cervantes_47">C/ Miguel de Cervantes, 47</string>
+    <string name="factura_digital_activa">Factura digital activa</string>
+    <string name="ya_estas_ahorrando">Ya estás ahorrando papel con tu factura electrónica.</string>
+    <string name="mi_energia">Mi energía</string>
+    <string name="_32_21">32,21 €</string>
 </resources>
