@@ -70,7 +70,19 @@ fun InvoiceScreen(
                 }
             )
         },
-        containerColor = Color.White
+        containerColor = Color.White,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = BrandGreen.copy(alpha = 0.9f),
+                        contentColor = Color.White
+                    )
+                }
+            )
+        }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             
