@@ -1,5 +1,6 @@
 package com.iberdrola.practicas2026.presentation.composables.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,12 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 
@@ -58,26 +59,40 @@ fun FeedbackBottomSheet(
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 24.dp),
+                    thickness = 1.dp,
+                    color = Color.LightGray.copy(alpha = 0.5f)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Fila de Emojis
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    val ratings = listOf("😫", "🙁", "😐", "🙂", "😄")
-                    ratings.forEachIndexed { index, emoji ->
-                        Text(
-                            text = emoji,
-                            fontSize = 38.sp,
+                    val ratings = listOf(
+                        R.drawable.ic_very_bad,
+                        R.drawable.ic_bad,
+                        R.drawable.ic_neutral,
+                        R.drawable.ic_good,
+                        R.drawable.ic_happy
+                    )
+
+                    ratings.forEachIndexed { index, drawableRes ->
+                        Image(
+                            painter = painterResource(id = drawableRes),
+                            contentDescription = null,
                             modifier = Modifier
+                                .size(38.dp)
                                 .clickable { onRatingSelected(index) }
-                                .padding(4.dp)
+                                .padding(1.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Botón "Responder más tarde"
                 Text(
@@ -94,7 +109,7 @@ fun FeedbackBottomSheet(
             } else {
                 // VISTA DE AGRADECIMIENTO
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = android.R.drawable.checkbox_on_background),
+                    painter = painterResource(id = android.R.drawable.checkbox_on_background),
                     contentDescription = null,
                     tint = BrandGreen,
                     modifier = Modifier.size(48.dp)
