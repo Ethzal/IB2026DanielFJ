@@ -22,120 +22,69 @@ class InvoiceRepositoryImpl @Inject constructor(
 
     override suspend fun getInvoices(isLocal: Boolean): Flow<InvoiceResponse> = flow {
         if (isLocal) {
-            // MODO LOCAL
+            // --- MODO LOCAL ---
             delay((1000..3000).random().toLong())
             val dto = apiLocal.getInvoices()
             emit(mapDtoToDomain(dto))
         } else {
-            // MODO REMOTO: Red -> Room -> UI
+            // --- MODO REMOTO ---
             try {
                 val remoteDto = apiRemote.getInvoices()
 
-                // Preparamos la lista para Room
-                val entities = mutableListOf<InvoiceEntity>()
+                // Mapeamos la lista plana a entidades de Room
+                val entities = remoteDto.facturas?.mapIndexed { index, item ->
+                    InvoiceEntity(
+                        id = item.id ?: "ID_$index",
+                        date = item.date ?: "",
+                        type = item.type ?: "",
+                        amount = item.amount ?: 0.0,
+                        status = item.status ?: "",
+                        startDate = item.startDate ?: "",
+                        endDate = item.endDate ?: "",
+                        isLastInvoice = index == 0
+                    )
+                } ?: emptyList()
 
-                // 1. Guardamos la última factura
-                remoteDto.lastInvoice?.let {
-                    entities.add(InvoiceEntity(
-                        id = it.id ?: "LAST_INV_ID",
-                        date = "",
-                        type = it.type ?: "",
-                        amount = it.amount ?: 0.0,
-                        status = it.status ?: "",
-                        isLastInvoice = true,
-                        startDate = it.startDate ?: "",
-                        endDate = it.endDate ?: ""
-                    ))
+                if (entities.isNotEmpty()) {
+                    dao.clearInvoices()
+                    dao.saveInvoices(entities)
                 }
-
-                // 2. Guardamos el historial
-                remoteDto.history?.forEach {
-                    entities.add(InvoiceEntity(
-                        id = it.id ?: "",
-                        date = it.date ?: "",
-                        type = it.type ?: "",
-                        amount = it.amount ?: 0.0,
-                        status = it.status ?: "",
-                        isLastInvoice = false
-                    ))
-                }
-
-                dao.clearInvoices()
-                dao.saveInvoices(entities)
-
             } catch (e: Exception) {
-                println("ERROR REMOTO: ${e.message}")
+                e.printStackTrace()
             }
 
-            // LEER DE ROOM
             val dbInvoices = dao.getAllInvoices()
+            if (dbInvoices.isEmpty()) throw Exception("No hay datos disponibles")
 
-            if (dbInvoices.isEmpty()) {
-                throw Exception("No hay datos en caché y la red falló")
-            }
-
-            val lastEntity = dbInvoices.find { it.isLastInvoice }
-            val historyEntities = dbInvoices.filter { !it.isLastInvoice }
-
-            emit(InvoiceResponse(
-                lastInvoice = InvoiceDetail(
-                    id = lastEntity?.id ?: "",
-                    type = lastEntity?.type ?: "",
-                    amount = lastEntity?.amount ?: 0.0,
-                    startDate = lastEntity?.startDate ?: "",
-                    endDate = lastEntity?.endDate ?: "",
-                    status = lastEntity?.status ?: ""
-                ),
-                history = historyEntities.map {
-                    InvoiceItem(it.id, it.date, it.type, it.amount, it.status)
-                }
-            ))
+            emit(InvoiceResponse(allInvoices = dbInvoices.map { it.toDomain() }))
         }
     }
 
-    // Función auxiliar para crear el detalle desde la primera entidad de Room
-    private fun mapEntityToDetail(entity: InvoiceEntity?): InvoiceDetail {
-        return entity?.let {
-            InvoiceDetail(
-                id = it.id,
-                type = it.type,
-                amount = it.amount,
-                startDate = "",
-                endDate = "",
-                status = it.status
-            )
-        } ?: InvoiceDetail("", "", 0.0, "", "", "")
-    }
-
     private fun mapDtoToDomain(dto: InvoiceResponseDto): InvoiceResponse {
-        return InvoiceResponse(
-            lastInvoice = InvoiceDetail(
-                id = dto.lastInvoice?.id ?: "",
-                type = dto.lastInvoice?.type ?: "",
-                amount = dto.lastInvoice?.amount ?: 0.0,
-                startDate = dto.lastInvoice?.startDate ?: "",
-                endDate = dto.lastInvoice?.endDate ?: "",
-                status = dto.lastInvoice?.status ?: ""
-            ),
-            history = dto.history?.map {
-                InvoiceItem(
-                    id = it.id ?: "",
-                    date = it.date ?: "",
-                    type = it.type ?: "",
-                    amount = it.amount ?: 0.0,
-                    status = it.status ?: ""
-                )
-            } ?: emptyList()
-        )
+        // Mapeamos la lista de DTOs a lista de Dominio
+        val domainList = dto.facturas?.map {
+            Invoice(
+                id = it.id ?: "",
+                date = it.date ?: "",
+                type = it.type ?: "",
+                amount = it.amount ?: 0.0,
+                status = it.status ?: "",
+                startDate = it.startDate ?: "",
+                endDate = it.endDate ?: ""
+            )
+        } ?: emptyList()
+
+        return InvoiceResponse(allInvoices = domainList)
     }
 
-    // Mappers: Entity -> Domain
-    fun InvoiceEntity.toDomain() = InvoiceItem(
+    private fun InvoiceEntity.toDomain() = Invoice(
         id = id,
         date = date,
         type = type,
         amount = amount,
-        status = status
+        status = status,
+        startDate = startDate,
+        endDate = endDate
     )
 
     // Mappers: DTO -> Entity

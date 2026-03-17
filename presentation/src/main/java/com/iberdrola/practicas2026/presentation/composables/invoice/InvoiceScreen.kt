@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.iberdrola.practicas2026.domain.model.InvoiceItem
+import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
@@ -144,13 +144,17 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (InvoiceItem) -> Unit) {
+fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
     ) {
         // Tarjeta principal
-        item { LastInvoiceCard(invoice = data.lastInvoice) }
+        item {
+            data.lastInvoice?.let { last ->
+                LastInvoiceCard(invoice = last)
+            }
+        }
 
         item {
             Row(

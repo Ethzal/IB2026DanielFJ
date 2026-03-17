@@ -1,8 +1,5 @@
 package com.iberdrola.practicas2026.presentation.ui.invoice
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
@@ -13,12 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.emptyList
 
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(
     private val getInvoicesUseCase: GetInvoicesUseCase
 ) : ViewModel() {
-    
+
     sealed class UiState {
         object Loading : UiState()
         data class Success(val data: InvoiceResponse) : UiState()
@@ -41,9 +39,7 @@ class InvoiceViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             getInvoicesUseCase(_usarMocksLocales.value)
-                .catch { e ->
-                    _uiState.value = UiState.Error(e.message ?: "Error de conexión")
-                }
+                .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error") }
                 .collect { response ->
                     originalResponse = response
                     filterInvoicesByType("Factura Luz")
@@ -52,18 +48,21 @@ class InvoiceViewModel @Inject constructor(
     }
 
     fun filterInvoicesByType(type: String) {
-        val data = originalResponse ?: return
+        val response = originalResponse ?: return
 
-        val filteredHistory = data.history.filter { it.type == type }
+        // Filtramos la lista bruta que guardamos en allInvoices
+        val filtered = response.allInvoices.filter { it.type == type }
 
-        val filteredLastInvoice = if (data.lastInvoice.type == type) {
-            data.lastInvoice
-        } else {
-            null
-        }
+        val last = filtered.firstOrNull()
+        val history = if (filtered.size > 1) filtered.drop(1) else emptyList()
 
+        // IMPORTANTE: Pasamos un objeto InvoiceResponse al Success
         _uiState.value = UiState.Success(
-            data.copy(history = filteredHistory)
+            data = InvoiceResponse(
+                lastInvoice = last,
+                history = history,
+                allInvoices = response.allInvoices // Mantenemos la original
+            )
         )
     }
 

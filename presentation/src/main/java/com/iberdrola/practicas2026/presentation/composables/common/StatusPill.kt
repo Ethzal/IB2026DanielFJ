@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.iberdrola.practicas2026.domain.model.InvoiceItem
+import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
@@ -53,7 +53,7 @@ fun StatusPill(status: String) {
 }
 
 @Composable
-fun InvoiceRow(invoice: InvoiceItem, onClick: () -> Unit) {
+fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +62,7 @@ fun InvoiceRow(invoice: InvoiceItem, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
