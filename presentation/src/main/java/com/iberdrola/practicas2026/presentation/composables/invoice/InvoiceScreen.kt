@@ -1,5 +1,6 @@
 package com.iberdrola.practicas2026.presentation.composables.invoice
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
@@ -40,6 +42,23 @@ fun InvoiceScreen(
     val scope = rememberCoroutineScope()
     val isLocal by viewModel.usarMocksLocales.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
+    val showThanks by viewModel.showThanksMessage.collectAsStateWithLifecycle()
+
+    // Manejar botón atrás físico
+    BackHandler {
+        viewModel.onBackClicked(onConfirmExit = onBackClick)
+    }
+
+    if (showFeedback) {
+        FeedbackBottomSheet(
+            showThanks = showThanks,
+            onRatingSelected = { rating -> viewModel.onRatingSelected(rating) },
+            onLaterSelected = { viewModel.onLaterClicked(onBackClick) },
+            onDismiss = { viewModel.onSheetDismissed(onBackClick) }
+        )
+    }
 
     var showNotAvailableDialog by remember { mutableStateOf(false) }
 
