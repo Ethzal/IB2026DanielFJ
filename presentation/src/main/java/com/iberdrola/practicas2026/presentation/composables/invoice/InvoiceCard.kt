@@ -37,6 +37,13 @@ import java.util.Locale
 
 @Composable
 fun LastInvoiceCard(invoice: Invoice) {
+
+    val icon = if (invoice.type.contains("Gas", ignoreCase = true)) {
+        R.drawable.ic_gas
+    } else {
+        R.drawable.ic_lightbulb
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +59,7 @@ fun LastInvoiceCard(invoice: Invoice) {
             ) {
                 Text(text = stringResource(R.string.ultima_factura), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_lightbulb),
+                    painter = painterResource(id = icon),
                     contentDescription = null,
                     tint = BrandGreen,
                     modifier = Modifier.size(Dimens.SpacingXL)
