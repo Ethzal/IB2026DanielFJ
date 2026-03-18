@@ -57,16 +57,25 @@ fun LastInvoiceCard(invoice: Invoice) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = stringResource(R.string.ultima_factura), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                Column {
+                    Text(
+                        text = stringResource(R.string.ultima_factura),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = invoice.type,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     tint = BrandGreen,
-                    modifier = Modifier.size(Dimens.SpacingXL)
+                    modifier = Modifier.size(Dimens.IconM)
                 )
             }
-            
-            Text(text = invoice.type, style = MaterialTheme.typography.bodySmall, color = TextSecondary)
             
             Spacer(modifier = Modifier.height(Dimens.SpacingM))
             

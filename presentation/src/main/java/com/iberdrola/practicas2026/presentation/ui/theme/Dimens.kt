@@ -23,7 +23,7 @@ object Dimens {
 
     // Icon sizes
     val IconS = 24.dp
-    val IconM = 35.dp
+    val IconM = 40.dp
 
     // UI Elements
     val DividerHeight = 1.dp

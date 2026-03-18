@@ -134,7 +134,7 @@ fun EnergyCard(title: String, subtitle: String, value: String, icon: Int, onClic
         elevation = CardDefaults.cardElevation(Dimens.SpacingXS)
     ) {
         Column(Modifier.padding(Dimens.SpacingM)) {
-            Icon(painterResource(icon), contentDescription = null, tint = BrandGreen)
+            Icon(painterResource(icon), contentDescription = null, tint = BrandGreen, modifier = Modifier.size(40.dp))
             Spacer(Modifier.weight(1f))
             Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text(title, style = MaterialTheme.typography.bodyMedium)
