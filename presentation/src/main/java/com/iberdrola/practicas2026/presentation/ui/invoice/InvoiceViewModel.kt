@@ -3,6 +3,7 @@ package com.iberdrola.practicas2026.presentation.ui.invoice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import com.iberdrola.practicas2026.domain.repository.SettingsRepository
 import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
@@ -18,6 +19,7 @@ import kotlin.collections.emptyList
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(
     private val getInvoicesUseCase: GetInvoicesUseCase,
+    private val settingsRepository: SettingsRepository,
     private val getFeedbackStatus: GetFeedbackStatusUseCase,
     private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase
 ) : ViewModel() {
@@ -33,11 +35,12 @@ class InvoiceViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
-    private val _usarMocksLocales = MutableStateFlow(true)
-    val usarMocksLocales: StateFlow<Boolean> = _usarMocksLocales
-
     init {
-        fetchFacturas()
+        viewModelScope.launch {
+            settingsRepository.isLocalMode().collect { isLocal ->
+                fetchFacturas(isLocal)
+            }
+        }
     }
 
     private val _showFeedbackSheet = MutableStateFlow(false)
@@ -90,10 +93,10 @@ class InvoiceViewModel @Inject constructor(
         onConfirmExit()
     }
 
-    fun fetchFacturas() {
+    fun fetchFacturas(isLocal: Boolean) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            getInvoicesUseCase(_usarMocksLocales.value)
+            getInvoicesUseCase(isLocal)
                 .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error") }
                 .collect { response ->
                     originalResponse = response
@@ -111,18 +114,13 @@ class InvoiceViewModel @Inject constructor(
         val last = filtered.firstOrNull()
         val history = if (filtered.size > 1) filtered.drop(1) else emptyList()
 
-        // IMPORTANTE: Pasamos un objeto InvoiceResponse al Success
+        // Pasamos un objeto InvoiceResponse al Success
         _uiState.value = UiState.Success(
             data = InvoiceResponse(
                 lastInvoice = last,
                 history = history,
-                allInvoices = response.allInvoices // Mantenemos la original
+                allInvoices = response.allInvoices
             )
         )
-    }
-
-    fun toggleMode(useLocal: Boolean) {
-        _usarMocksLocales.value = useLocal
-        fetchFacturas()
     }
 }

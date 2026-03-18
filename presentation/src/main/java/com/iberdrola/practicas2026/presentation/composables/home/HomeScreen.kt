@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,12 +21,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.ui.home.MainViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 
 @Composable
-fun HomeScreen(onNavigateToInvoices: () -> Unit ) {
+fun HomeScreen(
+    onNavigateToInvoices: () -> Unit,
+    mainViewModel: MainViewModel = hiltViewModel()
+) {
+    val isLocal by mainViewModel.isLocalMode.collectAsStateWithLifecycle()
     Scaffold { padding ->
         Column(modifier = Modifier
             .fillMaxSize()
@@ -45,6 +53,25 @@ fun HomeScreen(onNavigateToInvoices: () -> Unit ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.hola_daniel), color = Color.White, style = MaterialTheme.typography.headlineMedium)
                         Spacer(Modifier.weight(1f))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = if (isLocal) "Local" else "Remoto",
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                            androidx.compose.material3.Switch(
+                                checked = isLocal,
+                                onCheckedChange = { mainViewModel.toggleMode(it) },
+                                colors = androidx.compose.material3.SwitchDefaults.colors(
+                                    checkedThumbColor = BrandGreen,
+                                    checkedTrackColor = Color.White,
+                                    uncheckedThumbColor = Color.White,
+                                    uncheckedTrackColor = Color.White.copy(alpha = 0.4f)
+                                )
+                            )
+                        }
+
+                        Spacer(Modifier.width(12.dp))
                         // Profile Icon
                         Box(Modifier
                             .size(40.dp)

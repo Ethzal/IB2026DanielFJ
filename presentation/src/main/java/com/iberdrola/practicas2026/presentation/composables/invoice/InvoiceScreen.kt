@@ -13,14 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
-import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
@@ -28,7 +26,6 @@ import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
-import kotlinx.coroutines.launch
 
 @Composable
 fun InvoiceScreen(
@@ -39,9 +36,6 @@ fun InvoiceScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Luz", "Gas")
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    val isLocal by viewModel.usarMocksLocales.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
     val showThanks by viewModel.showThanksMessage.collectAsStateWithLifecycle()
@@ -78,18 +72,7 @@ fun InvoiceScreen(
     Scaffold(
         topBar = {
             InvoiceHeader(
-                isLocal = isLocal,
-                onBack = onBackClick,
-                onModeChange = { isLocal ->
-                    viewModel.toggleMode(isLocal)
-                    scope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(
-                            if (isLocal) context.getString(R.string.modo_local_cargando_mocks)
-                            else context.getString(R.string.modo_remoto_conectando_a_api)
-                        )
-                    }
-                }
+                onBack = { viewModel.onBackClicked(onConfirmExit = onBackClick) }
             )
         },
         containerColor = Color.White,
