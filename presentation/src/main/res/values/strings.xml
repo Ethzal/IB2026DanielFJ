@@ -28,4 +28,9 @@
     <string name="responder_mas_tarde">Responder más tarde</string>
     <string name="tu_opinion_nos_importa">Tu opinión nos importa</string>
     <string name="recomiendes_esta_app">¿Cómo de probable es que recomiendes esta app a amigos o familiares para que realicen sus gestiones?</string>
+    <string name="pagada">Pagada</string>
+    <string name="informacion">Información</string>
+    <string name="factura_no_disponible">Esta factura aún no está disponible para su visualización.</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="remoto">Remoto</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.R
@@ -35,6 +36,6 @@ fun FilterButton(onClick: () -> Unit) {
             tint = BrandGreen
         )
         Spacer(Modifier.width(Dimens.SpacingS))
-        Text(text = "Filtrar", color = BrandGreen, style = MaterialTheme.typography.labelLarge)
+        Text(text = stringResource(R.string.filtrar), color = BrandGreen, style = MaterialTheme.typography.labelLarge)
     }
 }

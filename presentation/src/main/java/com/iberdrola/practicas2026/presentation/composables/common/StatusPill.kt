@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.domain.model.Invoice
@@ -35,7 +36,7 @@ import java.util.Locale
 
 @Composable
 fun StatusPill(status: String) {
-    val isPaid = status == "Pagada"
+    val isPaid = status == stringResource(R.string.pagada)
     val backgroundColor = if (isPaid) BgPaid else BgPending
     val textColor = if (isPaid) TextPaid else TextPending
 

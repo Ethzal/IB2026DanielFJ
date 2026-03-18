@@ -13,11 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
@@ -34,7 +36,7 @@ fun InvoiceScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Luz", "Gas")
+    val tabs = listOf(stringResource(R.string.luz), stringResource(R.string.gas))
     val snackbarHostState = remember { SnackbarHostState() }
 
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
@@ -59,11 +61,11 @@ fun InvoiceScreen(
     if (showNotAvailableDialog) {
         AlertDialog(
             onDismissRequest = { showNotAvailableDialog = false },
-            title = { Text("Información") },
-            text = { Text("Esta factura aún no está disponible para su visualización.") },
+            title = { Text(stringResource(R.string.informacion)) },
+            text = { Text(stringResource(R.string.factura_no_disponible)) },
             confirmButton = {
                 TextButton(onClick = { showNotAvailableDialog = false }) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.aceptar))
                 }
             }
         )
@@ -166,7 +168,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Histórico de facturas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.historico_de_facturas), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 FilterButton(onClick = { /* ... */ })
             }
         }
@@ -174,7 +176,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
         // Título del año
         item {
             Text(
-                text = "2024",
+                text = stringResource(R.string._2024),
                 modifier = Modifier.padding(vertical = Dimens.SpacingS),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold

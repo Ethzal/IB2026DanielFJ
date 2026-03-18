@@ -56,7 +56,7 @@ fun HomeScreen(
                         Spacer(Modifier.weight(1f))
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = if (isLocal) "Local" else "Remoto",
+                                text = if (isLocal) stringResource(R.string.local) else stringResource(R.string.remoto),
                                 color = Color.White,
                                 style = MaterialTheme.typography.labelSmall
                             )

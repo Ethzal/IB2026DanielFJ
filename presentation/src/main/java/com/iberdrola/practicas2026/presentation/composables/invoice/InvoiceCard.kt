@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.iberdrola.practicas2026.domain.model.Invoice
 
@@ -49,7 +50,7 @@ fun LastInvoiceCard(invoice: Invoice) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Última factura", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.ultima_factura), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_lightbulb),
                     contentDescription = null,
