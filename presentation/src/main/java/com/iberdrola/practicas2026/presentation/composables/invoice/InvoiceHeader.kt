@@ -17,17 +17,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 
 @Composable
 fun InvoiceHeader(onBack: () -> Unit) {
 
-    Column(modifier = Modifier.padding(16.dp).padding(top = 20.dp, start = 0.dp, end = 0.dp, bottom = 8.dp)) {
+    Column(modifier = Modifier.padding(Dimens.SpacingM).padding(top = 20.dp, start = 0.dp, end = 0.dp, bottom = Dimens.SpacingS)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(vertical = 8.dp),
+                .padding(vertical = Dimens.SpacingS),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -49,9 +50,9 @@ fun InvoiceHeader(onBack: () -> Unit) {
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Dimens.SpacingS))
         Text(text = stringResource(R.string.mis_facturas), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(Dimens.SpacingXS))
         Text(text = stringResource(R.string.c_miguel_de_cervantes_47), style = MaterialTheme.typography.bodyLarge, color = TextMain, fontWeight = FontWeight.Bold)
     }
 }

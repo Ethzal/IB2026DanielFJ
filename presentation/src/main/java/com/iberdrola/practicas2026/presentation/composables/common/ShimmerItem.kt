@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 
 @Composable
 fun ShimmerItem() {
@@ -35,11 +36,11 @@ fun ShimmerItem() {
         end = Offset(x = translateAnim, y = translateAnim)
     )
 
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        Box(modifier = Modifier.fillMaxWidth().height(180.dp).background(brush, RoundedCornerShape(16.dp)))
-        Spacer(modifier = Modifier.height(24.dp))
-        Box(modifier = Modifier.width(150.dp).height(20.dp).background(brush))
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(brush))
+    Column(modifier = Modifier.fillMaxWidth().padding(Dimens.SpacingM)) {
+        Box(modifier = Modifier.fillMaxWidth().height(Dimens.ShimmerCardHeight).background(brush, RoundedCornerShape(Dimens.CornerDefault)))
+        Spacer(modifier = Modifier.height(Dimens.SpacingL))
+        Box(modifier = Modifier.width(Dimens.ShimmerTitleWidth).height(20.dp).background(brush))
+        Spacer(modifier = Modifier.height(Dimens.SpacingM))
+        Box(modifier = Modifier.fillMaxWidth().height(Dimens.ShimmerItemHeight).background(brush))
     }
 }

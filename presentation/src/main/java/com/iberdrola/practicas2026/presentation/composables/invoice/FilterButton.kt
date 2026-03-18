@@ -17,14 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 
 @Composable
 fun FilterButton(onClick: () -> Unit) {
     OutlinedButton(
         onClick = onClick,
         modifier = Modifier.height(40.dp),
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, BrandGreen),
+        shape = RoundedCornerShape(Dimens.CornerButton),
+        border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
         Icon(
@@ -33,7 +34,7 @@ fun FilterButton(onClick: () -> Unit) {
             modifier = Modifier.size(18.dp),
             tint = BrandGreen
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(Dimens.SpacingS))
         Text(text = "Filtrar", color = BrandGreen, style = MaterialTheme.typography.labelLarge)
     }
 }

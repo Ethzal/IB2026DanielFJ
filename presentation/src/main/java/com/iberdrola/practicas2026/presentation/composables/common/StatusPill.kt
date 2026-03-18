@@ -28,6 +28,7 @@ import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
@@ -40,12 +41,12 @@ fun StatusPill(status: String) {
 
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.padding(top = 8.dp)
+        shape = RoundedCornerShape(Dimens.SpacingS),
+        modifier = Modifier.padding(top = Dimens.SpacingS)
     ) {
         Text(
             text = status,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = Dimens.SpacingXS),
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = textColor
         )
@@ -58,7 +59,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(top = 16.dp)
+            .padding(top = Dimens.SpacingM)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -84,7 +85,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                     color = TextSecondary
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(Dimens.SpacingS))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_info),
                     contentDescription = null,
@@ -93,7 +94,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider(thickness = 1.dp, color = Color(0xFFEEEEEE))
+        Spacer(Modifier.height(Dimens.SpacingM))
+        HorizontalDivider(thickness = Dimens.StrokeDefault, color = Color(0xFFEEEEEE))
     }
 }

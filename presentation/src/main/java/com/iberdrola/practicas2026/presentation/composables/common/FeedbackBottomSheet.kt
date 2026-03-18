@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +37,7 @@ fun FeedbackBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = Dimens.SpacingL)
                 .padding(bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -49,23 +50,23 @@ fun FeedbackBottomSheet(
                     color = Color(0xFF333333)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpacingM))
 
                 Text(
                     text = stringResource(R.string.recomiendes_esta_app),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = Dimens.SpacingS)
                 )
 
                 HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 24.dp),
-                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = Dimens.SpacingL),
+                    thickness = Dimens.StrokeDefault,
                     color = Color.LightGray.copy(alpha = 0.5f)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpacingM))
 
                 // Fila de Emojis
                 Row(
@@ -92,14 +93,14 @@ fun FeedbackBottomSheet(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpacingM))
 
                 // Botón "Responder más tarde"
                 Text(
                     text = stringResource(R.string.responder_mas_tarde),
                     modifier = Modifier
                         .clickable { onLaterSelected() }
-                        .padding(8.dp),
+                        .padding(Dimens.SpacingS),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         textDecoration = TextDecoration.Underline,
                         fontWeight = FontWeight.Bold,
@@ -115,7 +116,7 @@ fun FeedbackBottomSheet(
                     modifier = Modifier.size(48.dp)
                 )
                 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpacingM))
                 
                 Text(
                     text = stringResource(R.string.muchas_gracias),
@@ -127,10 +128,10 @@ fun FeedbackBottomSheet(
                 Text(
                     text = stringResource(R.string.tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = Dimens.SpacingS)
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpacingXL))
 
                 Button(
                     onClick = onDismiss,

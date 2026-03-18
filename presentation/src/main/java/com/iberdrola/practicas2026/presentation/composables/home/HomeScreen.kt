@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.home.MainViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 
 @Composable
 fun HomeScreen(
@@ -45,9 +46,9 @@ fun HomeScreen(
                     .height(200.dp)
                     .background(
                         BrandGreen,
-                        RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                        RoundedCornerShape(bottomStart = Dimens.SpacingXL, bottomEnd = Dimens.SpacingXL)
                     )
-                    .padding(24.dp)
+                    .padding(Dimens.SpacingL)
             ) {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -86,14 +87,14 @@ fun HomeScreen(
             // Info Card
             Card(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(Dimens.SpacingM)
                     .offset(y = (-40).dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(Dimens.CornerDefault)
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier.padding(Dimens.SpacingM), verticalAlignment = Alignment.CenterVertically) {
                     Icon(painterResource(R.drawable.ic_lightbulb), contentDescription = null, tint = BrandGreen, modifier = Modifier.size(40.dp))
-                    Spacer(Modifier.width(16.dp))
+                    Spacer(Modifier.width(Dimens.SpacingM))
                     Column {
                         Text(stringResource(R.string.factura_digital_activa), fontWeight = FontWeight.Bold, color = BrandGreen)
                         Text(stringResource(R.string.ya_estas_ahorrando), style = MaterialTheme.typography.bodySmall)
@@ -102,10 +103,10 @@ fun HomeScreen(
             }
 
             // Mi Energía
-            Text(stringResource(R.string.mi_energia), modifier = Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.mi_energia), modifier = Modifier.padding(horizontal = Dimens.SpacingM), style = MaterialTheme.typography.titleLarge)
             
             Row(modifier = Modifier
-                .padding(16.dp)
+                .padding(Dimens.SpacingM)
                 .fillMaxWidth()) {
                 // Invoice Card
                 EnergyCard(
@@ -116,7 +117,7 @@ fun HomeScreen(
                     onClick = onNavigateToInvoices,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(Dimens.SpacingM))
                 // Empty Card
                 Box(Modifier.weight(1f)) 
             }
@@ -128,11 +129,11 @@ fun HomeScreen(
 fun EnergyCard(title: String, subtitle: String, value: String, icon: Int, onClick: () -> Unit, modifier: Modifier) {
     Card(
         onClick = onClick,
-        modifier = modifier.height(150.dp),
+        modifier = modifier.height(Dimens.ShimmerTitleWidth),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(Dimens.SpacingXS)
     ) {
-        Column(Modifier.padding(16.dp)) {
+        Column(Modifier.padding(Dimens.SpacingM)) {
             Icon(painterResource(icon), contentDescription = null, tint = BrandGreen)
             Spacer(Modifier.weight(1f))
             Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)

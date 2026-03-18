@@ -25,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.domain.model.Invoice
 
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.StatusPill
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
 
@@ -39,12 +39,12 @@ fun LastInvoiceCard(invoice: Invoice) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = Dimens.SpacingM),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, BrandGreen),
-        shape = RoundedCornerShape(16.dp)
+        border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
+        shape = RoundedCornerShape(Dimens.CornerDefault)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimens.SpacingM)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -54,13 +54,13 @@ fun LastInvoiceCard(invoice: Invoice) {
                     painter = painterResource(id = R.drawable.ic_lightbulb),
                     contentDescription = null,
                     tint = BrandGreen,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(Dimens.SpacingXL)
                 )
             }
             
             Text(text = invoice.type, style = MaterialTheme.typography.bodySmall, color = TextSecondary)
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.SpacingM))
             
             Text(
                 text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
@@ -73,7 +73,7 @@ fun LastInvoiceCard(invoice: Invoice) {
                 color = TextSecondary
             )
             
-            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color(0xFFE0E0E0))
+            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.SpacingM), color = Color(0xFFE0E0E0))
 
             StatusPill(status = invoice.status)
         }

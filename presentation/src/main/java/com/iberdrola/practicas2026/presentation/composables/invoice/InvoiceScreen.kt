@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
@@ -24,6 +23,7 @@ import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 
@@ -96,7 +96,7 @@ fun InvoiceScreen(
                 selectedTabIndex = selectedTabIndex,
                 containerColor = Color.White,
                 contentColor = BrandGreen,
-                edgePadding = 16.dp,
+                edgePadding = Dimens.SpacingM,
                 divider = {
                     HorizontalDivider(color = Color(0xFFEEEEEE))
                 },
@@ -149,7 +149,7 @@ fun InvoiceScreen(
 fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(Dimens.SpacingM)
     ) {
         // Tarjeta principal
         item {
@@ -162,7 +162,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 16.dp),
+                    .padding(top = Dimens.SpacingXL, bottom = Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -175,7 +175,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
         item {
             Text(
                 text = "2024",
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(vertical = Dimens.SpacingS),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
