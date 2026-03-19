@@ -36,7 +36,10 @@ import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
 
 @Composable
-fun LastInvoiceCard(invoice: Invoice) {
+fun LastInvoiceCard(
+    invoice: Invoice,
+    onClick: () -> Unit
+) {
 
     val icon = if (invoice.type.contains("Gas", ignoreCase = true)) {
         R.drawable.ic_gas
@@ -48,6 +51,7 @@ fun LastInvoiceCard(invoice: Invoice) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = Dimens.SpacingM),
+        onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         shape = RoundedCornerShape(Dimens.CornerDefault)

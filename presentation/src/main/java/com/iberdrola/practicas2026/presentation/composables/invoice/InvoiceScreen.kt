@@ -149,6 +149,7 @@ fun InvoiceScreen(
 
 @Composable
 fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(Dimens.SpacingM)
@@ -156,7 +157,10 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
         // Tarjeta principal
         item {
             data.lastInvoice?.let { last ->
-                LastInvoiceCard(invoice = last)
+                LastInvoiceCard(
+                    invoice = last,
+                    onClick = { onInvoiceClick(last) }
+                )
             }
         }
 
