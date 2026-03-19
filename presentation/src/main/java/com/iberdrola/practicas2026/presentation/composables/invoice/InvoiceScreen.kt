@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceResponse
+import com.iberdrola.practicas2026.domain.model.InvoiceType
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
@@ -116,8 +117,8 @@ fun InvoiceScreen(
                         selected = selectedTabIndex == index,
                         onClick = {
                             selectedTabIndex = index
-                            val filterType = if (index == 0) "Factura Luz" else "Factura Gas"
-                            viewModel.filterInvoicesByType(filterType)
+                            val type = if (index == 0) InvoiceType.LIGHT else InvoiceType.GAS
+                            viewModel.filterInvoices(type)
                         },
                         text = { Text(title, color = if (selectedTabIndex == index) TextMain else TextSecondary) }
                     )

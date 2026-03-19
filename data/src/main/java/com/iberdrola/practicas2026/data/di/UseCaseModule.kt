@@ -2,6 +2,7 @@ package com.iberdrola.practicas2026.data.di
 
 import com.iberdrola.practicas2026.domain.repository.FeedbackRepository
 import com.iberdrola.practicas2026.domain.repository.InvoiceRepository
+import com.iberdrola.practicas2026.domain.usecase.FilterInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
@@ -34,4 +35,7 @@ object UseCaseModule {
     fun provideUpdateFeedbackDecisionUseCase(repository: FeedbackRepository): UpdateFeedbackDecisionUseCase {
         return UpdateFeedbackDecisionUseCase(repository)
     }
+
+    @Provides
+    fun provideFilterInvoicesUseCase() = FilterInvoicesUseCase()
 }
