@@ -59,3 +59,4 @@ El proyecto utiliza una estructura de **Clean Architecture** para desacoplar la 
 | **Interfaz de Usuario**       | XML, Fragments, ViewBinding, Material 3 |
 | **Carga Visual**              | Shimmer Animation (Compose)             |
 | **Navegación**                | Navigation Compose                      |
+| **Testing**                   | JUnit 4, Mockk                          |
