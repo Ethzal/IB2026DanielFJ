@@ -13,8 +13,10 @@ kotlin {
 dependencies {
     // Testing
     testImplementation(libs.junit)
-//    testImplementation(libs.mockito.core)
-//    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
 
     // Coroutines + Flow
     implementation(libs.kotlinx.coroutines.core)
