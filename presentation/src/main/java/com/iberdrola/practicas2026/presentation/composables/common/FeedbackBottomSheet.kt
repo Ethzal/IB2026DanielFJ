@@ -110,7 +110,7 @@ fun FeedbackBottomSheet(
             } else {
                 // VISTA DE AGRADECIMIENTO
                 Icon(
-                    painter = painterResource(id = android.R.drawable.checkbox_on_background),
+                    painter = painterResource(id = R.drawable.ic_happy),
                     contentDescription = null,
                     tint = BrandGreen,
                     modifier = Modifier.size(48.dp)
