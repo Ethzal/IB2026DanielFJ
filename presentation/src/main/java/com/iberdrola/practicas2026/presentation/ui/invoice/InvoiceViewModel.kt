@@ -78,8 +78,7 @@ class InvoiceViewModel @Inject constructor(
         _uiState.value = UiState.Success(filteredResponse)
     }
 
-    // --- LÓGICA DE FEEDBACK (Mantenida en el ViewModel por petición) ---
-
+    // FEEDBACK
     fun onBackClicked(onConfirmExit: () -> Unit) {
         viewModelScope.launch {
             // 1. Siempre incrementamos el contador de intentos de salida
