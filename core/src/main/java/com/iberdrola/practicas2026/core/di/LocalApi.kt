@@ -1,4 +1,4 @@
-package com.iberdrola.practicas2026.data.di
+package com.iberdrola.practicas2026.core.di
 
 import javax.inject.Qualifier
 

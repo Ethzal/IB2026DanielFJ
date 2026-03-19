@@ -1,9 +1,9 @@
 package com.iberdrola.practicas2026.data.repository
 
+import com.iberdrola.practicas2026.core.di.LocalApi
+import com.iberdrola.practicas2026.core.di.RemoteApi
 import com.iberdrola.practicas2026.data.local.InvoiceDao
 import com.iberdrola.practicas2026.data.remote.InvoiceApi
-import com.iberdrola.practicas2026.data.di.LocalApi
-import com.iberdrola.practicas2026.data.di.RemoteApi
 import com.iberdrola.practicas2026.data.local.InvoiceEntity
 import com.iberdrola.practicas2026.data.remote.InvoiceItemDto
 import com.iberdrola.practicas2026.domain.model.*

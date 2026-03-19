@@ -1,8 +1,10 @@
 package com.iberdrola.practicas2026.data.di
 
 import android.content.Context
-import android.os.Build
 import co.infinum.retromock.Retromock
+import com.iberdrola.practicas2026.core.di.LocalApi
+import com.iberdrola.practicas2026.core.di.RemoteApi
+import com.iberdrola.practicas2026.core.utils.DeviceUtils
 import com.iberdrola.practicas2026.data.remote.InvoiceApi
 import dagger.Module
 import dagger.Provides
@@ -20,21 +22,11 @@ object NetworkModule {
     private const val EMULATOR_URL = "http://10.0.2.2:3000/"
     private const val DEVICE_URL = "http://localhost:3000/" // adb reverse tcp:3000 tcp:3000
 
-    private fun isEmulator(): Boolean {
-        return (Build.FINGERPRINT.startsWith("generic")
-                || Build.FINGERPRINT.lowercase().contains("vbox")
-                || Build.FINGERPRINT.lowercase().contains("test-keys")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")
-                || "google_sdk" == Build.PRODUCT)
-    }
-
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
-        val baseUrl = if (isEmulator()) EMULATOR_URL else DEVICE_URL
+        val baseUrl = if (DeviceUtils.isEmulator()) EMULATOR_URL else DEVICE_URL
+
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
