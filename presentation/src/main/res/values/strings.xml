@@ -33,4 +33,8 @@
     <string name="factura_no_disponible">Esta factura aún no está disponible para su visualización.</string>
     <string name="aceptar">Aceptar</string>
     <string name="remoto">Remoto</string>
+    <string name="cuota_fija">Cuota Fija</string>
+    <string name="pendiente_de_pago">Pendiente de Pago</string>
+    <string name="en_tramite_de_cobro">En Trámite de Cobro</string>
+    <string name="anulada">Anulada</string>
 </resources>
