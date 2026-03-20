@@ -2,52 +2,52 @@
   "facturas": [
     {
       "id": "F002",
-      "fecha": "8 de marzo",
-      "fecha_inicio": "01 feb. 2024",
-      "fecha_fin": "04 mar. 2024",
+      "fecha": "2024-03-08",
+      "fecha_inicio": "2024-02-01",
+      "fecha_fin": "2024-03-04",
       "tipo": "Factura Luz",
       "importe": 20.00,
       "estado": "Pendiente de Pago"
     },
     {
       "id": "F003",
-      "fecha": "6 de febrero",
-      "fecha_inicio": "01 ene. 2024",
-      "fecha_fin": "01 feb. 2024",
+      "fecha": "2024-02-06",
+      "fecha_inicio": "2024-01-01",
+      "fecha_fin": "2024-02-01",
       "tipo": "Factura Luz",
       "importe": 20.10,
       "estado": "Pendiente de Pago"
     },
     {
       "id": "F004",
-      "fecha": "6 de noviembre",
-      "fecha_inicio": "01 oct. 2023",
-      "fecha_fin": "01 nov. 2023",
+      "fecha": "2023-11-06",
+      "fecha_inicio": "2023-10-01",
+      "fecha_fin": "2023-11-01",
       "tipo": "Factura Luz",
       "importe": 150.43,
       "estado": "Pagada"
     },
     {
       "id": "F005",
-      "fecha": "3 de febrero",
-      "fecha_inicio": "01 ene. 2024",
-      "fecha_fin": "01 feb. 2024",
+      "fecha": "2024-02-03",
+      "fecha_inicio": "2024-01-01",
+      "fecha_fin": "2024-02-01",
       "tipo": "Factura Gas",
       "importe": 13.10,
       "estado": "Pendiente de Pago"
     },
     {
       "id": "F006",
-      "fecha": "16 de noviembre",
-      "fecha_inicio": "01 oct. 2023",
-      "fecha_fin": "01 nov. 2023",
+      "fecha": "2023-11-16",
+      "fecha_inicio": "2023-10-01",
+      "fecha_fin": "2023-11-01",
       "tipo": "Factura Gas",
       "importe": 69.69,
       "estado": "Pagada"
     },
     {
       "id": "F007",
-      "fecha": "15 de enero",
+      "fecha": "2024-01-15",
       "fecha_inicio": "2023-12-01",
       "fecha_fin": "2024-01-01",
       "tipo": "Factura Gas",
@@ -56,7 +56,7 @@
     },
     {
       "id": "F008",
-      "fecha": "3 de diciembre",
+      "fecha": "2023-12-03",
       "fecha_inicio": "2023-11-01",
       "fecha_fin": "2023-12-01",
       "tipo": "Factura Luz",
@@ -65,7 +65,7 @@
     },
     {
       "id": "F009",
-      "fecha": "1 de noviembre",
+      "fecha": "2023-11-01",
       "fecha_inicio": "2023-10-01",
       "fecha_fin": "2023-11-01",
       "tipo": "Factura Gas",
@@ -74,7 +74,7 @@
     },
     {
       "id": "F010",
-      "fecha": "13 de marzo",
+      "fecha": "2023-03-13",
       "fecha_inicio": "2023-02-01",
       "fecha_fin": "2023-03-01",
       "tipo": "Factura Luz",
