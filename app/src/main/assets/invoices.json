@@ -44,6 +44,42 @@
       "tipo": "Factura Gas",
       "importe": 69.69,
       "estado": "Pagada"
+    },
+    {
+      "id": "F007",
+      "fecha": "15 de enero",
+      "fecha_inicio": "2023-12-01",
+      "fecha_fin": "2024-01-01",
+      "tipo": "Factura Gas",
+      "importe": 151.00,
+      "estado": "En trámite de cobro"
+    },
+    {
+      "id": "F008",
+      "fecha": "3 de diciembre",
+      "fecha_inicio": "2023-11-01",
+      "fecha_fin": "2023-12-01",
+      "tipo": "Factura Luz",
+      "importe": 45.50,
+      "estado": "Anulada"
+    },
+    {
+      "id": "F009",
+      "fecha": "1 de noviembre",
+      "fecha_inicio": "2023-10-01",
+      "fecha_fin": "2023-11-01",
+      "tipo": "Factura Gas",
+      "importe": 60.00,
+      "estado": "Cuota Fija"
+    },
+    {
+      "id": "F010",
+      "fecha": "13 de marzo",
+      "fecha_inicio": "2023-02-01",
+      "fecha_fin": "2023-03-01",
+      "tipo": "Factura Luz",
+      "importe": 777.00,
+      "estado": "Anulada"
     }
   ]
 }
