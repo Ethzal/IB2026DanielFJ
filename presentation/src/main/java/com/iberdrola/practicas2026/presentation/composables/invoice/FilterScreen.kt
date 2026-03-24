@@ -376,8 +376,10 @@ fun DatePickerModal(
     onDateSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val selectionMillis = initialDate.toEpochMillis()
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialDate.toEpochMillis(),
+        initialSelectedDateMillis = selectionMillis,
+        initialDisplayedMonthMillis = selectionMillis ?: maxDateMillis ?: System.currentTimeMillis(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val isBeforeMax = maxDateMillis?.let { utcTimeMillis <= it } ?: true
@@ -387,7 +389,10 @@ fun DatePickerModal(
 
             override fun isSelectableYear(year: Int): Boolean {
                 val currentYear = java.time.LocalDate.now().year
-                return year <= currentYear
+                val minYear = minDateMillis?.let {
+                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).year
+                } ?: 1900
+                return year in minYear..currentYear
             }
         }
     )
@@ -397,13 +402,25 @@ fun DatePickerModal(
         confirmButton = {
             TextButton(onClick = {
                 datePickerState.selectedDateMillis?.let {
-                    val date = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    val date = Instant.ofEpochMilli(it).atZone(java.time.ZoneOffset.UTC).toLocalDate()
                     onDateSelected(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 }
-            }) { Text(stringResource(R.string.ok), color = BrandGreen) }
+            }) { Text(stringResource(R.string.ok), color = BrandGreen, fontWeight = FontWeight.Bold) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancelar), color = BrandGreen) } }
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancelar), color = BrandGreen)
+            }
+        }
     ) {
-        DatePicker(state = datePickerState)
+        DatePicker(
+            state = datePickerState,
+            colors = DatePickerDefaults.colors(
+                todayContentColor = BrandGreen.copy(alpha = 0.5f),
+                todayDateBorderColor = BrandGreen.copy(alpha = 0.5f),
+                selectedDayContainerColor = BrandGreen.copy(alpha = 0.5f),
+                selectedDayContentColor = Color.White,
+            )
+        )
     }
 }

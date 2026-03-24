@@ -17,7 +17,7 @@ fun String?.toEpochMillis(): Long? {
     return try {
         this?.let {
             LocalDate.parse(it)
-                .atStartOfDay(java.time.ZoneId.systemDefault())
+                .atStartOfDay(java.time.ZoneOffset.UTC)
                 .toInstant()
                 .toEpochMilli()
         }
