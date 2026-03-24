@@ -322,8 +322,14 @@ fun FilterScreen(
 
         TextButton(
             onClick = {
+                // 1. Resetear estados locales para que la UI se limpie inmediatamente
+                selectedFromDate = null
+                selectedToDate = null
+                sliderPosition = amountBounds
+                selectedStatuses.clear()
+
+                // 2. Notificar al exterior
                 onClearFilters()
-                onBack()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
