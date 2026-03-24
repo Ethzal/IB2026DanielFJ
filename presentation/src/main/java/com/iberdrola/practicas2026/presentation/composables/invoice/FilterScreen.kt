@@ -3,6 +3,8 @@ package com.iberdrola.practicas2026.presentation.composables.invoice
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -110,23 +112,29 @@ fun FilterScreen(
 
             // Campo "Desde"
             var fromFieldFocus by remember { mutableStateOf(false) }
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+
+            if (isPressed) {
+                showFromDatePicker = true
+            }
 
             OutlinedTextField(
                 value = selectedFromDate ?: "",
                 onValueChange = {},
                 readOnly = true,
+                interactionSource = interactionSource,
                 label = { Text(stringResource(R.string.desde), fontWeight = FontWeight.Normal) },
                 trailingIcon = {
                     Icon(
                         painterResource(R.drawable.ic_calendar),
                         contentDescription = null,
-                        modifier = Modifier.clickable { showFromDatePicker = true },
                         tint = Color.Gray
-
                     )
                 },
                 modifier = Modifier
                     .weight(1f)
+                    .clickable { showFromDatePicker = true }
                     .onFocusChanged { fromFieldFocus = it.isFocused }
                     .drawBehind {
                         val borderColor = if (fromFieldFocus) BrandGreen else Color.Gray
@@ -149,22 +157,29 @@ fun FilterScreen(
 
             // Campo "Hasta"
             var toFieldFocus by remember { mutableStateOf(false) }
+            val interactionSourceTo = remember { MutableInteractionSource() }
+            val isPressedTo by interactionSourceTo.collectIsPressedAsState()
+
+            if (isPressedTo) {
+                showToDatePicker = true
+            }
 
             OutlinedTextField(
                 value = selectedToDate ?: "",
                 onValueChange = {},
                 readOnly = true,
+                interactionSource = interactionSourceTo,
                 label = { Text(stringResource(R.string.hasta), fontWeight = FontWeight.Normal) },
                 trailingIcon = {
                     Icon(
                         painterResource(R.drawable.ic_calendar),
                         contentDescription = null,
-                        modifier = Modifier.clickable { showToDatePicker = true },
                         tint = Color.Gray
                     )
                 },
                 modifier = Modifier
                     .weight(1f)
+                    .clickable { showToDatePicker = true }
                     .onFocusChanged { toFieldFocus = it.isFocused }
                     .drawBehind {
                         val borderColor = if (toFieldFocus) BrandGreen else Color.Gray
