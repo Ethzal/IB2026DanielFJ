@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.core.utils.toUiDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
@@ -36,9 +36,14 @@ import java.util.Locale
 
 @Composable
 fun StatusPill(status: String) {
-    val isPaid = status == stringResource(R.string.pagada)
-    val backgroundColor = if (isPaid) BgPaid else BgPending
-    val textColor = if (isPaid) TextPaid else TextPending
+    val (backgroundColor, textColor) = when(status) {
+        "Pagada" -> Pair(BgPaid, TextPaid)
+        "Pendiente de Pago" -> Pair(BgPending, TextPending)
+        "En trámite de cobro" -> Pair(BgPending, TextPending)
+        "Anulada" -> Pair(Color(0xFFEAEAEA), Color(0xFF757575))
+        "Cuota Fija" -> Pair(Color(0xFFD4E6F1), Color(0xFF2874A6))
+        else -> Pair(BgPending, TextPending)
+    }
 
     Surface(
         color = backgroundColor,
@@ -69,7 +74,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = invoice.date,
+                    text = invoice.date.toUiDate(),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(

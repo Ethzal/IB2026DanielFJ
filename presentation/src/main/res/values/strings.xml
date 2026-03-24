@@ -37,4 +37,18 @@
     <string name="pendiente_de_pago">Pendiente de Pago</string>
     <string name="en_tramite_de_cobro">En Trámite de Cobro</string>
     <string name="anulada">Anulada</string>
+    <string name="por_fecha">Por fecha</string>
+    <string name="desde">* Desde</string>
+    <string name="hasta">* Hasta</string>
+    <string name="por_un_importe">Por un importe</string>
+    <string name="por_estado">Por estado</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="borrar_filtros">Borrar filtros</string>
+    <string name="aplicar_filtros">Aplicar filtros</string>
+    <string name="euro_symbol">%1$d €</string>
+    <string name="status_paid">Pagadas</string>
+    <string name="status_pending">Pendientes de Pago</string>
+    <string name="status_in_progress">En trámite de cobro</string>
+    <string name="status_cancelled">Anuladas</string>
+    <string name="status_fixed_quota">Cuota Fija</string>
 </resources>

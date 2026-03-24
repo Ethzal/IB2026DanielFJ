@@ -43,6 +43,11 @@ fun InvoiceScreen(
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
     val showThanks by viewModel.showThanksMessage.collectAsStateWithLifecycle()
 
+    // FILTROS
+    val invoiceFilter by viewModel.invoiceFilter.collectAsStateWithLifecycle()
+    val amountBounds by viewModel.amountBounds.collectAsStateWithLifecycle()
+    var showFilterScreen by remember { mutableStateOf(false) }
+
     // Manejar botón atrás físico
     BackHandler {
         viewModel.onBackClicked(onConfirmExit = onBackClick)
@@ -72,75 +77,91 @@ fun InvoiceScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            InvoiceHeader(
-                onBack = { viewModel.onBackClicked(onConfirmExit = onBackClick) }
-            )
-        },
-        containerColor = Color.White,
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { data ->
-                    Snackbar(
-                        snackbarData = data,
-                        containerColor = BrandGreen.copy(alpha = 0.9f),
-                        contentColor = Color.White
-                    )
-                }
-            )
-        }
-    ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            
-            // TABS (Luz / Gas)
-            ScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
-                containerColor = Color.White,
-                contentColor = BrandGreen,
-                edgePadding = Dimens.SpacingM,
-                divider = {
-                    HorizontalDivider(color = Color(0xFFEEEEEE))
-                },
-                indicator = { tabPositions ->
-                    if (selectedTabIndex < tabPositions.size) {
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                            color = BrandGreen
+    if (showFilterScreen) {
+        FilterScreen(
+            currentFilter = invoiceFilter,
+            amountBounds = amountBounds,
+            onApplyFilters = { viewModel.applyFilters(it) },
+            onClearFilters = { viewModel.clearFilters() },
+            onBack = { showFilterScreen = false }
+        )
+    } else {
+        Scaffold(
+            topBar = {
+                InvoiceHeader(
+                    onBack = { viewModel.onBackClicked(onConfirmExit = onBackClick) }
+                )
+            },
+            containerColor = Color.White,
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            containerColor = BrandGreen.copy(alpha = 0.9f),
+                            contentColor = Color.White
+                        )
+                    }
+                )
+            }
+        ) { padding ->
+            Column(modifier = Modifier.padding(padding)) {
+
+                // TABS (Luz / Gas)
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    containerColor = Color.White,
+                    contentColor = BrandGreen,
+                    edgePadding = Dimens.SpacingM,
+                    divider = {
+                        HorizontalDivider(color = Color(0xFFEEEEEE))
+                    },
+                    indicator = { tabPositions ->
+                        if (selectedTabIndex < tabPositions.size) {
+                            TabRowDefaults.SecondaryIndicator(
+                                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                                color = BrandGreen
+                            )
+                        }
+                    }
+                ) {
+                    tabs.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = {
+                                selectedTabIndex = index
+                                val type = if (index == 0) InvoiceType.LIGHT else InvoiceType.GAS
+                                viewModel.filterInvoices(type)
+                            },
+                            text = {
+                                Text(
+                                    title,
+                                    color = if (selectedTabIndex == index) TextMain else TextSecondary
+                                )
+                            }
                         )
                     }
                 }
-            ) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = {
-                            selectedTabIndex = index
-                            val type = if (index == 0) InvoiceType.LIGHT else InvoiceType.GAS
-                            viewModel.filterInvoices(type)
-                        },
-                        text = { Text(title, color = if (selectedTabIndex == index) TextMain else TextSecondary) }
-                    )
-                }
-            }
 
-            // GESTIÓN DE ESTADOS (Loading, Success, Error)
-            when (val state = uiState) {
-                is InvoiceViewModel.UiState.Loading -> {
-                    Column { repeat(3) { ShimmerItem() } }
-                }
+                // GESTIÓN DE ESTADOS (Loading, Success, Error)
+                when (val state = uiState) {
+                    is InvoiceViewModel.UiState.Loading -> {
+                        Column { repeat(3) { ShimmerItem() } }
+                    }
 
-                is InvoiceViewModel.UiState.Success -> {
-                    InvoiceList(
-                        data = state.data,
-                        onInvoiceClick = { showNotAvailableDialog = true }
-                    )
-                }
+                    is InvoiceViewModel.UiState.Success -> {
+                        InvoiceList(
+                            data = state.data,
+                            onInvoiceClick = { showNotAvailableDialog = true },
+                            onFilterClick = { showFilterScreen = true }
+                        )
+                    }
 
-                is InvoiceViewModel.UiState.Error -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(text = state.msg, color = Color.Red)
+                    is InvoiceViewModel.UiState.Error -> {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = state.msg, color = Color.Red)
+                        }
                     }
                 }
             }
@@ -149,7 +170,7 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
+fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -174,7 +195,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = stringResource(R.string.historico_de_facturas), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                FilterButton(onClick = { /* ... */ })
+                FilterButton(onClick = onFilterClick)
             }
         }
 

@@ -10,6 +10,7 @@ import com.iberdrola.practicas2026.domain.usecase.FilterInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
+import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,6 +46,15 @@ class InvoiceViewModel @Inject constructor(
     private val _showThanksMessage = MutableStateFlow(false)
     val showThanksMessage: StateFlow<Boolean> = _showThanksMessage
 
+    // FILTROS
+    private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
+    val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
+
+    private val _amountBounds = MutableStateFlow(0f..100f) // Límites dinámicos
+    val amountBounds: StateFlow<ClosedFloatingPointRange<Float>> = _amountBounds
+
+    private var currentInvoiceType = InvoiceType.LIGHT
+
     init {
         observeSettings()
     }
@@ -64,7 +74,15 @@ class InvoiceViewModel @Inject constructor(
                 .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error desconocido") }
                 .collect { response ->
                     allInvoicesCached = response.allInvoices
-                    filterInvoices(InvoiceType.LIGHT) // Carga inicial por defecto
+
+                    // Cálculo dinámico para el slider
+                    if (allInvoicesCached.isNotEmpty()) {
+                        val min = allInvoicesCached.minOf { it.amount.toFloat() }
+                        val max = allInvoicesCached.maxOf { it.amount.toFloat() }
+                        _amountBounds.value = if (min == max) 0f..(max + 1f) else min..max
+                    }
+
+                    filterInvoices(currentInvoiceType)
                 }
         }
     }
@@ -74,8 +92,19 @@ class InvoiceViewModel @Inject constructor(
      * No necesitamos volver a llamar a la API, usamos la cache.
      */
     fun filterInvoices(type: InvoiceType) {
-        val filteredResponse = filterInvoicesUseCase(allInvoicesCached, type)
+        currentInvoiceType = type
+        val filteredResponse = filterInvoicesUseCase(allInvoicesCached, type, _invoiceFilter.value)
         _uiState.value = UiState.Success(filteredResponse)
+    }
+
+    fun applyFilters(newFilter: InvoiceFilter) {
+        _invoiceFilter.value = newFilter
+        filterInvoices(currentInvoiceType)
+    }
+
+    fun clearFilters() {
+        _invoiceFilter.value = InvoiceFilter()
+        filterInvoices(currentInvoiceType)
     }
 
     // FEEDBACK

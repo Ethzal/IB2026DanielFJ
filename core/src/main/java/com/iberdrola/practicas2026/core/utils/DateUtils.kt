@@ -10,6 +10,6 @@ fun String.toUiDate(): String {
         val formatter = DateTimeFormatter.ofPattern("d 'de' MMMM", Locale.forLanguageTag("es-ES"))
         parsed.format(formatter)
     } catch (_: Exception) {
-        "FALLO: $this" // Si falla, devuelve el original
+        this // Si falla, devuelve el original
     }
 }
