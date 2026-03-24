@@ -13,3 +13,15 @@ fun String.toUiDate(): String {
         this // Si falla, devuelve el original
     }
 }
+fun String?.toEpochMillis(): Long? {
+    return try {
+        this?.let {
+            LocalDate.parse(it)
+                .atStartOfDay(java.time.ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        }
+    } catch (_: Exception) {
+        null
+    }
+}
