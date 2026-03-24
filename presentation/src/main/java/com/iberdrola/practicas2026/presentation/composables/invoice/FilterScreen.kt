@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.core.utils.toEpochMillis
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
 import com.iberdrola.practicas2026.presentation.R
@@ -332,12 +333,35 @@ fun FilterScreen(
         Spacer(Modifier.height(Dimens.SpacingM))
     }
 
-    // Date Picker Modals
+    // Date Picker "Desde"
     if (showFromDatePicker) {
-        DatePickerModal(onDateSelected = { selectedFromDate = it; showFromDatePicker = false }, onDismiss = { showFromDatePicker = false })
+        DatePickerModal(
+            initialDate = selectedFromDate,
+            maxDateMillis = System.currentTimeMillis(),
+            onDateSelected = {
+                selectedFromDate = it
+                val fromMillis = it.toEpochMillis() ?: 0
+                val toMillis = selectedToDate.toEpochMillis() ?: 0
+                if (toMillis < fromMillis) selectedToDate = null
+
+                showFromDatePicker = false
+            },
+            onDismiss = { showFromDatePicker = false }
+        )
     }
+
+    // Date Picker "Hasta"
     if (showToDatePicker) {
-        DatePickerModal(onDateSelected = { selectedToDate = it; showToDatePicker = false }, onDismiss = { showToDatePicker = false })
+        DatePickerModal(
+            initialDate = selectedToDate,
+            minDateMillis = selectedFromDate.toEpochMillis(),
+            maxDateMillis = System.currentTimeMillis(),
+            onDateSelected = {
+                selectedToDate = it
+                showToDatePicker = false
+            },
+            onDismiss = { showToDatePicker = false }
+        )
     }
     Log.d("showToDatePicker", showToDatePicker.toString())
     Log.d("showFromDatePicker", showFromDatePicker.toString())
@@ -345,8 +369,29 @@ fun FilterScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(onDateSelected: (String) -> Unit, onDismiss: () -> Unit) {
-    val datePickerState = rememberDatePickerState()
+fun DatePickerModal(
+    initialDate: String?,
+    minDateMillis: Long? = null,
+    maxDateMillis: Long? = System.currentTimeMillis(),
+    onDateSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialDate.toEpochMillis(),
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                val isBeforeMax = maxDateMillis?.let { utcTimeMillis <= it } ?: true
+                val isAfterMin = minDateMillis?.let { utcTimeMillis >= it } ?: true
+                return isBeforeMax && isAfterMin
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                val currentYear = java.time.LocalDate.now().year
+                return year <= currentYear
+            }
+        }
+    )
+
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -355,7 +400,7 @@ fun DatePickerModal(onDateSelected: (String) -> Unit, onDismiss: () -> Unit) {
                     val date = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
                     onDateSelected(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 }
-            }) { Text("OK", color = BrandGreen) }
+            }) { Text(stringResource(R.string.ok), color = BrandGreen) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancelar), color = BrandGreen) } }
     ) {

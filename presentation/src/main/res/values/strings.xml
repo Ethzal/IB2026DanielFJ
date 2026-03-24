@@ -51,4 +51,5 @@
     <string name="status_in_progress">En trámite de cobro</string>
     <string name="status_cancelled">Anuladas</string>
     <string name="status_fixed_quota">Cuota Fija</string>
+    <string name="ok">OK</string>
 </resources>
