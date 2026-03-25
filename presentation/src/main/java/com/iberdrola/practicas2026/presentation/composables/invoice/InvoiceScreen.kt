@@ -177,7 +177,8 @@ fun InvoiceScreen(
                                 data = pageUiState.data,
                                 onInvoiceClick = { showNotAvailableDialog = true },
                                 onFilterClick = { showFilterScreen = true },
-                                isFiltering = isFiltering
+                                isFiltering = isFiltering,
+                                onClearFilters = { viewModel.clearFilters() }
                             )
                         }
 
@@ -194,49 +195,74 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit, isFiltering: Boolean) {
+fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit, onClearFilters: () -> Unit, isFiltering: Boolean) {
     val groupedHistory = data.history.groupBy {
         it.date.take(4)
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(Dimens.SpacingM)
-    ) {
-        // Tarjeta principal
-        item {
-            data.lastInvoice?.let { last ->
-                LastInvoiceCard(
-                    invoice = last,
-                    onClick = { onInvoiceClick(last) }
-                )
-            }
-        }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+    val hasContent = data.lastInvoice != null || data.history.isNotEmpty()
+
+    if (!hasContent) {
+        EmptyStateView(
+            iconRes = R.drawable.ic_energy_empty,
+            title = "Sin facturas",
+            message = "No hemos encontrado facturas que coincidan con tu búsqueda.",
+            onClearFilters = onClearFilters
+        )
+    } else {
+        if (data.allInvoices.isEmpty()) {
+            EmptyStateView(
+                iconRes = R.drawable.ic_energy_empty,
+                title = "Sin facturas",
+                message = "No hemos encontrado facturas que coincidan con tu búsqueda.",
+                onClearFilters = onClearFilters
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(Dimens.SpacingM)
             ) {
-                Text(text = stringResource(R.string.historico_de_facturas), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
-            }
-        }
+                // Tarjeta principal
+                item {
+                    data.lastInvoice?.let { last ->
+                        LastInvoiceCard(
+                            invoice = last,
+                            onClick = { onInvoiceClick(last) }
+                        )
+                    }
+                }
 
-        groupedHistory.forEach { (year, invoices) ->
-            item {
-                Text(
-                    text = year,
-                    modifier = Modifier.padding(vertical = Dimens.SpacingS),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.historico_de_facturas),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
+                    }
+                }
 
-            items(invoices) { invoice ->
-                InvoiceRow(invoice = invoice, onClick = { onInvoiceClick(invoice) })
+                groupedHistory.forEach { (year, invoices) ->
+                    item {
+                        Text(
+                            text = year,
+                            modifier = Modifier.padding(vertical = Dimens.SpacingS),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    items(invoices) { invoice ->
+                        InvoiceRow(invoice = invoice, onClick = { onInvoiceClick(invoice) })
+                    }
+                }
             }
         }
     }

@@ -129,12 +129,14 @@ class InvoiceViewModel @Inject constructor(
 
     fun applyFilters(newFilter: InvoiceFilter) {
         _invoiceFilter.value = newFilter
-        filterInvoices(currentInvoiceType)
+        filterInvoices(InvoiceType.LIGHT)
+        filterInvoices(InvoiceType.GAS)
     }
 
     fun clearFilters() {
         _invoiceFilter.value = InvoiceFilter()
-        filterInvoices(currentInvoiceType)
+        filterInvoices(InvoiceType.LIGHT)
+        filterInvoices(InvoiceType.GAS)
     }
 
     // FEEDBACK
