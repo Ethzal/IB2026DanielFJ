@@ -13,8 +13,10 @@ class FilterInvoicesUseCase {
         type: InvoiceType,
         criteria: InvoiceFilter? = null
     ): InvoiceResponse {
+        // 1. Filtramos primero por tipo
         var filtered = allInvoices.filter { it.type == type.value }
 
+        // 2. Aplicamos criterios de filtro (fecha, importe, estado)
         criteria?.let { filter ->
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -39,9 +41,19 @@ class FilterInvoicesUseCase {
             }
         }
 
+        // 3. Ordenar de más nueva a más antigua
+        val sortedList = filtered.sortedByDescending {
+            try {
+                LocalDate.parse(it.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            } catch (_: Exception) {
+                LocalDate.MIN // Si falla el formato, lo pone al final
+            }
+        }
+
+        // 4. Devolvemos el response con la lista ordenada
         return InvoiceResponse(
-            lastInvoice = filtered.firstOrNull(),
-            history = if (filtered.size > 1) filtered.drop(1) else emptyList(),
+            lastInvoice = sortedList.firstOrNull(),
+            history = if (sortedList.size > 1) sortedList.drop(1) else emptyList(),
             allInvoices = allInvoices
         )
     }
