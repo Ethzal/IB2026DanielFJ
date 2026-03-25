@@ -192,7 +192,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilt
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimens.SpacingXL, bottom = Dimens.SpacingM),
+                    .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

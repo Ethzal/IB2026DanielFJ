@@ -16,6 +16,12 @@ class FilterInvoicesUseCase {
         // 1. Filtramos primero por tipo
         var filtered = allInvoices.filter { it.type == type.value }
 
+        // Si no hay filtros, el criterio es nulo o vacío
+        val isFiltering = criteria?.let {
+            it.dateFrom != null || it.dateTo != null ||
+                    it.amountRange != null || it.statuses.isNotEmpty()
+        } ?: false
+
         // 2. Aplicamos criterios de filtro (fecha, importe, estado)
         criteria?.let { filter ->
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -52,8 +58,8 @@ class FilterInvoicesUseCase {
 
         // 4. Devolvemos el response con la lista ordenada
         return InvoiceResponse(
-            lastInvoice = sortedList.firstOrNull(),
-            history = if (sortedList.size > 1) sortedList.drop(1) else emptyList(),
+            lastInvoice = if (isFiltering) null else sortedList.firstOrNull(),
+            history = if (isFiltering) sortedList else sortedList.drop(1),
             allInvoices = allInvoices
         )
     }
