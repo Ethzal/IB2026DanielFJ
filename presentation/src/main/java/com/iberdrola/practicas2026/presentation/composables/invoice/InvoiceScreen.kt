@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -29,13 +31,13 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import kotlinx.coroutines.launch
 
 @Composable
 fun InvoiceScreen(
     viewModel: InvoiceViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(stringResource(R.string.luz), stringResource(R.string.gas))
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,6 +49,15 @@ fun InvoiceScreen(
     val invoiceFilter by viewModel.invoiceFilter.collectAsStateWithLifecycle()
     val amountBounds by viewModel.amountBounds.collectAsStateWithLifecycle()
     var showFilterScreen by remember { mutableStateOf(false) }
+
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTabIndex = pagerState.currentPage
+        val type = if (pagerState.currentPage == 0) InvoiceType.LIGHT else InvoiceType.GAS
+        viewModel.filterInvoices(type)
+    }
 
     // Manejar botón atrás físico
     BackHandler {
@@ -110,7 +121,7 @@ fun InvoiceScreen(
 
                 // TABS (Luz / Gas)
                 ScrollableTabRow(
-                    selectedTabIndex = selectedTabIndex,
+                    selectedTabIndex = pagerState.currentPage,
                     containerColor = Color.White,
                     contentColor = BrandGreen,
                     edgePadding = Dimens.SpacingM,
@@ -128,11 +139,11 @@ fun InvoiceScreen(
                 ) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
-                            selected = selectedTabIndex == index,
+                            selected = pagerState.currentPage == index,
                             onClick = {
-                                selectedTabIndex = index
-                                val type = if (index == 0) InvoiceType.LIGHT else InvoiceType.GAS
-                                viewModel.filterInvoices(type)
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
                             },
                             text = {
                                 Text(
@@ -144,23 +155,34 @@ fun InvoiceScreen(
                     }
                 }
 
-                // GESTIÓN DE ESTADOS (Loading, Success, Error)
-                when (val state = uiState) {
-                    is InvoiceViewModel.UiState.Loading -> {
-                        Column { repeat(3) { ShimmerItem() } }
-                    }
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize(),
+                    userScrollEnabled = true,
+                    beyondViewportPageCount = 1
+                ) { pageIndex ->
 
-                    is InvoiceViewModel.UiState.Success -> {
-                        InvoiceList(
-                            data = state.data,
-                            onInvoiceClick = { showNotAvailableDialog = true },
-                            onFilterClick = { showFilterScreen = true }
-                        )
-                    }
+                    val type = if (pageIndex == 0) InvoiceType.LIGHT else InvoiceType.GAS
 
-                    is InvoiceViewModel.UiState.Error -> {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(text = state.msg, color = Color.Red)
+                    // Obtenemos el estado específico de esta página
+                    val pageUiState = viewModel.uiStates.collectAsStateWithLifecycle().value[type] ?: InvoiceViewModel.UiState.Loading
+
+                    when (val state = pageUiState) {
+                        is InvoiceViewModel.UiState.Loading -> {
+                            Column { repeat(3) { ShimmerItem() } }
+                        }
+                        is InvoiceViewModel.UiState.Success -> {
+                            InvoiceList(
+                                data = state.data,
+                                onInvoiceClick = { showNotAvailableDialog = true },
+                                onFilterClick = { showFilterScreen = true }
+                            )
+                        }
+
+                        is InvoiceViewModel.UiState.Error -> {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(text = state.msg, color = Color.Red)
+                            }
                         }
                     }
                 }

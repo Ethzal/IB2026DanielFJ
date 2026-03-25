@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,8 +38,8 @@ class InvoiceViewModel @Inject constructor(
     // Cache local para evitar llamadas a red al cambiar de Tab
     private var allInvoicesCached: List<Invoice> = emptyList()
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState
+    private val _uiStates = MutableStateFlow<Map<InvoiceType, UiState>>(emptyMap())
+    val uiStates: StateFlow<Map<InvoiceType, UiState>> = _uiStates
 
     private val _showFeedbackSheet = MutableStateFlow(false)
     val showFeedbackSheet: StateFlow<Boolean> = _showFeedbackSheet
@@ -69,9 +70,19 @@ class InvoiceViewModel @Inject constructor(
 
     fun fetchFacturas(isLocal: Boolean) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            _uiStates.value = mapOf(
+                InvoiceType.LIGHT to UiState.Loading,
+                InvoiceType.GAS to UiState.Loading
+            )
+
             getInvoicesUseCase(isLocal)
-                .catch { e -> _uiState.value = UiState.Error(e.message ?: "Error desconocido") }
+                .catch { e ->
+                    // Si hay error, lo ponemos en ambos para que el usuario se entere
+                    _uiStates.value = mapOf(
+                        InvoiceType.LIGHT to UiState.Error(e.message ?: "Error desconocido"),
+                        InvoiceType.GAS to UiState.Error(e.message ?: "Error desconocido")
+                    )
+                }
                 .collect { response ->
                     allInvoicesCached = response.allInvoices
 
@@ -81,8 +92,8 @@ class InvoiceViewModel @Inject constructor(
                         val max = allInvoicesCached.maxOf { it.amount.toFloat() }
                         _amountBounds.value = if (min == max) 0f..(max + 1f) else min..max
                     }
-
-                    filterInvoices(currentInvoiceType)
+                    filterInvoices(InvoiceType.LIGHT)
+                    filterInvoices(InvoiceType.GAS)
                 }
         }
     }
@@ -93,8 +104,13 @@ class InvoiceViewModel @Inject constructor(
      */
     fun filterInvoices(type: InvoiceType) {
         currentInvoiceType = type
+        if (allInvoicesCached.isEmpty()) {
+            _uiStates.update { it + (type to UiState.Loading) }
+            return
+        }
+
         val filteredResponse = filterInvoicesUseCase(allInvoicesCached, type, _invoiceFilter.value)
-        _uiState.value = UiState.Success(filteredResponse)
+        _uiStates.update { it + (type to UiState.Success(filteredResponse)) }
     }
 
     fun applyFilters(newFilter: InvoiceFilter) {
