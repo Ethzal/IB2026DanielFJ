@@ -13,9 +13,12 @@ import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,6 +53,17 @@ class InvoiceViewModel @Inject constructor(
     // FILTROS
     private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
     val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
+
+    val isFiltering: StateFlow<Boolean> = _invoiceFilter.map { filter ->
+        filter.dateFrom != null ||
+                filter.dateTo != null ||
+                filter.amountRange != null ||
+                filter.statuses.isNotEmpty()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
 
     private val _amountBounds = MutableStateFlow(0f..100f) // Límites dinámicos
     val amountBounds: StateFlow<ClosedFloatingPointRange<Float>> = _amountBounds

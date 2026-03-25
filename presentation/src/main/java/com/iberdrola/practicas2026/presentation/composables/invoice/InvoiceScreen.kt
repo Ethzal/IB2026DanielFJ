@@ -49,6 +49,7 @@ fun InvoiceScreen(
     val invoiceFilter by viewModel.invoiceFilter.collectAsStateWithLifecycle()
     val amountBounds by viewModel.amountBounds.collectAsStateWithLifecycle()
     var showFilterScreen by remember { mutableStateOf(false) }
+    val isFiltering by viewModel.isFiltering.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
@@ -167,21 +168,22 @@ fun InvoiceScreen(
                     // Obtenemos el estado específico de esta página
                     val pageUiState = viewModel.uiStates.collectAsStateWithLifecycle().value[type] ?: InvoiceViewModel.UiState.Loading
 
-                    when (val state = pageUiState) {
+                    when (pageUiState) {
                         is InvoiceViewModel.UiState.Loading -> {
                             Column { repeat(3) { ShimmerItem() } }
                         }
                         is InvoiceViewModel.UiState.Success -> {
                             InvoiceList(
-                                data = state.data,
+                                data = pageUiState.data,
                                 onInvoiceClick = { showNotAvailableDialog = true },
-                                onFilterClick = { showFilterScreen = true }
+                                onFilterClick = { showFilterScreen = true },
+                                isFiltering = isFiltering
                             )
                         }
 
                         is InvoiceViewModel.UiState.Error -> {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(text = state.msg, color = Color.Red)
+                                Text(text = pageUiState.msg, color = Color.Red)
                             }
                         }
                     }
@@ -192,7 +194,7 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit) {
+fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit, isFiltering: Boolean) {
     val groupedHistory = data.history.groupBy {
         it.date.take(4)
     }
@@ -219,7 +221,7 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilt
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = stringResource(R.string.historico_de_facturas), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                FilterButton(onClick = onFilterClick)
+                FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
             }
         }
 
