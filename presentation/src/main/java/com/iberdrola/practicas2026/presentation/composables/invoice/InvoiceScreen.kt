@@ -171,7 +171,9 @@ fun InvoiceScreen(
 
 @Composable
 fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit) {
-
+    val groupedHistory = data.history.groupBy {
+        it.date.take(4)
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(Dimens.SpacingM)
@@ -199,19 +201,19 @@ fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilt
             }
         }
 
-        // Título del año
-        item {
-            Text(
-                text = stringResource(R.string._2024),
-                modifier = Modifier.padding(vertical = Dimens.SpacingS),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        groupedHistory.forEach { (year, invoices) ->
+            item {
+                Text(
+                    text = year,
+                    modifier = Modifier.padding(vertical = Dimens.SpacingS),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-        // Listado plano con separadores
-        items(data.history) { invoice ->
-            InvoiceRow(invoice = invoice, onClick = { onInvoiceClick(invoice) })
+            items(invoices) { invoice ->
+                InvoiceRow(invoice = invoice, onClick = { onInvoiceClick(invoice) })
+            }
         }
     }
 }
