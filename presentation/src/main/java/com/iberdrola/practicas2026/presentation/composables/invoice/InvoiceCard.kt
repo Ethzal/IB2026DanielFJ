@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.iberdrola.practicas2026.core.utils.toLastInvoiceDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 
 import com.iberdrola.practicas2026.presentation.R
@@ -62,11 +63,13 @@ fun LastInvoiceCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
+                    // Last Invoice
                     Text(
                         text = stringResource(R.string.ultima_factura),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
+                    // Invoice type
                     Text(
                         text = invoice.type,
                         style = MaterialTheme.typography.bodySmall,
@@ -82,14 +85,16 @@ fun LastInvoiceCard(
             }
             
             Spacer(modifier = Modifier.height(Dimens.SpacingM))
-            
+
+            // Amount
             Text(
                 text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
             )
-            
+
+            // Date range
             Text(
-                text = "${invoice.startDate} - ${invoice.endDate}",
+                text = "${invoice.startDate.toLastInvoiceDate()} - ${invoice.endDate.toLastInvoiceDate()}",
                 style = MaterialTheme.typography.bodySmall,
                 color = TextSecondary
             )
