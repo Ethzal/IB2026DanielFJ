@@ -12,6 +12,7 @@ import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -54,6 +55,8 @@ class InvoiceViewModel @Inject constructor(
     private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
     val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
 
+    private var fetchJob: Job? = null
+
     val isFiltering: StateFlow<Boolean> = _invoiceFilter.map { filter ->
         filter.dateFrom != null ||
                 filter.dateTo != null ||
@@ -83,7 +86,8 @@ class InvoiceViewModel @Inject constructor(
     }
 
     fun fetchFacturas(isLocal: Boolean) {
-        viewModelScope.launch {
+        fetchJob?.cancel() // Cancela la carga anterior si está en curso
+        fetchJob = viewModelScope.launch {
             _uiStates.value = mapOf(
                 InvoiceType.LIGHT to UiState.Loading,
                 InvoiceType.GAS to UiState.Loading
@@ -92,10 +96,10 @@ class InvoiceViewModel @Inject constructor(
             getInvoicesUseCase(isLocal)
                 .catch { e ->
                     // Si hay error, lo ponemos en ambos para que el usuario se entere
-                    _uiStates.value = mapOf(
-                        InvoiceType.LIGHT to UiState.Error(e.message ?: "Error desconocido"),
-                        InvoiceType.GAS to UiState.Error(e.message ?: "Error desconocido")
-                    )
+                    _uiStates.update { currentMap ->
+                        currentMap + (InvoiceType.LIGHT to UiState.Error(e.message ?: "Sin conexión")) +
+                                (InvoiceType.GAS to UiState.Error(e.message ?: "Sin conexión"))
+                    }
                 }
                 .collect { response ->
                     allInvoicesCached = response.allInvoices
@@ -118,11 +122,13 @@ class InvoiceViewModel @Inject constructor(
      */
     fun filterInvoices(type: InvoiceType) {
         currentInvoiceType = type
+
         if (allInvoicesCached.isEmpty()) {
             _uiStates.update { it + (type to UiState.Loading) }
             return
         }
 
+        // SI HAY DATOS (Caché), calculamos el éxito
         val filteredResponse = filterInvoicesUseCase(allInvoicesCached, type, _invoiceFilter.value)
         _uiStates.update { it + (type to UiState.Success(filteredResponse)) }
     }

@@ -54,4 +54,6 @@
     <string name="ok">OK</string>
     <string name="sin_facturas">Sin facturas</string>
     <string name="no_hemos_encontrado_facturas">No hemos encontrado facturas que coincidan con tu búsqueda.</string>
+    <string name="ups_algo_ha_ido_mal">¡Ups! Algo ha ido mal</string>
+    <string name="reintentar_conexion">Reintentar conexión</string>
 </resources>

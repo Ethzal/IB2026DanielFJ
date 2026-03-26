@@ -49,8 +49,14 @@ class InvoiceRepositoryImpl @Inject constructor(
                     dao.clearInvoices()
                     dao.saveInvoices(entities)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (_: Exception) {
+                val dbInvoices = dao.getAllInvoices()
+                if (dbInvoices.isNotEmpty()) {
+                    emit(InvoiceResponse(allInvoices = dbInvoices.map { it.toDomain() }))
+                } else {
+                    // Si no hay caché y falla la API, entonces sí lanzamos el error
+                    throw Exception("Error de conexión y no hay datos offline.")
+                }
             }
 
             val dbInvoices = dao.getAllInvoices()
