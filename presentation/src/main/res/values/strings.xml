@@ -52,4 +52,6 @@
     <string name="status_cancelled">Anuladas</string>
     <string name="status_fixed_quota">Cuota Fija</string>
     <string name="ok">OK</string>
+    <string name="sin_facturas">Sin facturas</string>
+    <string name="no_hemos_encontrado_facturas">No hemos encontrado facturas que coincidan con tu búsqueda.</string>
 </resources>
