@@ -181,4 +181,13 @@ class InvoiceViewModel @Inject constructor(
         _showThanksMessage.value = false
         onConfirmExit()
     }
+
+    fun getResultCount(): Int {
+        val luz = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, _invoiceFilter.value)
+        val gas = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, _invoiceFilter.value)
+        val totalLuz = luz.history.size + (if (luz.lastInvoice != null) 1 else 0)
+        val totalGas = gas.history.size + (if (gas.lastInvoice != null) 1 else 0)
+
+        return totalLuz + totalGas
+    }
 }

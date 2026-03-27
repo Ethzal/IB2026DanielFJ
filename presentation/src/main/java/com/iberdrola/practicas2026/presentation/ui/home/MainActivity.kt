@@ -16,7 +16,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -25,8 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.iberdrola.practicas2026.presentation.composables.home.HomeScreen
 import com.iberdrola.practicas2026.presentation.composables.invoice.InvoiceScreen
 import com.iberdrola.practicas2026.presentation.navigation.Screen
-import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.EnergyAppTheme
+import com.iberdrola.practicas2026.presentation.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -61,8 +61,8 @@ class MainActivity : ComponentActivity() {
                         SnackbarHost(hostState = snackbarHostState) { data ->
                             Snackbar(
                                 snackbarData = data,
-                                containerColor = BrandGreen.copy(alpha = 0.9f),
-                                contentColor = Color.White
+                                containerColor = DarkGray.copy(alpha = 0.9f),
+                                contentColor = White
                             )
                         }
                     }

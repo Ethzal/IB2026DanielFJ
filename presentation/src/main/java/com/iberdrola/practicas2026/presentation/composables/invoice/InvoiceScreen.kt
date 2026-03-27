@@ -27,9 +27,11 @@ import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import com.iberdrola.practicas2026.presentation.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,6 +53,16 @@ fun InvoiceScreen(
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
+
+    fun showSnackbar(message: String) {
+        coroutineScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     // Manejar botón atrás físico
     BackHandler {
@@ -89,8 +101,15 @@ fun InvoiceScreen(
         FilterScreen(
             currentFilter = invoiceFilter,
             amountBounds = amountBounds,
-            onApplyFilters = { viewModel.applyFilters(it) },
-            onClearFilters = { viewModel.clearFilters() },
+            onApplyFilters = {
+                viewModel.applyFilters(it)
+                val count = viewModel.getResultCount()
+                showFilterScreen = false
+                showSnackbar("Filtros aplicados: $count ${if (count == 1) "resultado" else "resultados"}")
+            },
+            onClearFilters = {
+                viewModel.clearFilters()
+            },
             onBack = { showFilterScreen = false }
         )
     } else {
@@ -107,8 +126,8 @@ fun InvoiceScreen(
                     snackbar = { data ->
                         Snackbar(
                             snackbarData = data,
-                            containerColor = BrandGreen.copy(alpha = 0.9f),
-                            contentColor = Color.White
+                            containerColor = DarkGray.copy(alpha = 0.9f),
+                            contentColor = White
                         )
                     }
                 )
@@ -119,7 +138,7 @@ fun InvoiceScreen(
                 // TABS (Luz / Gas)
                 ScrollableTabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    containerColor = Color.White,
+                    containerColor = White,
                     contentColor = BrandGreen,
                     edgePadding = Dimens.SpacingM,
                     divider = { HorizontalDivider(color = Color(0xFFEEEEEE)) },
@@ -161,7 +180,6 @@ fun InvoiceScreen(
                     // Obtenemos el estado específico de esta página
                     val pageUiState = uiStatesMap[type] ?: InvoiceViewModel.UiState.Loading
 
-
                     LaunchedEffect(type) {
                         viewModel.filterInvoices(type)
                     }
@@ -194,7 +212,13 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit, onClearFilters: () -> Unit, isFiltering: Boolean) {
+fun InvoiceList(
+    data: InvoiceResponse,
+    onInvoiceClick: (Invoice) -> Unit,
+    onFilterClick: () -> Unit,
+    onClearFilters: () -> Unit,
+    isFiltering: Boolean
+) {
     val groupedHistory = data.history.groupBy {
         it.date.take(4)
     }
