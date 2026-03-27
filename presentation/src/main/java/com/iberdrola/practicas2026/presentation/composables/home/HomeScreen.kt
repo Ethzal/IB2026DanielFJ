@@ -2,8 +2,10 @@ package com.iberdrola.practicas2026.presentation.composables.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
@@ -38,7 +40,8 @@ fun HomeScreen(
     Scaffold { padding ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(padding)) {
+            .padding(padding)
+            .verticalScroll(rememberScrollState())) {
             // Header
             Box(
                 modifier = Modifier
