@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +65,8 @@ fun FilterScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
 
     Scaffold(
         snackbarHost = {
@@ -352,7 +355,7 @@ fun FilterScreen(
 
                     coroutineScope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar("Filtros eliminados")
+                        snackbarHostState.showSnackbar(context.getString(R.string.filtros_eliminados))
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

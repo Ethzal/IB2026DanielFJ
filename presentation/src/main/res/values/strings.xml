@@ -44,6 +44,11 @@
     <string name="por_estado">Por estado</string>
     <string name="euro_symbol">%1$d €</string>
 
+    <plurals name="filtros_aplicados">
+        <item quantity="one">Filtros aplicados: %d resultado</item>
+        <item quantity="other">Filtros aplicados: %d resultados</item>
+    </plurals>
+
     <!-- Invoice Status -->
     <string name="pagada">Pagada</string>
     <string name="status_paid">Pagadas</string>
@@ -66,4 +71,5 @@
     <!-- Error States -->
     <string name="ups_algo_ha_ido_mal">¡Ups! Algo ha ido mal</string>
     <string name="reintentar_conexion">Reintentar conexión</string>
+    <string name="filtros_eliminados">Filtros eliminados</string>
 </resources>

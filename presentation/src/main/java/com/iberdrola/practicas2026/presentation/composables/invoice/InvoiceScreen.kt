@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,6 +54,8 @@ fun InvoiceScreen(
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
 
     fun showSnackbar(message: String) {
         coroutineScope.launch {
@@ -105,7 +108,8 @@ fun InvoiceScreen(
                 viewModel.applyFilters(it)
                 val count = viewModel.getResultCount()
                 showFilterScreen = false
-                showSnackbar("Filtros aplicados: $count ${if (count == 1) "resultado" else "resultados"}")
+                val message = context.resources.getQuantityString(R.plurals.filtros_aplicados, count, count)
+                showSnackbar(message)
             },
             onClearFilters = {
                 viewModel.clearFilters()
