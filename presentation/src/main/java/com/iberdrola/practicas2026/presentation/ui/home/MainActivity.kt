@@ -82,7 +82,11 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Screen.Invoices.route) {
                                 InvoiceScreen(
-                                    onBackClick = { navController.popBackStack() }
+                                    onBackClick = {
+                                        if (navController.previousBackStackEntry != null) {
+                                            navController.popBackStack()
+                                        }
+                                    }
                                 )
                             }
                         }

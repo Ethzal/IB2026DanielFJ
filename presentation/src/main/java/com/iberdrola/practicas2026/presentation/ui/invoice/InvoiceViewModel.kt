@@ -152,12 +152,11 @@ class InvoiceViewModel @Inject constructor(
             updateFeedbackDecision.incrementExit()
 
             // 2. Consultamos si toca mostrar el diálogo (lógica 10, 3, 0)
-            getFeedbackStatus().first().let { shouldShow ->
-                if (shouldShow) {
-                    _showFeedbackSheet.value = true
-                } else {
-                    onConfirmExit()
-                }
+            val shouldShow = getFeedbackStatus().first()
+            if (shouldShow) {
+                _showFeedbackSheet.value = true
+            } else {
+                onConfirmExit()
             }
         }
     }

@@ -54,7 +54,11 @@ fun InvoiceScreen(
 
     // Manejar botón atrás físico
     BackHandler {
-        viewModel.onBackClicked(onConfirmExit = onBackClick)
+        if (showFilterScreen) {
+            showFilterScreen = false
+        } else {
+            viewModel.onBackClicked(onConfirmExit = onBackClick)
+        }
     }
 
     if (showFeedback) {
