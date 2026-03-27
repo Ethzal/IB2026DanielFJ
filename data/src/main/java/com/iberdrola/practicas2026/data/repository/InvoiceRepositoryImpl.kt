@@ -9,9 +9,14 @@ import com.iberdrola.practicas2026.data.remote.InvoiceItemDto
 import com.iberdrola.practicas2026.domain.model.*
 import com.iberdrola.practicas2026.domain.repository.InvoiceRepository
 import com.iberdrola.practicas2026.data.remote.InvoiceResponseDto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InvoiceRepositoryImpl @Inject constructor(
@@ -20,49 +25,51 @@ class InvoiceRepositoryImpl @Inject constructor(
     private val dao: InvoiceDao
 ) : InvoiceRepository {
 
-    override suspend fun getInvoices(isLocal: Boolean): Flow<InvoiceResponse> = flow {
+    private val repositoryScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    override suspend fun getInvoices(isLocal: Boolean): Flow<InvoiceResponse> {
         if (isLocal) {
-            // --- MODO LOCAL ---
-            delay((1000..3000).random().toLong())
-            val dto = apiLocal.getInvoices()
-            emit(mapDtoToDomain(dto))
+            return flow {
+                delay((1000..3000).random().toLong())
+                val dto = apiLocal.getInvoices()
+                emit(mapDtoToDomain(dto))
+            }
         } else {
-            // --- MODO REMOTO ---
-            try {
-                val remoteDto = apiRemote.getInvoices()
+            // Refrescamos en segundo plano sin bloquear el return
+            repositoryScope.launch {
+                try {
+                    val remoteDto = apiRemote.getInvoices()
 
-                // Mapeamos la lista plana a entidades de Room
-                val entities = remoteDto.facturas?.mapIndexed { index, item ->
-                    InvoiceEntity(
-                        id = item.id ?: "ID_$index",
-                        date = item.date ?: "",
-                        type = item.type ?: "",
-                        amount = item.amount ?: 0.0,
-                        status = item.status ?: "",
-                        startDate = item.startDate ?: "",
-                        endDate = item.endDate ?: "",
-                        isLastInvoice = index == 0
-                    )
-                } ?: emptyList()
+                    // Mapeamos la lista plana a entidades de Room
+                    val entities = remoteDto.facturas?.mapIndexed { index, item ->
+                        InvoiceEntity(
+                            id = item.id ?: "ID_$index",
+                            date = item.date ?: "",
+                            type = item.type ?: "",
+                            amount = item.amount ?: 0.0,
+                            status = item.status ?: "",
+                            startDate = item.startDate ?: "",
+                            endDate = item.endDate ?: "",
+                            isLastInvoice = index == 0
+                        )
+                    } ?: emptyList()
 
-                if (entities.isNotEmpty()) {
-                    dao.clearInvoices()
-                    dao.saveInvoices(entities)
-                }
-            } catch (_: Exception) {
-                val dbInvoices = dao.getAllInvoices()
-                if (dbInvoices.isNotEmpty()) {
-                    emit(InvoiceResponse(allInvoices = dbInvoices.map { it.toDomain() }))
-                } else {
-                    // Si no hay caché y falla la API, entonces sí lanzamos el error
-                    throw Exception("Error de conexión y no hay datos offline.")
+                    if (entities.isNotEmpty()) {
+                        dao.clearInvoices()
+                        dao.saveInvoices(entities)
+                    }
+                } catch (_: Exception) {
+                    // Si falla, está Room
                 }
             }
 
-            val dbInvoices = dao.getAllInvoices()
-            if (dbInvoices.isEmpty()) throw Exception("No hay datos disponibles")
-
-            emit(InvoiceResponse(allInvoices = dbInvoices.map { it.toDomain() }))
+            // Devolvemos el flujo de Room
+            return dao.observeAllInvoices().map { entities ->
+                if (entities.isEmpty()) {
+                    throw Exception("Error de conexión y no hay datos offline.")
+                }
+                InvoiceResponse(allInvoices = entities.map { it.toDomain() })
+            }
         }
     }
 
