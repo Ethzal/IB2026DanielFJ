@@ -9,30 +9,25 @@ val AppTypography = Typography(
     headlineMedium = TextStyle(
         fontSize = Dimens.TextXXL,
         fontWeight = FontWeight.Bold,
-        color = TextMain
     ),
 
     titleLarge = TextStyle(
         fontSize = Dimens.TextXL,
         fontWeight = FontWeight.Bold,
-        color = TextMain
     ),
 
     bodyLarge = TextStyle(
         fontSize = Dimens.TextL,
         fontWeight = FontWeight.Bold,
-        color = TextMain
     ),
 
     bodySmall = TextStyle(
         fontSize = Dimens.TextS,
-        color = TextSecondary
     ),
 
     displaySmall = TextStyle(
         fontSize = Dimens.TextAmount,
         fontWeight = FontWeight.Bold,
-        color = TextMain
     ),
 
     labelSmall = TextStyle(

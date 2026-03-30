@@ -452,6 +452,7 @@ fun DatePickerModal(
                 todayDateBorderColor = BrandGreen.copy(alpha = 0.5f),
                 selectedDayContainerColor = BrandGreen.copy(alpha = 0.5f),
                 selectedDayContentColor = Color.White,
+                disabledDayContentColor = Color(0xFFC4C4C4),
             )
         )
     }
