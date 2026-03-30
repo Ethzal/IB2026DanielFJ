@@ -1,57 +1,75 @@
 <resources>
+    <!-- App -->
     <string name="app_name">IB2026 DanielFJ</string>
+    <string name="informacion">Información</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="cerrar">Cerrar</string>
+    <string name="atras"><u>Atrás</u></string>
+
+    <!-- Home Screen -->
+    <string name="hola_daniel">Hola, Daniel</string>
+    <string name="c_miguel_de_cervantes_47">C/ Miguel de Cervantes, 47</string>
+    <string name="direccion">C/ PALMA - ARTA KM 49, 5 , 4ºA -PINTO - MADRID</string>
+    <string name="mi_energia">Mi energía</string>
+    <string name="factura_digital_activa">Factura digital activa</string>
+    <string name="_32_21">32,21 €</string>
+    <string name="ya_estas_ahorrando">Ya estás ahorrando papel con tu factura electrónica.</string>
+    <string name="local">Local</string>
+    <string name="remoto">Remoto</string>
+    <string name="modo_local_cargando_mocks">Modo Local: Cargando mocks…</string>
+    <string name="modo_remoto_conectando_a_api">Modo Remoto: Conectando a API…</string>
+
+    <!-- Invoices Screen -->
     <string name="facturas">Facturas</string>
     <string name="mis_facturas">Mis facturas</string>
-    <string name="direccion">C/ PALMA - ARTA KM 49, 5 , 4ºA -PINTO - MADRID</string>
     <string name="luz">Luz</string>
     <string name="gas">Gas</string>
     <string name="ultima_factura">Última factura</string>
-    <string name="tipo_de_icono">Tipo de icono</string>
-    <string name="factura_luz">Factura Luz</string>
     <string name="historico_de_facturas">Histórico de facturas</string>
-    <string name="filtrar">Filtrar</string>
-    <string name="_2024">2024</string>
-    <string name="atras"><u>Atrás</u></string>
-    <string name="flecha">Flecha</string>
-    <string name="local">Local</string>
-    <string name="modo_local_cargando_mocks">Modo Local: Cargando mocks…</string>
-    <string name="modo_remoto_conectando_a_api">Modo Remoto: Conectando a API…</string>
-    <string name="hola_daniel">Hola, Daniel</string>
-    <string name="c_miguel_de_cervantes_47">C/ Miguel de Cervantes, 47</string>
-    <string name="factura_digital_activa">Factura digital activa</string>
-    <string name="ya_estas_ahorrando">Ya estás ahorrando papel con tu factura electrónica.</string>
-    <string name="mi_energia">Mi energía</string>
-    <string name="_32_21">32,21 €</string>
-    <string name="cerrar">Cerrar</string>
-    <string name="tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia">Tu valoración nos ayuda a mejorar día a día.</string>
-    <string name="muchas_gracias">¡Muchas gracias!</string>
-    <string name="responder_mas_tarde">Responder más tarde</string>
-    <string name="tu_opinion_nos_importa">Tu opinión nos importa</string>
-    <string name="recomiendes_esta_app">¿Cómo de probable es que recomiendes esta app a amigos o familiares para que realicen sus gestiones?</string>
-    <string name="pagada">Pagada</string>
-    <string name="informacion">Información</string>
+    <string name="factura_luz">Factura Luz</string>
     <string name="factura_no_disponible">Esta factura aún no está disponible para su visualización.</string>
-    <string name="aceptar">Aceptar</string>
-    <string name="remoto">Remoto</string>
-    <string name="cuota_fija">Cuota Fija</string>
-    <string name="pendiente_de_pago">Pendiente de Pago</string>
-    <string name="en_tramite_de_cobro">En Trámite de Cobro</string>
-    <string name="anulada">Anulada</string>
+    <string name="sin_facturas">Sin facturas</string>
+    <string name="no_hemos_encontrado_facturas">No hemos encontrado facturas que coincidan con tu búsqueda.</string>
+
+    <!-- Filter Screen -->
+    <string name="filtrar">Filtrar</string>
+    <string name="aplicar_filtros">Aplicar filtros</string>
+    <string name="borrar_filtros">Borrar filtros</string>
     <string name="por_fecha">Por fecha</string>
     <string name="desde">* Desde</string>
     <string name="hasta">* Hasta</string>
     <string name="por_un_importe">Por un importe</string>
     <string name="por_estado">Por estado</string>
-    <string name="cancelar">Cancelar</string>
-    <string name="borrar_filtros">Borrar filtros</string>
-    <string name="aplicar_filtros">Aplicar filtros</string>
     <string name="euro_symbol">%1$d €</string>
+
+    <plurals name="filtros_aplicados">
+        <item quantity="one">Filtros aplicados: %d resultado</item>
+        <item quantity="other">Filtros aplicados: %d resultados</item>
+    </plurals>
+
+    <!-- Invoice Status -->
+    <string name="pagada">Pagada</string>
     <string name="status_paid">Pagadas</string>
+    <string name="pendiente_de_pago">Pendiente de Pago</string>
     <string name="status_pending">Pendientes de Pago</string>
+    <string name="en_tramite_de_cobro">En trámite de cobro</string>
     <string name="status_in_progress">En trámite de cobro</string>
+    <string name="anulada">Anulada</string>
     <string name="status_cancelled">Anuladas</string>
+    <string name="cuota_fija">Cuota Fija</string>
     <string name="status_fixed_quota">Cuota Fija</string>
-    <string name="ok">OK</string>
-    <string name="sin_facturas">Sin facturas</string>
-    <string name="no_hemos_encontrado_facturas">No hemos encontrado facturas que coincidan con tu búsqueda.</string>
+
+    <!-- Feedback -->
+    <string name="tu_opinion_nos_importa">Tu opinión nos importa</string>
+    <string name="recomiendes_esta_app">¿Cómo de probable es que recomiendes esta app a amigos o familiares?</string>
+    <string name="muchas_gracias">¡Muchas gracias!</string>
+    <string name="responder_mas_tarde">Responder más tarde</string>
+    <string name="tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia">Tu valoración nos ayuda a mejorar día a día.</string>
+
+    <!-- Error States -->
+    <string name="ups_algo_ha_ido_mal">¡Ups! Algo ha ido mal</string>
+    <string name="reintentar_conexion">Reintentar conexión</string>
+    <string name="filtros_eliminados">Filtros eliminados</string>
 </resources>

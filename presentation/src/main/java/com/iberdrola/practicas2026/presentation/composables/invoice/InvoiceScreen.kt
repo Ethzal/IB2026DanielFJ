@@ -10,11 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,9 +28,11 @@ import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
+import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import com.iberdrola.practicas2026.presentation.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,7 +40,6 @@ fun InvoiceScreen(
     viewModel: InvoiceViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(stringResource(R.string.luz), stringResource(R.string.gas))
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -54,15 +55,25 @@ fun InvoiceScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(pagerState.currentPage) {
-        selectedTabIndex = pagerState.currentPage
-        val type = if (pagerState.currentPage == 0) InvoiceType.LIGHT else InvoiceType.GAS
-        viewModel.filterInvoices(type)
+    val context = LocalContext.current
+
+    fun showSnackbar(message: String) {
+        coroutineScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
     }
 
     // Manejar botón atrás físico
     BackHandler {
-        viewModel.onBackClicked(onConfirmExit = onBackClick)
+        if (showFilterScreen) {
+            showFilterScreen = false
+        } else {
+            viewModel.onBackClicked(onConfirmExit = onBackClick)
+        }
     }
 
     if (showFeedback) {
@@ -93,8 +104,16 @@ fun InvoiceScreen(
         FilterScreen(
             currentFilter = invoiceFilter,
             amountBounds = amountBounds,
-            onApplyFilters = { viewModel.applyFilters(it) },
-            onClearFilters = { viewModel.clearFilters() },
+            onApplyFilters = {
+                viewModel.applyFilters(it)
+                val count = viewModel.getResultCount()
+                showFilterScreen = false
+                val message = context.resources.getQuantityString(R.plurals.filtros_aplicados, count, count)
+                showSnackbar(message)
+            },
+            onClearFilters = {
+                viewModel.clearFilters()
+            },
             onBack = { showFilterScreen = false }
         )
     } else {
@@ -111,8 +130,8 @@ fun InvoiceScreen(
                     snackbar = { data ->
                         Snackbar(
                             snackbarData = data,
-                            containerColor = BrandGreen.copy(alpha = 0.9f),
-                            contentColor = Color.White
+                            containerColor = DarkGray.copy(alpha = 0.9f),
+                            contentColor = White
                         )
                     }
                 )
@@ -123,19 +142,15 @@ fun InvoiceScreen(
                 // TABS (Luz / Gas)
                 ScrollableTabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    containerColor = Color.White,
+                    containerColor = White,
                     contentColor = BrandGreen,
                     edgePadding = Dimens.SpacingM,
-                    divider = {
-                        HorizontalDivider(color = Color(0xFFEEEEEE))
-                    },
+                    divider = { HorizontalDivider(color = Color(0xFFEEEEEE)) },
                     indicator = { tabPositions ->
-                        if (selectedTabIndex < tabPositions.size) {
-                            TabRowDefaults.SecondaryIndicator(
-                                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                                color = BrandGreen
-                            )
-                        }
+                        TabRowDefaults.SecondaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                            color = BrandGreen
+                        )
                     }
                 ) {
                     tabs.forEachIndexed { index, title ->
@@ -148,8 +163,8 @@ fun InvoiceScreen(
                             },
                             text = {
                                 Text(
-                                    title,
-                                    color = if (selectedTabIndex == index) TextMain else TextSecondary
+                                    text = title,
+                                    color = if (pagerState.currentPage == index) TextMain else TextSecondary
                                 )
                             }
                         )
@@ -164,9 +179,14 @@ fun InvoiceScreen(
                 ) { pageIndex ->
 
                     val type = if (pageIndex == 0) InvoiceType.LIGHT else InvoiceType.GAS
+                    val uiStatesMap by viewModel.uiStates.collectAsStateWithLifecycle()
 
                     // Obtenemos el estado específico de esta página
-                    val pageUiState = viewModel.uiStates.collectAsStateWithLifecycle().value[type] ?: InvoiceViewModel.UiState.Loading
+                    val pageUiState = uiStatesMap[type] ?: InvoiceViewModel.UiState.Loading
+
+                    LaunchedEffect(type) {
+                        viewModel.filterInvoices(type)
+                    }
 
                     when (pageUiState) {
                         is InvoiceViewModel.UiState.Loading -> {
@@ -183,9 +203,10 @@ fun InvoiceScreen(
                         }
 
                         is InvoiceViewModel.UiState.Error -> {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(text = pageUiState.msg, color = Color.Red)
-                            }
+                            ErrorStateView(
+                                message = pageUiState.msg,
+                                onRetry = { viewModel.fetchFacturas(isLocal = false) } // Fuerza la recarga
+                            )
                         }
                     }
                 }
@@ -195,7 +216,13 @@ fun InvoiceScreen(
 }
 
 @Composable
-fun InvoiceList(data: InvoiceResponse, onInvoiceClick: (Invoice) -> Unit, onFilterClick: () -> Unit, onClearFilters: () -> Unit, isFiltering: Boolean) {
+fun InvoiceList(
+    data: InvoiceResponse,
+    onInvoiceClick: (Invoice) -> Unit,
+    onFilterClick: () -> Unit,
+    onClearFilters: () -> Unit,
+    isFiltering: Boolean
+) {
     val groupedHistory = data.history.groupBy {
         it.date.take(4)
     }
