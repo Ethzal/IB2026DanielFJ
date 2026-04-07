@@ -6,9 +6,11 @@ Este proyecto es la implementación profesional de una aplicación Android nativ
 
 La interfaz sigue los lineamientos de diseño de la aplicación oficial, garantizando una experiencia de usuario (UX) coherente y profesional.
 
-<div style="text-align: center;">
-  <img src="https://github.com/user-attachments/assets/6cbc5dac-ca04-480d-8ec5-74bf60b975ab" width="350" alt="App Screenshot">
-</div>
+| <img src="https://github.com/user-attachments/assets/d5864f11-c723-48b0-8d61-99bfe93f043e" width="250" alt="Home"/> | <img src="https://github.com/user-attachments/assets/294e8931-81ac-4ee0-a143-592062501667" width="250" alt="Tabs"/> | <img src="https://github.com/user-attachments/assets/33d34258-02ae-42db-aae8-c201379a5f48" width="250" alt="Feedback"/> |
+| :---: | :---: | :---: |
+| <sub><b>Pantalla Principal / Home</b></sub> | <sub><b>Listado de Facturas (Tabs)</b></sub> | <sub><b>Feedback BottomSheet</b></sub> |
+| <img src="https://github.com/user-attachments/assets/2079b741-c8ec-4cef-aafb-e9784345b33a" width="250" alt="Filtros"/> | <img src="https://github.com/user-attachments/assets/eeefa89a-ac12-4e9e-8ac8-50f6ec41cab1" width="250" alt="Filtradas"/> | <img src="https://github.com/user-attachments/assets/ff3d8209-709d-4c44-a015-fea62f5bccc3" width="250" alt="Empty"/> |
+| <sub><b>Pantalla Filtros</b></sub> | <sub><b>Facturas Filtradas</b></sub> | <sub><b>Empty State</b></sub> |
 
 ---
 
@@ -27,6 +29,10 @@ La interfaz sigue los lineamientos de diseño de la aplicación oficial, garanti
 *   **Caché Offline:** Implementación de `Room Database` para persistencia de datos y consulta sin conexión.
 *   **UI Reactiva y Fluida:** Uso de `StateFlow` y estados de Compose (`mutableStateOf`) para reflejar cambios de estado de forma instantánea y segura ante cambios de configuración.
 *   **Skeleton Loading:** Implementación de Shimmer animado nativo en Compose.
+*   **Sistema de Filtrado Avanzado:** Implementación de una pantalla dedicada para filtrar facturas por Rango de fechas (DatePicker), Rango de importe (RangeSlider dinámico calculado según los datos) y Estado (Selección múltiple).
+*   **Sistema de Feedback Inteligente:** Un BottomSheet nativo en Compose para recoger la valoración del usuario. Implementa lógica de negocio (UseCases) para mostrarse de forma no intrusiva basándose en un sistema de contadores (seguimiento de veces que el usuario intenta salir de la app) almacenado en DataStore.
+*   **Navegación Paginada (Tabs):** Uso de HorizontalPager de Compose para separar visualmente el histórico de facturas de "Luz" y "Gas" con transiciones fluidas.
+*   **Toggle Dinámico de Entorno:** Switch en la pantalla principal (HomeScreen) que permite cambiar en tiempo real entre el entorno Local (Mocks) y Remoto (API/Mockoon) persistiendo la decisión en las preferencias locales.
 
 ---
 
@@ -49,14 +55,14 @@ El proyecto utiliza una estructura de **Clean Architecture** para desacoplar la 
 
 ## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Toolbox.webp" alt="Toolbox" width="25" height="25" /> Stack Tecnológico
 
-| Componente                    | Tecnología / Librería                   |
-|:------------------------------|:----------------------------------------|
-| **Lenguaje**                  | Kotlin                                  |
-| **Inyección de Dependencias** | Dagger Hilt                             |
-| **Networking**                | Retrofit 2, OkHttp 4, Retromock         |
-| **Persistencia**              | Room Database                           |
-| **Asincronía**                | Coroutines & Kotlin Flow                |
-| **Interfaz de Usuario**       | XML, Fragments, ViewBinding, Material 3 |
-| **Carga Visual**              | Shimmer Animation (Compose)             |
-| **Navegación**                | Navigation Compose                      |
-| **Testing**                   | JUnit 4, Mockk                          |
+| Componente                    | Tecnología / Librería           |
+|:------------------------------|:--------------------------------|
+| **Lenguaje**                  | Kotlin                          |
+| **Inyección de Dependencias** | Dagger Hilt                     |
+| **Networking**                | Retrofit 2, OkHttp 4, Retromock |
+| **Persistencia**              | Room Database & DataStore       |
+| **Asincronía**                | Coroutines & Kotlin Flow        |
+| **Interfaz de Usuario**       | Jetpack Compose, Material 3     |
+| **Carga Visual**              | Shimmer Animation (Compose)     |
+| **Navegación**                | Navigation & Pager Compose      |
+| **Testing**                   | JUnit 4, Mockk                  |
