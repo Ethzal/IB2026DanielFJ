@@ -6,10 +6,10 @@ Este proyecto es la implementación profesional de una aplicación Android nativ
 
 La interfaz sigue los lineamientos de diseño de la aplicación oficial, garantizando una experiencia de usuario (UX) coherente y profesional.
 
-| <img src="https://github.com/user-attachments/assets/d5864f11-c723-48b0-8d61-99bfe93f043e" width="250" alt="Home"/> | <img src="https://github.com/user-attachments/assets/294e8931-81ac-4ee0-a143-592062501667" width="250" alt="Tabs"/> | <img src="https://github.com/user-attachments/assets/33d34258-02ae-42db-aae8-c201379a5f48" width="250" alt="Feedback"/> |
+| <img src="https://github.com/user-attachments/assets/9813b936-7d34-42c6-93b0-37138311a79b" width="250" alt="Home"/> | <img src="https://github.com/user-attachments/assets/3e5f6891-1ffc-4e81-b0b7-c347e5414e31" width="250" alt="Tabs"/> | <img src="https://github.com/user-attachments/assets/87d0cc80-255f-4ca6-8328-24d42d8a11ac" width="250" alt="Feedback"/> |
 | :---: | :---: | :---: |
 | <sub><b>Pantalla Principal / Home</b></sub> | <sub><b>Listado de Facturas (Tabs)</b></sub> | <sub><b>Feedback BottomSheet</b></sub> |
-| <img src="https://github.com/user-attachments/assets/2079b741-c8ec-4cef-aafb-e9784345b33a" width="250" alt="Filtros"/> | <img src="https://github.com/user-attachments/assets/eeefa89a-ac12-4e9e-8ac8-50f6ec41cab1" width="250" alt="Filtradas"/> | <img src="https://github.com/user-attachments/assets/ff3d8209-709d-4c44-a015-fea62f5bccc3" width="250" alt="Empty"/> |
+| <img src="https://github.com/user-attachments/assets/c8713b34-e864-459e-b218-52bc537b756d" width="250" alt="Filtros"/> | <img src="https://github.com/user-attachments/assets/be2aa6c6-9881-4a81-8310-76818d00e7fc" width="250" alt="Filtradas"/> | <img src="https://github.com/user-attachments/assets/45942d8f-9614-44e8-ac53-ec321fa423a6" width="250" alt="Empty"/> |
 | <sub><b>Pantalla Filtros</b></sub> | <sub><b>Facturas Filtradas</b></sub> | <sub><b>Empty State</b></sub> |
 
 ---
