@@ -72,4 +72,45 @@
     <string name="ups_algo_ha_ido_mal">¡Ups! Algo ha ido mal</string>
     <string name="reintentar_conexion">Reintentar conexión</string>
     <string name="filtros_eliminados">Filtros eliminados</string>
+
+    <!-- Electronic Invoice-->
+    <string name="factura_electronica">Factura electrónica</string>
+    <string name="contrato_de_luz">Contrato de Luz</string>
+    <string name="contrato_de_gas">Contrato de Gas</string>
+
+    <!-- Light -->
+    <string name="actualmente_recibes">Actualmente recibes las facturas electrónicas de este contrato al:</string>
+    <string name="recibes_facturas_en">Recibes tus facturas en este email</string>
+    <string name="recuerda_requisito">Recuerda que la factura electrónica es un requisito de este Plan, por lo que no es posible desactivarla.</string>
+    <string name="modificar_email">Modificar email</string>
+
+    <!-- Activate Electronic Invoice -->
+    <string name="activa_tu_factura">Activa tu factura electrónica</string>
+    <string name="email_vinculado">Email vinculado a tu cuenta:</string>
+    <string name="en_que_email_deseas">¿En qué email deseas recibir tus facturas?</string>
+    <string name="info_basica_proteccion">Información básica sobre protección de datos</string>
+    <string name="responsable_iberdrola">Responsable: Iberdrola Clientes S.A.U. </string>
+    <string name="finalidad_gestion">Finalidad: Gestión de la factura electrónica. </string>
+    <string name="derechos_acceso">Derechos: Acceso, rectificación, supresión, limitación del tratamiento, portabilidad de datos u oposición, incluída la oposición a decisiones individuales automatizadas.</string>
+    <string name="anterior">Anterior</string>
+    <string name="siguiente">Siguiente</string>
+
+    <!-- OTP Verification -->
+    <string name="introduce_codigo">Introduce tu código de verificación</string>
+    <string name="para_verificar_identidad">Para verificar tu identidad, hemos enviado un código al teléfono ******146. Por favor, introdúcelo a continuación:</string>
+    <string name="codigo_verificacion">* Código de verificación</string>
+    <string name="no_has_recibido">¿No has recibido el código?</string>
+    <string name="si_no_lo_encuentras">Si no lo encuentras, podemos volver a enviar el SMS. Recuerda que hoy te quedan 2 intentos.</string>
+    <string name="volver_a_enviar">Volver a enviar</string>
+    <string name="hemos_vuelto_enviar">Hemos vuelto a enviar un SMS con tu código de verificación.</string>
+
+    <!-- Success Screen -->
+    <string name="has_activado_correctamente">¡Has activado correctamente tu factura electrónica!</string>
+    <string name="has_modificado_correctamente">¡Has modificado correctamente tu email!</string>
+    <string name="pronto_recibiras_correo">Pronto recibirás un correo electrónico de verificación para recibir tus facturas en la dirección b********5@imfaya.com</string>
+    <string name="mas_info">Más info</string>
+    <string name="he_leido_y_acepto">"He leído y acepto la Política de privacidad, acepto las"</string>
+    <string name="condiciones_generales">Condiciones Generales</string>
+    <string name="he_leido_y_acepto_2">"y Particulares de la oferta y la suscripción a Factura Electrónica."</string>
+    <string name="no_disponible">No disponible aún esta funcionalidad.</string>
 </resources>
