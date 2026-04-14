@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.shimmer)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Compose
     val composeBom = platform(libs.androidx.compose.bom)
@@ -66,11 +65,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.animation.core)
 
     // Integration con ViewModel y Navigation
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Hilt
     implementation(libs.hilt.android)
