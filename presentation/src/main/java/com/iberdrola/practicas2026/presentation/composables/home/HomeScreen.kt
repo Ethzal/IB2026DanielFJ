@@ -34,6 +34,7 @@ import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 @Composable
 fun HomeScreen(
     onNavigateToInvoices: () -> Unit,
+    onNavigateToElectronicInvoice: () -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     val isLocal by mainViewModel.isLocalMode.collectAsStateWithLifecycle()
@@ -121,8 +122,16 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(Dimens.SpacingM))
+                EnergyCard(
+                    title = stringResource(R.string.factura_electronica),
+                    subtitle = "Gestionar",
+                    value = "",
+                    icon = R.drawable.ic_electronic_invoice,
+                    onClick = onNavigateToElectronicInvoice,
+                    modifier = Modifier.weight(1f)
+                )
                 // Empty Card
-                Box(Modifier.weight(1f)) 
+                // Box(Modifier.weight(1f))
             }
         }
     }
