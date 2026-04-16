@@ -51,7 +51,7 @@ fun LastInvoiceCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = Dimens.SpacingM),
+            .padding(bottom = Dimens.SpacingXL),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
@@ -84,7 +84,7 @@ fun LastInvoiceCard(
                 )
             }
             
-            Spacer(modifier = Modifier.height(Dimens.SpacingM))
+            Spacer(modifier = Modifier.height(Dimens.SpacingS))
 
             // Amount
             Text(
@@ -99,7 +99,7 @@ fun LastInvoiceCard(
                 color = TextSecondary
             )
             
-            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.SpacingM), color = Color(0xFFE0E0E0))
+            HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = Color(0xFFE0E0E0))
 
             StatusPill(status = invoice.status)
         }
