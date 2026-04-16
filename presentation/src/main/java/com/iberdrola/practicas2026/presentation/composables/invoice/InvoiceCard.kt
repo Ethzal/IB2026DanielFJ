@@ -25,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import com.iberdrola.practicas2026.core.utils.toLastInvoiceDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 
@@ -88,8 +90,23 @@ fun LastInvoiceCard(
 
             // Amount
             Text(
-                text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
+                text = buildAnnotatedString {
+                    val amountText = String.format(Locale.getDefault(), "%.2f", invoice.amount)
+
+                    withStyle(
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ).toSpanStyle()
+                    ) {
+                        append(amountText)
+                    }
+
+                    withStyle(
+                        style = MaterialTheme.typography.headlineMedium.toSpanStyle()
+                    ) {
+                        append(" €")
+                    }
+                }
             )
 
             // Date range
