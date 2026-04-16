@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,8 +64,6 @@ fun FilterScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
-    val context = LocalContext.current
 
     Scaffold(
         snackbarHost = {
@@ -342,6 +339,8 @@ fun FilterScreen(
 
             Spacer(Modifier.height(Dimens.SpacingM))
 
+            val filtrosEliminadosText = stringResource(R.string.filtros_eliminados)
+
             TextButton(
                 onClick = {
                     // 1. Resetear estados locales para que la UI se limpie inmediatamente
@@ -353,9 +352,10 @@ fun FilterScreen(
                     // 2. Notificar al exterior
                     onClearFilters()
 
+
                     coroutineScope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(context.getString(R.string.filtros_eliminados))
+                        snackbarHostState.showSnackbar(filtrosEliminadosText)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -443,14 +443,18 @@ fun DatePickerModal(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.cancelar), color = BrandGreen)
             }
-        }
+        },
+        colors = DatePickerDefaults.colors(
+            containerColor = Color.White
+        )
     ) {
         DatePicker(
             state = datePickerState,
             colors = DatePickerDefaults.colors(
-                todayContentColor = BrandGreen.copy(alpha = 0.5f),
-                todayDateBorderColor = BrandGreen.copy(alpha = 0.5f),
-                selectedDayContainerColor = BrandGreen.copy(alpha = 0.5f),
+                containerColor = Color.White,
+                todayContentColor = BrandGreen,
+                todayDateBorderColor = BrandGreen,
+                selectedDayContainerColor = BrandGreen,
                 selectedDayContentColor = Color.White,
                 disabledDayContentColor = Color(0xFFC4C4C4),
             )

@@ -96,7 +96,8 @@ fun InvoiceScreen(
                 TextButton(onClick = { showNotAvailableDialog = false }) {
                     Text(stringResource(R.string.aceptar))
                 }
-            }
+            },
+            containerColor = Color.White
         )
     }
 
