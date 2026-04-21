@@ -30,6 +30,7 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
@@ -52,7 +53,7 @@ fun StatusPill(status: String) {
     ) {
         Text(
             text = status,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = Dimens.SpacingXS),
+            modifier = Modifier.padding(horizontal = Dimens.SpacingS, vertical = 6.dp),
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = textColor
         )
@@ -77,10 +78,10 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
                     text = invoice.date.toUiDate(),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
+                Spacer(Modifier.height(Dimens.SpacingXS))
                 Text(
                     text = invoice.type,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
                 )
                 StatusPill(status = invoice.status)
             }
@@ -88,10 +89,10 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
                     color = TextSecondary
                 )
-                Spacer(Modifier.width(Dimens.SpacingS))
+                Spacer(Modifier.width(Dimens.SpacingM))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_info),
                     contentDescription = null,
@@ -101,6 +102,6 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
             }
         }
         Spacer(Modifier.height(Dimens.SpacingM))
-        HorizontalDivider(thickness = Dimens.StrokeDefault, color = Color(0xFFEEEEEE))
     }
+    HorizontalDivider(thickness = Dimens.StrokeDefault, color = DividerColor)
 }
