@@ -66,6 +66,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.animation.core)
+    implementation(libs.androidx.compose.ui.text)
 
     // Integration con ViewModel y Navigation
     implementation(libs.androidx.lifecycle.viewmodel.compose)
