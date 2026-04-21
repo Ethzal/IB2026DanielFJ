@@ -35,6 +35,7 @@ import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.StatusPill
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
 
@@ -71,11 +72,11 @@ fun LastInvoiceCard(
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.height(Dimens.SpacingS))
                     // Invoice type
                     Text(
                         text = invoice.type,
                         style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary
                     )
                 }
                 Icon(
@@ -86,7 +87,7 @@ fun LastInvoiceCard(
                 )
             }
             
-            Spacer(modifier = Modifier.height(Dimens.SpacingS))
+            Spacer(modifier = Modifier.height(Dimens.SpacingM))
 
             // Amount
             Text(
@@ -94,7 +95,7 @@ fun LastInvoiceCard(
                     val amountText = String.format(Locale.getDefault(), "%.2f", invoice.amount)
 
                     withStyle(
-                        style = MaterialTheme.typography.headlineLarge.copy(
+                        style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ).toSpanStyle()
                     ) {
@@ -102,12 +103,16 @@ fun LastInvoiceCard(
                     }
 
                     withStyle(
-                        style = MaterialTheme.typography.headlineMedium.toSpanStyle()
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ).toSpanStyle()
                     ) {
                         append(" €")
                     }
                 }
             )
+
+            Spacer(modifier = Modifier.height(Dimens.SpacingXS))
 
             // Date range
             Text(
@@ -116,7 +121,7 @@ fun LastInvoiceCard(
                 color = TextSecondary
             )
             
-            HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = Color(0xFFE0E0E0))
+            HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = DividerColor)
 
             StatusPill(status = invoice.status)
         }
