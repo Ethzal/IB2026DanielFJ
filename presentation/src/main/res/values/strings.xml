@@ -62,7 +62,7 @@
 
     <!-- Feedback -->
     <string name="tu_opinion_nos_importa">Tu opinión nos importa</string>
-    <string name="recomiendes_esta_app">¿Cómo de probable es que recomiendes esta app a amigos o familiares?</string>
+    <string name="recomiendes_esta_app">¿Cómo de probable es que recomiendes esta app a amigos o familiares para que realicen sus gestiones?</string>
     <string name="muchas_gracias">¡Muchas gracias!</string>
     <string name="responder_mas_tarde">Responder más tarde</string>
     <string name="tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia">Tu valoración nos ayuda a mejorar día a día.</string>
@@ -82,6 +82,7 @@
     <string name="recibes_facturas_en">Recibes tus facturas en este email</string>
     <string name="recuerda_requisito">Recuerda que la factura electrónica es un requisito de este Plan, por lo que no es posible desactivarla.</string>
     <string name="modificar_email">Modificar email</string>
+    <string name="direccion2">C/ Apartado de Correos 184, 5, 1ºb -los dolores-el plan - murcia</string>
 
     <!-- Activate Electronic Invoice -->
     <string name="activa_tu_factura">Activa tu factura electrónica</string>
