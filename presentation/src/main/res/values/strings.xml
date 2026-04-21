@@ -10,8 +10,7 @@
 
     <!-- Home Screen -->
     <string name="hola_daniel">Hola, Daniel</string>
-    <string name="c_miguel_de_cervantes_47">C/ Miguel de Cervantes, 47</string>
-    <string name="direccion">C/ PALMA - ARTA KM 49, 5 , 4ºA -PINTO - MADRID</string>
+    <string name="direccion">C/ Palma - Arta km 49, 5 , 4ºA -Pinto - Madrid</string>
     <string name="mi_energia">Mi energía</string>
     <string name="factura_digital_activa">Factura digital activa</string>
     <string name="_32_21">32,21 €</string>

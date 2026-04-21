@@ -29,6 +29,7 @@ object Dimens {
     val DividerHeight = 1.dp
     val StrokeDefault = 1.dp
     val StrokeThick = 2.dp
+    val StrokeVeryThick = 3.dp
 
     val CornerDefault = 16.dp
     val CornerButton = 20.dp
