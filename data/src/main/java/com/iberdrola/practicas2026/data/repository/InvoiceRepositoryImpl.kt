@@ -5,6 +5,7 @@ import com.iberdrola.practicas2026.core.di.RemoteApi
 import com.iberdrola.practicas2026.data.local.InvoiceDao
 import com.iberdrola.practicas2026.data.remote.InvoiceApi
 import com.iberdrola.practicas2026.data.local.InvoiceEntity
+import com.iberdrola.practicas2026.data.mapper.toInvoiceStatus
 import com.iberdrola.practicas2026.data.remote.InvoiceItemDto
 import com.iberdrola.practicas2026.domain.model.*
 import com.iberdrola.practicas2026.domain.repository.InvoiceRepository
@@ -47,7 +48,7 @@ class InvoiceRepositoryImpl @Inject constructor(
                             date = item.date ?: "",
                             type = item.type ?: "",
                             amount = item.amount ?: 0.0,
-                            status = item.status ?: "",
+                            status = (item.status ?: "").toInvoiceStatus().id,
                             startDate = item.startDate ?: "",
                             endDate = item.endDate ?: "",
                             isLastInvoice = index == 0
@@ -81,7 +82,7 @@ class InvoiceRepositoryImpl @Inject constructor(
                 date = it.date ?: "",
                 type = it.type ?: "",
                 amount = it.amount ?: 0.0,
-                status = it.status ?: "",
+                status = (it.status ?: "").toInvoiceStatus(),
                 startDate = it.startDate ?: "",
                 endDate = it.endDate ?: ""
             )
@@ -95,7 +96,7 @@ class InvoiceRepositoryImpl @Inject constructor(
         date = date,
         type = type,
         amount = amount,
-        status = status,
+        status = status.toInvoiceStatus(),
         startDate = startDate,
         endDate = endDate
     )

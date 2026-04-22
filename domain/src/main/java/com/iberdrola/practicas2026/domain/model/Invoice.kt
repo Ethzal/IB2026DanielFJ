@@ -5,7 +5,7 @@ data class Invoice(
     val date: String,
     val type: String,
     val amount: Double,
-    val status: String,
+    val status: InvoiceStatus,
     val startDate: String = "",
     val endDate: String = ""
 )

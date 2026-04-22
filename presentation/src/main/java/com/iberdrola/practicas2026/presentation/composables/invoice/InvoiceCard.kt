@@ -33,6 +33,7 @@ import com.iberdrola.practicas2026.domain.model.Invoice
 
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.StatusPill
+import com.iberdrola.practicas2026.presentation.mapper.toUiModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
@@ -123,7 +124,11 @@ fun LastInvoiceCard(
             
             HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = DividerColor)
 
-            StatusPill(status = invoice.status)
+            Spacer(modifier = Modifier.height(Dimens.SpacingS))
+
+            StatusPill(
+                model = invoice.status.toUiModel()
+            )
         }
     }
 }

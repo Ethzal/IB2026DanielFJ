@@ -26,33 +26,45 @@ import androidx.compose.ui.unit.dp
 import com.iberdrola.practicas2026.core.utils.toUiDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.mapper.toUiModel
+import com.iberdrola.practicas2026.presentation.ui.theme.BgGray
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
+import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import java.util.Locale
 
+data class StatusUiModel(
+    val label: String,
+    val style: StatusStyle
+)
+
+enum class StatusStyle {
+    SUCCESS,
+    WARNING,
+    NEUTRAL,
+    INFO
+}
+
 @Composable
-fun StatusPill(status: String) {
-    val (backgroundColor, textColor) = when(status) {
-        "Pagada" -> Pair(BgPaid, TextPaid)
-        "Pendiente de Pago" -> Pair(BgPending, TextPending)
-        "En trámite de cobro" -> Pair(BgPending, TextPending)
-        "Anulada" -> Pair(Color(0xFFEAEAEA), Color(0xFF757575))
-        "Cuota Fija" -> Pair(Color(0xFFD4E6F1), Color(0xFF2874A6))
-        else -> Pair(BgPending, TextPending)
+fun StatusPill(model: StatusUiModel) {
+    val (backgroundColor, textColor) = when (model.style) {
+        StatusStyle.SUCCESS -> BgPaid to TextPaid
+        StatusStyle.WARNING -> BgPending to TextPending
+        StatusStyle.NEUTRAL -> BgGray to TextMain
+        StatusStyle.INFO -> Color(0xFFD4E6F1) to Color(0xFF2874A6)
     }
 
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(Dimens.SpacingS),
-        modifier = Modifier.padding(top = Dimens.SpacingS)
+        shape = RoundedCornerShape(Dimens.SpacingS)
     ) {
         Text(
-            text = status,
+            text = model.label,
             modifier = Modifier.padding(horizontal = Dimens.SpacingS, vertical = 6.dp),
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = textColor
@@ -83,7 +95,10 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
                     text = invoice.type,
                     style = MaterialTheme.typography.bodySmall,
                 )
-                StatusPill(status = invoice.status)
+                Spacer(modifier = Modifier.height(Dimens.SpacingS))
+                StatusPill(
+                    model = invoice.status.toUiModel()
+                )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {

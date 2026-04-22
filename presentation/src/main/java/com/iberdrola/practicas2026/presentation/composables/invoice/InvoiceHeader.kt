@@ -50,9 +50,9 @@ fun InvoiceHeader(onBack: () -> Unit) {
             }
         }
 
-        Spacer(Modifier.height(Dimens.SpacingS))
+        Spacer(Modifier.height(Dimens.SpacingM))
         Text(text = stringResource(R.string.mis_facturas), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(Dimens.SpacingXS))
-        Text(text = stringResource(R.string.c_miguel_de_cervantes_47), style = MaterialTheme.typography.bodyLarge, color = TextMain, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(Dimens.SpacingS))
+        Text(text = stringResource(R.string.direccion).uppercase(), style = MaterialTheme.typography.titleLarge, color = TextMain, fontWeight = FontWeight.Bold)
     }
 }

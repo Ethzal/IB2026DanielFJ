@@ -26,6 +26,7 @@ import com.iberdrola.practicas2026.core.utils.toEpochMillis
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.mapper.toUiModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
 import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
@@ -55,7 +56,9 @@ fun FilterScreen(
         mutableStateOf(currentFilter.amountRange ?: amountBounds)
     }
 
-    val selectedStatuses = remember { mutableStateListOf(*currentFilter.statuses.toTypedArray()) }
+    val selectedStatuses = remember {
+        mutableStateListOf(*currentFilter.statuses.toTypedArray())
+    }
 
     var showFromDatePicker by remember { mutableStateOf(false) }
     var showToDatePicker by remember { mutableStateOf(false) }
@@ -288,31 +291,30 @@ fun FilterScreen(
             Spacer(Modifier.height(Dimens.SpacingS))
 
             statusOptions.forEach { status ->
-                val label = status.getLabel()
-                val id = status.id
+                val ui = status.toUiModel()
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            if (selectedStatuses.contains(id)) selectedStatuses.remove(id)
-                            else selectedStatuses.add(id)
+                            if (selectedStatuses.contains(status)) selectedStatuses.remove(status)
+                            else selectedStatuses.add(status)
                         }
                         .padding(vertical = 4.dp)
                 ) {
                     Checkbox(
-                        checked = selectedStatuses.contains(id),
+                        checked = selectedStatuses.contains(status),
                         onCheckedChange = { isChecked ->
-                            if (isChecked) selectedStatuses.add(id)
-                            else selectedStatuses.remove(id)
+                            if (isChecked) selectedStatuses.add(status)
+                            else selectedStatuses.remove(status)
                         },
                         colors = CheckboxDefaults.colors(
                             checkedColor = BrandGreen,
                             uncheckedColor = BrandGreen
                         )
                     )
-                    Text(text = label, color = Color(0xFF333333), fontWeight = FontWeight.Normal)
+                    Text(text = ui.label, color = Color(0xFF333333), fontWeight = FontWeight.Normal)
                 }
             }
 
