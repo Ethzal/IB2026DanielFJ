@@ -26,7 +26,7 @@ object Dimens {
     val IconM = 40.dp
 
     // UI Elements
-    val DividerHeight = 1.dp
+    val DividerHeight = 1.5.dp
     val StrokeDefault = 1.dp
     val StrokeThick = 2.dp
     val StrokeVeryThick = 3.dp

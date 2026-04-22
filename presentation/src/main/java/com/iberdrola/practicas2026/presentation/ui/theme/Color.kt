@@ -9,7 +9,7 @@ val Gray = Color(0xFFDEDEDE)
 val DarkGray = Color(0xFF323232)
 
 // Brand
-val BrandGreen = Color(0xFF184C3D)
+val BrandGreen = Color(0xFF2b6052)
 val BrandGreenLight = Color(0xFFE8F5E9)
 
 // Text
@@ -17,11 +17,13 @@ val TextMain = Color(0xFF333333)
 val TextSecondary = Color(0xFF757575)
 
 // Divider
-val DividerColor = Color(0xFFE0E0E0)
+val DividerColor = Color(0xFFDCE6E2)
 
 // Pills
-val BgPending = Color(0xFFFADBD8)
-val TextPending = Color(0xFFB03A2E)
+val BgPending = Color(0xFFF1BFBF)
+val TextPending = Color(0xFF95291D)
 
-val BgPaid = Color(0xFFA9DFBF)
-val TextPaid = Color(0xFF1E8449)
+val BgPaid = Color(0xFFB1DEC8)
+val TextPaid = Color(0xFF05582D)
+
+val BgGray = Color(0xFFE0E0E0)
