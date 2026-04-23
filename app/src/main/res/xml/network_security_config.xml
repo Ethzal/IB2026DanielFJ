@@ -1,0 +1,14 @@
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">172.21.53.6</domain>
+        <trust-anchors>
+            <certificates   src = "@raw/certificado_iberdrola" />
+            <certificates   src = "system" />
+        </trust-anchors>
+        <!-- localhost del emulador -->
+        <domain includeSubdomains="true">192.168.1.100</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

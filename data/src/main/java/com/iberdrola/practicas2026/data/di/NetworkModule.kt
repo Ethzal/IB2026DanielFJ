@@ -21,8 +21,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val EMULATOR_URL = "http://10.0.2.2:3000/"
-    private const val DEVICE_URL = "http://localhost:3000/" // adb reverse tcp:3000 tcp:3000
+    private const val EMULATOR_URL = "https://10.0.2.2:3000/"
+    private const val DEVICE_URL = "https://localhost:3000/" // adb reverse tcp:3000 tcp:3000
 
 
     @Provides
@@ -31,6 +31,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
+            .hostnameVerifier { _, _ -> true }
             .build()
     }
 

@@ -1,0 +1,113 @@
+{
+  "uuid": "7149b32a-7bd4-43b7-b056-e667d04c567b",
+  "lastMigration": 33,
+  "name": "Iberdola API",
+  "endpointPrefix": "",
+  "latency": 3000,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "7500b1d7-e300-406f-afec-d5c3e9b21103",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "getInvoices",
+      "responses": [
+        {
+          "uuid": "97a129ac-ed13-48dd-930c-25c31489d5b0",
+          "body": "{\r\n  \"facturas\": [\r\n    {\r\n      \"id\": \"F002\",\r\n      \"fecha\": \"2024-03-08\",\r\n      \"fecha_inicio\": \"2024-02-02\",\r\n      \"fecha_fin\": \"2024-03-04\",\r\n      \"tipo\": \"Factura Luz\",\r\n      \"importe\": 73.00,\r\n      \"estado\": \"Pagada\"\r\n    },\r\n    {\r\n      \"id\": \"F003\",\r\n      \"fecha\": \"2024-02-06\",\r\n      \"fecha_inicio\": \"2024-01-01\",\r\n      \"fecha_fin\": \"2024-02-01\",\r\n      \"tipo\": \"Factura Luz\",\r\n      \"importe\": 31.10,\r\n      \"estado\": \"Pendiente de Pago\"\r\n    },\r\n    {\r\n      \"id\": \"F004\",\r\n      \"fecha\": \"2024-02-03\",\r\n      \"fecha_inicio\": \"2024-01-01\",\r\n      \"fecha_fin\": \"2024-02-01\",\r\n      \"tipo\": \"Factura Luz\",\r\n      \"importe\": 191.10,\r\n      \"estado\": \"Pendiente de Pago\"\r\n    },\r\n    {\r\n      \"id\": \"F005\",\r\n      \"fecha\": \"2024-02-03\",\r\n      \"fecha_inicio\": \"2024-01-01\",\r\n      \"fecha_fin\": \"2024-02-01\",\r\n      \"tipo\": \"Factura Gas\",\r\n      \"importe\": 419.10,\r\n      \"estado\": \"Pendiente de Pago\"\r\n    },\r\n    {\r\n      \"id\": \"F006\",\r\n      \"fecha\": \"2024-02-03\",\r\n      \"fecha_inicio\": \"2024-01-01\",\r\n      \"fecha_fin\": \"2024-02-01\",\r\n      \"tipo\": \"Factura Gas\",\r\n      \"importe\": 19.10,\r\n      \"estado\": \"Pagada\"\r\n    },\r\n    {\r\n      \"id\": \"F007\",\r\n      \"fecha\": \"2024-01-15\",\r\n      \"fecha_inicio\": \"2023-12-01\",\r\n      \"fecha_fin\": \"2024-01-01\",\r\n      \"tipo\": \"Factura Gas\",\r\n      \"importe\": 151.00,\r\n      \"estado\": \"En trámite de cobro\"\r\n    },\r\n    {\r\n      \"id\": \"F008\",\r\n      \"fecha\": \"2023-12-03\",\r\n      \"fecha_inicio\": \"2023-11-01\",\r\n      \"fecha_fin\": \"2023-12-01\",\r\n      \"tipo\": \"Factura Luz\",\r\n      \"importe\": 45.50,\r\n      \"estado\": \"Anulada\"\r\n    },\r\n    {\r\n      \"id\": \"F009\",\r\n      \"fecha\": \"2023-11-01\",\r\n      \"fecha_inicio\": \"2023-10-01\",\r\n      \"fecha_fin\": \"2023-11-01\",\r\n      \"tipo\": \"Factura Gas\",\r\n      \"importe\": 60.00,\r\n      \"estado\": \"Cuota Fija\"\r\n    },\r\n    {\r\n      \"id\": \"F010\",\r\n      \"fecha\": \"2023-03-13\",\r\n      \"fecha_inicio\": \"2023-02-01\",\r\n      \"fecha_fin\": \"2023-03-01\",\r\n      \"tipo\": \"Factura Luz\",\r\n      \"importe\": 777.00,\r\n      \"estado\": \"Anulada\"\r\n    }\r\n  ]\r\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "77244846-1993-4302-8620-978cb4b96d83",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "7500b1d7-e300-406f-afec-d5c3e9b21103"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": true,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": ".\\certificado_iberdrola.crt",
+    "keyPath": ".\\clave.key",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
