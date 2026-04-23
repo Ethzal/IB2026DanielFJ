@@ -17,7 +17,7 @@ class MainViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    private val _uiEvent = MutableSharedFlow<Int>()
+    private val _uiEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
     val uiEvent = _uiEvent.asSharedFlow()
 
     val isLocalMode = settingsRepository.isLocalMode().stateIn(

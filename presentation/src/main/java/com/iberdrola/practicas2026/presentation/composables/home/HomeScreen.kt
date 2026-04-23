@@ -84,7 +84,7 @@ fun HomeScreen(
                             Icon(Icons.Default.Person, contentDescription = null, tint = Color.White)
                         }
                     }
-                    Text(stringResource(R.string.c_miguel_de_cervantes_47), color = Color.White.copy(alpha = 0.8f))
+                    Text(stringResource(R.string.direccion), color = Color.White.copy(alpha = 0.8f))
                 }
             }
 
