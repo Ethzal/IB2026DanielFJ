@@ -5,7 +5,13 @@ import com.iberdrola.practicas2026.presentation.composables.common.ContractStatu
 import com.iberdrola.practicas2026.presentation.composables.common.StatusStyle
 import com.iberdrola.practicas2026.presentation.composables.common.StatusUiModel
 
-fun InvoiceStatus.toUiModel(): StatusUiModel {
+fun InvoiceStatus?.toUiModel(): StatusUiModel {
+    if (this == null) {
+        return StatusUiModel(
+            label = "Desconocido",
+            style = StatusStyle.NEUTRAL
+        )
+    }
     return StatusUiModel(
         label = when (this) {
             InvoiceStatus.Paid -> "Pagada"
@@ -23,7 +29,6 @@ fun InvoiceStatus.toUiModel(): StatusUiModel {
         }
     )
 }
-
 fun ContractStatus.toUiModel(): StatusUiModel {
     return StatusUiModel(
         label = when (this) {

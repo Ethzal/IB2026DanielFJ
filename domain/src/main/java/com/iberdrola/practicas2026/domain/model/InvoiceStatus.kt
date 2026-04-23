@@ -9,5 +9,9 @@ sealed class InvoiceStatus(val id: String) {
 
     companion object {
         val all = listOf(Paid, Pending, InProgress, Cancelled, FixedQuota)
+
+        fun fromId(id: String?): InvoiceStatus {
+            return all.find { it.id == id } ?: Pending // Si es nulo o no existe, por defecto Pendiente
+        }
     }
 }

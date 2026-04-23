@@ -59,7 +59,7 @@ class FilterInvoicesUseCase {
         // 4. Devolvemos el response con la lista ordenada
         return InvoiceResponse(
             lastInvoice = if (isFiltering) null else sortedList.firstOrNull(),
-            history = if (isFiltering) sortedList else sortedList.drop(1),
+            history = sortedList,
             allInvoices = allInvoices
         )
     }

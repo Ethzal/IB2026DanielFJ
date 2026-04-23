@@ -82,7 +82,7 @@ class InvoiceRepositoryImpl @Inject constructor(
                 date = it.date ?: "",
                 type = it.type ?: "",
                 amount = it.amount ?: 0.0,
-                status = (it.status ?: "").toInvoiceStatus(),
+                status = InvoiceStatus.fromId(it.status),
                 startDate = it.startDate ?: "",
                 endDate = it.endDate ?: ""
             )
@@ -96,7 +96,7 @@ class InvoiceRepositoryImpl @Inject constructor(
         date = date,
         type = type,
         amount = amount,
-        status = status.toInvoiceStatus(),
+        status = InvoiceStatus.fromId(status),
         startDate = startDate,
         endDate = endDate
     )
