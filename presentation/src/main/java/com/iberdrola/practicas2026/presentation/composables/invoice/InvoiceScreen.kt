@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -26,12 +25,10 @@ import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
+import com.iberdrola.practicas2026.presentation.composables.common.SlidingTabsSection
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
-import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
-import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
-import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.presentation.ui.theme.White
 import kotlinx.coroutines.launch
 
@@ -91,7 +88,7 @@ fun InvoiceScreen(
         AlertDialog(
             onDismissRequest = { showNotAvailableDialog = false },
             title = { Text(stringResource(R.string.informacion)) },
-            text = { Text(stringResource(R.string.factura_no_disponible)) },
+            text = { Text(stringResource(R.string.factura_no_disponible), fontWeight = FontWeight.Normal) },
             confirmButton = {
                 TextButton(onClick = { showNotAvailableDialog = false }) {
                     Text(stringResource(R.string.aceptar))
@@ -141,36 +138,11 @@ fun InvoiceScreen(
             Column(modifier = Modifier.padding(padding)) {
 
                 // TABS (Luz / Gas)
-                ScrollableTabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = White,
-                    contentColor = BrandGreen,
-                    edgePadding = Dimens.SpacingM,
-                    divider = { HorizontalDivider(color = Color(0xFFEEEEEE)) },
-                    indicator = { tabPositions ->
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                            color = BrandGreen
-                        )
-                    }
-                ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = pagerState.currentPage == index,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                            text = {
-                                Text(
-                                    text = title,
-                                    color = if (pagerState.currentPage == index) TextMain else TextSecondary
-                                )
-                            }
-                        )
-                    }
-                }
+                SlidingTabsSection(
+                    pagerState = pagerState,
+                    tabs = tabs, // Tu lista de nombres ["Luz", "Gas"]
+                    coroutineScope = coroutineScope
+                )
 
                 HorizontalPager(
                     state = pagerState,
@@ -277,7 +249,7 @@ fun InvoiceList(
                 item {
                     Text(
                         text = year,
-                        modifier = Modifier.padding(vertical = Dimens.SpacingS),
+                        modifier = Modifier.padding(vertical = Dimens.SpacingM),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
