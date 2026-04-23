@@ -26,6 +26,7 @@ import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBotto
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
 import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
 import com.iberdrola.practicas2026.presentation.composables.common.SlidingTabsSection
+import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceEvent
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
@@ -53,6 +54,20 @@ fun InvoiceScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
+
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.updateCurrentTab(pagerState.currentPage)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is InvoiceEvent.SwitchToTab -> {
+                    pagerState.animateScrollToPage(event.index)
+                }
+            }
+        }
+    }
 
     fun showSnackbar(message: String) {
         coroutineScope.launch {

@@ -13,9 +13,11 @@ import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -23,6 +25,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed class InvoiceEvent {
+    data class SwitchToTab(val index: Int) : InvoiceEvent()
+}
 
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(
@@ -54,6 +60,16 @@ class InvoiceViewModel @Inject constructor(
     // FILTROS
     private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
     val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
+
+    // Canal de eventos para la UI
+    private val _events = MutableSharedFlow<InvoiceEvent>()
+    val events = _events.asSharedFlow()
+
+    private var currentTabIndex = 0
+
+    fun updateCurrentTab(index: Int) {
+        currentTabIndex = index
+    }
 
     private var fetchJob: Job? = null
 
@@ -135,8 +151,28 @@ class InvoiceViewModel @Inject constructor(
 
     fun applyFilters(newFilter: InvoiceFilter) {
         _invoiceFilter.value = newFilter
-        filterInvoices(InvoiceType.LIGHT)
-        filterInvoices(InvoiceType.GAS)
+
+        // 2. Calculamos los resultados de AMBAS pestañas inmediatamente
+        val luzRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, newFilter)
+        val gasRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, newFilter)
+
+        // Actualizamos los estados de la UI
+        _uiStates.update { it + (InvoiceType.LIGHT to UiState.Success(luzRes)) }
+        _uiStates.update { it + (InvoiceType.GAS to UiState.Success(gasRes)) }
+
+        // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
+        viewModelScope.launch {
+            val hasLuz = (luzRes.lastInvoice != null || luzRes.history.isNotEmpty())
+            val hasGas = (gasRes.lastInvoice != null || gasRes.history.isNotEmpty())
+
+            if (currentTabIndex == 0 && !hasLuz && hasGas) {
+                // Estoy en LUZ, no hay nada, pero en GAS sí -> Ir a GAS (index 1)
+                _events.emit(InvoiceEvent.SwitchToTab(1))
+            } else if (currentTabIndex == 1 && !hasGas && hasLuz) {
+                // Estoy en GAS, no hay nada, pero en LUZ sí -> Ir a LUZ (index 0)
+                _events.emit(InvoiceEvent.SwitchToTab(0))
+            }
+        }
     }
 
     fun clearFilters() {
