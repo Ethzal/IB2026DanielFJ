@@ -1,6 +1,7 @@
 package com.iberdrola.practicas2026.presentation.composables.invoice
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iberdrola.practicas2026.domain.model.Invoice
@@ -24,8 +26,12 @@ import com.iberdrola.practicas2026.domain.model.InvoiceType
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.FeedbackBottomSheet
 import com.iberdrola.practicas2026.presentation.composables.common.InvoiceRow
-import com.iberdrola.practicas2026.presentation.composables.common.ShimmerItem
+import com.iberdrola.practicas2026.presentation.composables.common.ShimmerFilterButton
+import com.iberdrola.practicas2026.presentation.composables.common.ShimmerInvoiceRow
+import com.iberdrola.practicas2026.presentation.composables.common.ShimmerLastInvoiceCard
+import com.iberdrola.practicas2026.presentation.composables.common.ShimmerYearHeader
 import com.iberdrola.practicas2026.presentation.composables.common.SlidingTabsSection
+import com.iberdrola.practicas2026.presentation.composables.common.rememberShimmerBrush
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceEvent
 import com.iberdrola.practicas2026.presentation.ui.invoice.InvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
@@ -178,7 +184,39 @@ fun InvoiceScreen(
 
                     when (pageUiState) {
                         is InvoiceViewModel.UiState.Loading -> {
-                            Column { repeat(3) { ShimmerItem() } }
+                            val brush = rememberShimmerBrush()
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(Dimens.SpacingM)
+                            ) {
+                                // Tarjeta principal destacada
+                                item { ShimmerLastInvoiceCard(brush) }
+
+                                // Título Histórico + Botón Filtrar
+                                item {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Caja para "Histórico de facturas"
+                                        Box(modifier = Modifier.width(180.dp).height(24.dp).background(brush))
+
+                                        // Botón de filtrar
+                                        ShimmerFilterButton(brush)
+                                    }
+                                }
+
+                                // Año
+                                item { ShimmerYearHeader(brush) }
+
+                                // Lista de facturas del histórico
+                                items(5) {
+                                    ShimmerInvoiceRow(brush)
+                                }
+                            }
                         }
                         is InvoiceViewModel.UiState.Success -> {
                             InvoiceList(
