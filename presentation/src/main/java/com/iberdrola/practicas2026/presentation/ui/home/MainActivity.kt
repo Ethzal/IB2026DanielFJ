@@ -14,20 +14,26 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.iberdrola.practicas2026.presentation.composables.common.WizardContainer
 import com.iberdrola.practicas2026.presentation.composables.home.HomeScreen
 import com.iberdrola.practicas2026.presentation.composables.invoice.InvoiceScreen
 import com.iberdrola.practicas2026.presentation.navigation.Screen
+import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.ElectronicInvoiceViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.DarkGray
 import com.iberdrola.practicas2026.presentation.ui.theme.EnergyAppTheme
 import com.iberdrola.practicas2026.presentation.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,17 +47,34 @@ class MainActivity : ComponentActivity() {
 
                 // Obtenemos el MainViewModel a nivel de Actividad para que sea global
                 val mainViewModel: MainViewModel = hiltViewModel()
+                val electronicInvoiceViewModel: ElectronicInvoiceViewModel = hiltViewModel()
 
                 // Escuchamos los eventos de mensaje
                 val context = LocalContext.current
 
+                // Función para volver atrás de forma segura
+                var lastBackClickTime by remember { mutableLongStateOf(0L) }
+
+                val navigateBackSafe: () -> Unit = {
+                    val currentTime = System.currentTimeMillis()
+
+                    if (currentTime - lastBackClickTime > 1000L) {
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        }
+                        lastBackClickTime = currentTime
+                    }
+                }
+
                 LaunchedEffect(Unit) {
                     mainViewModel.uiEvent.collect { msgResId ->
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(msgResId),
-                            duration = SnackbarDuration.Short
-                        )
+                        launch {
+                            snackbarHostState.currentSnackbarData?.dismiss()
+                            snackbarHostState.showSnackbar(
+                                message = context.getString(msgResId),
+                                duration = SnackbarDuration.Short
+                            )
+                        }
                     }
                 }
 
@@ -77,12 +100,24 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.Home.route) {
                                 HomeScreen(
                                     mainViewModel = mainViewModel,
-                                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) }
+                                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
+                                    onNavigateToElectronicInvoice = { navController.navigate(Screen.ElectronicInvoiceList.route) },
                                 )
                             }
                             composable(Screen.Invoices.route) {
                                 InvoiceScreen(
                                     onBackClick = {
+                                        if (navController.previousBackStackEntry != null) {
+                                            navController.popBackStack()
+                                        }
+                                    }
+                                )
+                            }
+                            composable(Screen.ElectronicInvoiceList.route) {
+                                electronicInvoiceViewModel.resetState()
+
+                                WizardContainer(
+                                    onExit = {
                                         if (navController.previousBackStackEntry != null) {
                                             navController.popBackStack()
                                         }
