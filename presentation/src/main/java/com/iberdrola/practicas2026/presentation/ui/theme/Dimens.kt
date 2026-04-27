@@ -33,6 +33,7 @@ object Dimens {
 
     val CornerDefault = 16.dp
     val CornerButton = 20.dp
+    val CornerButtonXL = 32.dp
 
     // Skeleton
     val ShimmerCardHeight = 180.dp

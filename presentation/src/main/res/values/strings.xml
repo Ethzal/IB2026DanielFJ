@@ -100,9 +100,14 @@
     <string name="para_verificar_identidad">Para verificar tu identidad, hemos enviado un código al teléfono ******146. Por favor, introdúcelo a continuación:</string>
     <string name="codigo_verificacion">* Código de verificación</string>
     <string name="no_has_recibido">¿No has recibido el código?</string>
-    <string name="si_no_lo_encuentras">Si no lo encuentras, podemos volver a enviar el SMS. Recuerda que hoy te quedan 2 intentos.</string>
+    <string name="si_no_lo_encuentras">Si no lo encuentras, podemos volver a enviar el SMS.</string>
     <string name="volver_a_enviar">Volver a enviar</string>
     <string name="hemos_vuelto_enviar">Hemos vuelto a enviar un SMS con tu código de verificación.</string>
+
+    <plurals name="intentos_restantes">
+        <item quantity="one">Recuerda que hoy te queda %d intento.</item>
+        <item quantity="other">Recuerda que hoy te quedan %d intentos.</item>
+    </plurals>
 
     <!-- Success Screen -->
     <string name="has_activado_correctamente">¡Has activado correctamente tu factura electrónica!</string>

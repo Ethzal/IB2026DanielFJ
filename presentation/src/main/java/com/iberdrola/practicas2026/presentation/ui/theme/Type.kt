@@ -22,6 +22,7 @@ val AppTypography = Typography(
         fontSize = Dimens.TextXXL,
         fontWeight = FontWeight.Bold,
         lineHeight = 32.sp,
+        letterSpacing = 0.4.sp
     ),
 
 //    headlineSmall = TextStyle(
@@ -35,6 +36,7 @@ val AppTypography = Typography(
         fontSize = Dimens.TextXL,
         fontWeight = FontWeight.Bold,
         lineHeight = 24.sp,
+        letterSpacing = 0.4.sp
     ),
 
     bodyLarge = TextStyle(
@@ -42,6 +44,7 @@ val AppTypography = Typography(
         fontSize = Dimens.TextL,
         fontWeight = FontWeight.Bold,
         lineHeight = 20.sp,
+        letterSpacing = 0.4.sp
     ),
 
 //    bodyMedium = TextStyle(
@@ -54,6 +57,7 @@ val AppTypography = Typography(
         fontFamily = AppFontFamily,
         fontSize = Dimens.TextS,
         lineHeight = 16.sp,
+        letterSpacing = 0.2.sp
     ),
 
     displaySmall = TextStyle(
@@ -61,6 +65,7 @@ val AppTypography = Typography(
         fontSize = Dimens.TextAmount,
         fontWeight = FontWeight.Bold,
         lineHeight = 36.sp,
+        letterSpacing = 0.4.sp
     ),
 
     labelSmall = TextStyle(
@@ -68,13 +73,14 @@ val AppTypography = Typography(
         fontSize = Dimens.TextXS,
         fontWeight = FontWeight.Bold,
         lineHeight = 15.sp,
+        letterSpacing = 0.2.sp
     ),
 
-    bodyMedium = baseTextStyle.copy(fontSize = Dimens.TextM, lineHeight = 18.sp,),
-    titleMedium = baseTextStyle.copy(fontWeight = FontWeight.Bold, lineHeight = 24.sp),
-    labelMedium = baseTextStyle.copy(lineHeight = 16.sp,),
-    displayLarge = baseTextStyle.copy(lineHeight = 44.sp,),
-    displayMedium = baseTextStyle.copy(lineHeight = 40.sp,),
-    headlineLarge = baseTextStyle.copy(lineHeight = 36.sp,),
-    headlineSmall = baseTextStyle.copy(lineHeight = 28.sp,)
+    bodyMedium = baseTextStyle.copy(fontSize = Dimens.TextM, lineHeight = 18.sp, letterSpacing = 0.2.sp),
+    titleMedium = baseTextStyle.copy(fontWeight = FontWeight.Bold, lineHeight = 24.sp, letterSpacing = 0.4.sp),
+    labelMedium = baseTextStyle.copy(lineHeight = 16.sp, letterSpacing = 0.2.sp),
+    displayLarge = baseTextStyle.copy(lineHeight = 44.sp, letterSpacing = 0.4.sp),
+    displayMedium = baseTextStyle.copy(lineHeight = 40.sp, letterSpacing = 0.4.sp),
+    headlineLarge = baseTextStyle.copy(lineHeight = 36.sp, letterSpacing = 0.4.sp),
+    headlineSmall = baseTextStyle.copy(lineHeight = 28.sp, letterSpacing = 0.4.sp)
 )
