@@ -82,9 +82,11 @@ fun OtpPreview() {
             progress = 0.75f,
             onOtpChange = {},
             onResendClick = {},
+            otpAttemptsLeft = 0,
             onNext = {},
             onBack = {},
-            onClose = {}
+            onClose = {},
+            hasRequestedResend = true,
         )
     }
 }
@@ -100,9 +102,11 @@ fun OtpResentPreview() {
             progress = 0.75f,
             onOtpChange = {},
             onResendClick = {},
+            otpAttemptsLeft = 0,
             onNext = {},
             onBack = {},
-            onClose = {}
+            onClose = {},
+            hasRequestedResend = true
         )
     }
 }

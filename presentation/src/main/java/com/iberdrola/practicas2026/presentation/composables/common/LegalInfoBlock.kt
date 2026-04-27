@@ -21,6 +21,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
@@ -32,15 +33,15 @@ fun LegalInfoBlock(onInfoClick: () -> Unit) {
         Text(
             text = stringResource(R.string.info_basica_proteccion),
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.titleLarge
         )
 
         Spacer(Modifier.height(Dimens.SpacingS))
 
         LegalInfoLine(baseText = stringResource(R.string.responsable_iberdrola), linkText = stringResource(R.string.mas_info), onInfoClick = onInfoClick)
-        Spacer(Modifier.height(Dimens.SpacingS))
+        Spacer(Modifier.height(Dimens.SpacingM))
         LegalInfoLine(baseText = stringResource(R.string.finalidad_gestion), linkText = stringResource(R.string.mas_info), onInfoClick = onInfoClick)
-        Spacer(Modifier.height(Dimens.SpacingS))
+        Spacer(Modifier.height(Dimens.SpacingM))
         LegalInfoLine(baseText = stringResource(R.string.derechos_acceso), linkText = stringResource(R.string.mas_info), onInfoClick = onInfoClick)
     }
 }
@@ -62,7 +63,7 @@ fun LegalInfoLine(baseText: String, linkText: String, onInfoClick: () -> Unit) {
 
     Text(
         text = annotatedString,
-        style = MaterialTheme.typography.bodyMedium.copy(color = TextMain),
+        style = MaterialTheme.typography.bodyLarge.copy(color = TextMain, fontSize = 15.sp, fontWeight = FontWeight.Normal),
         onTextLayout = { layoutResult = it },
         modifier = Modifier.pointerInput(Unit) {
             detectTapGestures { pos ->

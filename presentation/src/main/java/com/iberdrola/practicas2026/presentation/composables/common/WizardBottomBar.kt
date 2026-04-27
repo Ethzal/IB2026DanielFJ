@@ -13,10 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.White
 
 @Composable
@@ -34,13 +38,32 @@ fun WizardBottomBar(
             .fillMaxWidth()
             .background(Color.White)
     ) {
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .layout { measurable, constraints ->
+                    val paddingPx = Dimens.SpacingM.roundToPx()
+                    val extendedWidth = constraints.maxWidth + (paddingPx * 2)
+
+                    val placeable = measurable.measure(
+                        constraints.copy(
+                            minWidth = extendedWidth,
+                            maxWidth = extendedWidth
+                        )
+                    )
+                    layout(constraints.maxWidth, placeable.height) {
+                        placeable.place(-paddingPx, 0)
+                    }
+                },
+            color = DividerColor,
+            thickness = Dimens.DividerHeight
+        )
 
         Spacer(Modifier.height(Dimens.SpacingM))
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimens.SpacingM),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM)
         ) {
             // Botón Secundario (Anterior)
@@ -48,10 +71,10 @@ fun WizardBottomBar(
                 OutlinedButton(
                     onClick = onSecondaryClick,
                     modifier = Modifier.weight(1f).height(50.dp),
-                    border = BorderStroke(1.dp, BrandGreen),
-                    shape = RoundedCornerShape(Dimens.CornerButton)
+                    border = BorderStroke(Dimens.StrokeThick, BrandGreen),
+                    shape = RoundedCornerShape(Dimens.CornerButtonXL)
                 ) {
-                    Text(secondaryText, color = BrandGreen, fontWeight = FontWeight.Bold)
+                    Text(secondaryText, color = BrandGreen, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
                 }
             }
 
@@ -66,13 +89,13 @@ fun WizardBottomBar(
                     disabledContainerColor = BrandGreen.copy(alpha = 0.15f),
                     disabledContentColor = BrandGreen.copy(alpha = 0.4f),
                 ),
-                shape = RoundedCornerShape(Dimens.CornerButton)
+                shape = RoundedCornerShape(Dimens.CornerButtonXL)
             ) {
                 if (primaryIcon != null) {
                     Icon(painterResource(primaryIcon), null, modifier = Modifier.size(20.dp))
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Dimens.SpacingS))
                 }
-                Text(primaryText, fontWeight = FontWeight.Bold)
+                Text(primaryText, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
             }
         }
 
