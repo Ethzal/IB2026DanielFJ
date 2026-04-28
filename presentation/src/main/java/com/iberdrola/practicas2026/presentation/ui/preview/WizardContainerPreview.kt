@@ -28,7 +28,8 @@ fun ModifyEmailInfoPreview() {
     EnergyAppTheme {
         ModifyEmailInfoScreen(
             onModifyClick = {},
-            onBack = {}
+            onBack = {},
+            email = "pepe2@a.com"
         )
     }
 }
@@ -82,11 +83,14 @@ fun OtpPreview() {
             progress = 0.75f,
             onOtpChange = {},
             onResendClick = {},
-            otpAttemptsLeft = 0,
+            otpAttemptsLeft = 2,
+            hasRequestedResend = true,
             onNext = {},
             onBack = {},
             onClose = {},
-            hasRequestedResend = true,
+            onCloseNotice = {},
+            verSoporte = false,
+            isOtpValid = true,
         )
     }
 }
@@ -103,10 +107,13 @@ fun OtpResentPreview() {
             onOtpChange = {},
             onResendClick = {},
             otpAttemptsLeft = 0,
+            hasRequestedResend = true,
             onNext = {},
             onBack = {},
             onClose = {},
-            hasRequestedResend = true
+            onCloseNotice = {},
+            verSoporte = true,
+            isOtpValid = true,
         )
     }
 }
@@ -116,7 +123,8 @@ fun SuccessPreview() {
     EnergyAppTheme {
         SuccessScreen(
             isActivation = true,
-            onAccept = {}
+            onAccept = {},
+            displayEmail = "correo@gmail.com"
         )
     }
 }

@@ -112,7 +112,7 @@
     <!-- Success Screen -->
     <string name="has_activado_correctamente">¡Has activado correctamente tu factura electrónica!</string>
     <string name="has_modificado_correctamente">¡Has modificado correctamente tu email!</string>
-    <string name="pronto_recibiras_correo">Pronto recibirás un correo electrónico de verificación para recibir tus facturas en la dirección b********5@imfaya.com</string>
+    <string name="pronto_recibiras_correo">Pronto recibirás un correo electrónico de verificación para recibir tus facturas en la dirección</string>
     <string name="mas_info">Más info</string>
     <string name="he_leido_y_acepto">"He leído y acepto la Política de privacidad, acepto las"</string>
     <string name="condiciones_generales">Condiciones Generales</string>
