@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.shimmer)
+    implementation(libs.androidx.animation.core)
 
     // Compose
     val composeBom = platform(libs.androidx.compose.bom)
