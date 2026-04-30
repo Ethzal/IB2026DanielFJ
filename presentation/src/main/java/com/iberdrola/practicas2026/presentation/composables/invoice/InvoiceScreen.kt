@@ -257,16 +257,22 @@ fun InvoiceList(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(Dimens.SpacingM)
+        contentPadding = PaddingValues(vertical = Dimens.SpacingM)
     ) {
         // Tarjeta principal
         if (data.allInvoices.isNotEmpty()) {
             item {
-                data.lastInvoice?.let { last ->
-                    LastInvoiceCard(
-                        invoice = last,
-                        onClick = { onInvoiceClick(last) }
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.SpacingM)
+                ) {
+                    data.lastInvoice?.let { last ->
+                        LastInvoiceCard(
+                            invoice = last,
+                            onClick = { onInvoiceClick(last) }
+                        )
+                    }
                 }
             }
         }
@@ -275,7 +281,7 @@ fun InvoiceList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
+                    .padding(Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -300,12 +306,18 @@ fun InvoiceList(
         } else {
             groupedHistory.forEach { (year, invoices) ->
                 item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.SpacingM)
+                    ) {
                     Text(
                         text = year,
                         modifier = Modifier.padding(vertical = Dimens.SpacingM),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
+                        }
                 }
 
                 items(invoices) { invoice ->

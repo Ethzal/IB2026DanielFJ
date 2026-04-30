@@ -81,7 +81,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
             .padding(top = Dimens.SpacingM)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
