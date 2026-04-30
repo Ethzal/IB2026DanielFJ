@@ -39,7 +39,8 @@ fun InvoiceLoadingShimmerPreview() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier

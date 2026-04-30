@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -117,25 +116,7 @@ fun ShimmerInvoiceRow(brush: Brush) {
 // El Botón de Filtrar Shimmer (Outline + Icono + Texto)
 @Composable
 fun ShimmerFilterButton(brush: Brush) {
-    Surface(
-        modifier = Modifier
-            .height(40.dp)
-            .width(95.dp),
-        shape = RoundedCornerShape(Dimens.CornerButton),
-        border = BorderStroke(Dimens.StrokeDefault, BrandGreen.copy(alpha = 0.1f)),
-        color = Color.White
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            // Icono del filtro
-            Box(modifier = Modifier.size(18.dp).background(brush, RoundedCornerShape(4.dp)))
-            Spacer(Modifier.width(Dimens.SpacingS))
-            // Texto "Filtrar"
-            Box(modifier = Modifier.width(50.dp).height(14.dp).background(brush))
-        }
-    }
+    Box(modifier = Modifier.width(95.dp).height(40.dp).background(brush, RoundedCornerShape(Dimens.CornerButton)))
 }
 
 // Año
