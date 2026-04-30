@@ -31,7 +31,9 @@ fun WizardBottomBar(
     onSecondaryClick: (() -> Unit)? = null,
     primaryEnabled: Boolean = true,
     primaryIcon: Int? = null,
-    addGhostSpace: Boolean = false
+    addGhostSpace: Boolean = false,
+    secondaryEnabled: Boolean = true,
+    interactionEnabled: Boolean = true,
 ) {
     Column(
         modifier = Modifier
@@ -70,6 +72,7 @@ fun WizardBottomBar(
             if (secondaryText != null && onSecondaryClick != null) {
                 OutlinedButton(
                     onClick = onSecondaryClick,
+                    enabled = secondaryEnabled && interactionEnabled,
                     modifier = Modifier.weight(1f).height(50.dp),
                     border = BorderStroke(Dimens.StrokeThick, BrandGreen),
                     shape = RoundedCornerShape(Dimens.CornerButtonXL)
@@ -81,12 +84,12 @@ fun WizardBottomBar(
             // Botón Principal (Siguiente / Modificar)
             Button(
                 onClick = onPrimaryClick,
-                enabled = primaryEnabled,
+                enabled = interactionEnabled,
                 modifier = Modifier.weight(1f).height(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = BrandGreen,
-                    contentColor = White,
-                    disabledContainerColor = BrandGreen.copy(alpha = 0.15f),
+                    containerColor = if (primaryEnabled) BrandGreen else BrandGreen.copy(alpha = 0.17f),
+                    contentColor = if (primaryEnabled) White else BrandGreen.copy(alpha = 0.4f),
+                    disabledContainerColor = BrandGreen.copy(alpha = 0.17f),
                     disabledContentColor = BrandGreen.copy(alpha = 0.4f),
                 ),
                 shape = RoundedCornerShape(Dimens.CornerButtonXL)
