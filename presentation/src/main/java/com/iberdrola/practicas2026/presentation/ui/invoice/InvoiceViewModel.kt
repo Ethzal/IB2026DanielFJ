@@ -178,8 +178,8 @@ class InvoiceViewModel @Inject constructor(
 
         // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
         viewModelScope.launch {
-            val hasLuz = (luzRes.lastInvoice != null || luzRes.history.isNotEmpty())
-            val hasGas = (gasRes.lastInvoice != null || gasRes.history.isNotEmpty())
+            val hasLuz = luzRes.history.isNotEmpty()
+            val hasGas = gasRes.history.isNotEmpty()
 
             if (currentTabIndex == 0 && !hasLuz && hasGas) {
                 // Estoy en LUZ, no hay nada, pero en GAS sí -> Ir a GAS (index 1)
