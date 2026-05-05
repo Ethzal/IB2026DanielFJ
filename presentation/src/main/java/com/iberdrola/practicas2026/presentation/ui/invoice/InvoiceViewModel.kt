@@ -136,7 +136,11 @@ class InvoiceViewModel @Inject constructor(
                     if (allInvoicesCached.isNotEmpty()) {
                         val min = allInvoicesCached.minOf { it.amount.toFloat() }
                         val max = allInvoicesCached.maxOf { it.amount.toFloat() }
-                        _amountBounds.value = if (min == max) 0f..(max + 1f) else min..max
+                        _amountBounds.value = if (min == max) {
+                            (min - 0.5f)..(max + 0.5f)
+                        } else {
+                            min..max
+                        }
                     }
                     filterInvoices(InvoiceType.LIGHT)
                     filterInvoices(InvoiceType.GAS)

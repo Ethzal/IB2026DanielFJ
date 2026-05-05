@@ -270,9 +270,40 @@ fun FilterScreen(
                             )
                         }
                         // FILTRO POR IMPORTE
+                        val minRangeGap = 1f
                         RangeSlider(
                             value = sliderPosition,
-                            onValueChange = { sliderPosition = it },
+                            onValueChange = { newRange ->
+                                // 2. Lógica de control de distancia
+                                val start = newRange.start
+                                val end = newRange.endInclusive
+
+                                // Calculamos la distancia actual
+                                val currentGap = end - start
+
+                                if (currentGap < minRangeGap) {
+                                    // Si el rango absoluto de las facturas permite tener 1€ de diferencia
+                                    if (amountBounds.endInclusive - amountBounds.start >= minRangeGap) {
+
+                                        // Si el usuario está moviendo el pulgar de la IZQUIERDA (mínimo)
+                                        if (start != sliderPosition.start) {
+                                            val fixedStart = (end - minRangeGap).coerceAtLeast(amountBounds.start)
+                                            sliderPosition = fixedStart..end
+                                        }
+                                        // Si el usuario está moviendo el pulgar de la DERECHA (máximo)
+                                        else {
+                                            val fixedEnd = (start + minRangeGap).coerceAtMost(amountBounds.endInclusive)
+                                            sliderPosition = start..fixedEnd
+                                        }
+                                    } else {
+                                        // Caso borde: El total de facturas solo varía en menos de 1€ (ej. todas valen 13.50€)
+                                        sliderPosition = newRange
+                                    }
+                                } else {
+                                    // Distancia correcta, permitimos el cambio
+                                    sliderPosition = newRange
+                                }
+                            },
                             valueRange = amountBounds,
                             colors = SliderDefaults.colors(
                                 thumbColor = BrandGreen,
