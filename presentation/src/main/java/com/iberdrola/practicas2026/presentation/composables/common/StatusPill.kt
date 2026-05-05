@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +31,6 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
-import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
@@ -118,5 +116,11 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
         }
         Spacer(Modifier.height(Dimens.SpacingM))
     }
-    HorizontalDivider(thickness = Dimens.StrokeDefault, color = DividerColor)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.SpacingM)
+    ){
+        AppDivider()
+    }
 }
