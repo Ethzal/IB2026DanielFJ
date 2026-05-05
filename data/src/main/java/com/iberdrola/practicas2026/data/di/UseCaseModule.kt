@@ -5,6 +5,7 @@ import com.iberdrola.practicas2026.domain.repository.InvoiceRepository
 import com.iberdrola.practicas2026.domain.usecase.FilterInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
+import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import dagger.Module
 import dagger.Provides
@@ -38,4 +39,7 @@ object UseCaseModule {
 
     @Provides
     fun provideFilterInvoicesUseCase() = FilterInvoicesUseCase()
+
+    @Provides
+    fun provideGetOldestDateUseCase() = GetOldestDateUseCase()
 }
