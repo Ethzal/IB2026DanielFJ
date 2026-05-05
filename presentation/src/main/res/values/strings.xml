@@ -41,7 +41,7 @@
     <string name="hasta">* Hasta</string>
     <string name="por_un_importe">Por un importe</string>
     <string name="por_estado">Por estado</string>
-    <string name="euro_symbol">%1$d €</string>
+    <string name="euro_symbol">%s €</string>
 
     <plurals name="filtros_aplicados">
         <item quantity="one">Filtros aplicados: %d resultado</item>

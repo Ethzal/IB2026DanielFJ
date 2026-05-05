@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.iberdrola.practicas2026.core.utils.formatSpanishInteger
 import com.iberdrola.practicas2026.core.utils.toEpochMillis
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
@@ -40,7 +41,6 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -262,7 +262,7 @@ fun FilterScreen(
                     ) {
                         Surface(color = BrandGreenLight, shape = RoundedCornerShape(4.dp)) {
                             Text(
-                                text = "${sliderPosition.start.roundToInt()} € - ${sliderPosition.endInclusive.roundToInt()} €",
+                                text = "${sliderPosition.start.formatSpanishInteger()} € - ${sliderPosition.endInclusive.formatSpanishInteger()} €",
                                 color = TextMain,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -308,15 +308,12 @@ fun FilterScreen(
                         )
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(
-                                stringResource(R.string.euro_symbol, amountBounds.start.roundToInt()),
+                                text = "${amountBounds.start.formatSpanishInteger()} €",
                                 fontWeight = FontWeight.Normal,
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                stringResource(
-                                    R.string.euro_symbol,
-                                    amountBounds.endInclusive.roundToInt()
-                                ),
+                                text = "${amountBounds.endInclusive.formatSpanishInteger()} €",
                                 fontWeight = FontWeight.Normal,
                                 style = MaterialTheme.typography.bodySmall
                             )

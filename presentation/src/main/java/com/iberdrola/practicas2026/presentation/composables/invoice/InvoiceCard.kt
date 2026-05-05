@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 import com.iberdrola.practicas2026.core.utils.toLastInvoiceDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 
@@ -38,7 +39,6 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
-import java.util.Locale
 
 @Composable
 fun LastInvoiceCard(
@@ -93,7 +93,7 @@ fun LastInvoiceCard(
             // Amount
             Text(
                 text = buildAnnotatedString {
-                    val amountText = String.format(Locale.getDefault(), "%.2f", invoice.amount)
+                    val amountText = invoice.amount.formatSpanishCurrency()
 
                     withStyle(
                         style = MaterialTheme.typography.headlineMedium.copy(

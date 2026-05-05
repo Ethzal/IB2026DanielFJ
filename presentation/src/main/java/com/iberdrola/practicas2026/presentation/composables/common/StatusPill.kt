@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 import com.iberdrola.practicas2026.core.utils.toUiDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
@@ -34,7 +35,6 @@ import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
-import java.util.Locale
 
 data class StatusUiModel(
     val label: String,
@@ -101,7 +101,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
+                    text = "${invoice.amount.formatSpanishCurrency()} €",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
                     color = TextSecondary
                 )
