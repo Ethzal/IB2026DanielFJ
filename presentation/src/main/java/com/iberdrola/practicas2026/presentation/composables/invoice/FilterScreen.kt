@@ -2,26 +2,29 @@ package com.iberdrola.practicas2026.presentation.composables.invoice
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.iberdrola.practicas2026.core.utils.toEpochMillis
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
@@ -44,12 +47,14 @@ import kotlin.math.roundToInt
 fun FilterScreen(
     currentFilter: InvoiceFilter,
     amountBounds: ClosedFloatingPointRange<Float>,
+    minDateAllowed: Long?,
+    onFilterStateChanged: (ClosedFloatingPointRange<Float>, Set<InvoiceStatus>) -> Unit,
     onApplyFilters: (InvoiceFilter) -> Unit,
     onClearFilters: () -> Unit,
     onBack: () -> Unit
 ) {
-    var selectedFromDate by remember { mutableStateOf(currentFilter.dateFrom) }
-    var selectedToDate by remember { mutableStateOf(currentFilter.dateTo) }
+    var selectedFromDate by rememberSaveable { mutableStateOf(currentFilter.dateFrom) }
+    var selectedToDate by rememberSaveable { mutableStateOf(currentFilter.dateTo) }
 
     // Si no hay rango seleccionado, coge los límites
     var sliderPosition by remember {
@@ -68,6 +73,12 @@ fun FilterScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    val filtrosEliminadosText = stringResource(R.string.filtros_eliminados)
+
+    LaunchedEffect(sliderPosition, selectedStatuses.size) {
+        onFilterStateChanged(sliderPosition, selectedStatuses.toSet())
+    }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -80,6 +91,75 @@ fun FilterScreen(
                     )
                 }
             )
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(White)
+                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, top = 0.dp, bottom = Dimens.SpacingS)
+                    .navigationBarsPadding()
+            ) {
+
+                Button(
+                    onClick = {
+                        onApplyFilters(
+                            InvoiceFilter(
+                                dateFrom = selectedFromDate,
+                                dateTo = selectedToDate,
+                                amountRange = sliderPosition,
+                                statuses = selectedStatuses.toSet()
+                            )
+                        )
+                        onBack()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.SpacingL)
+                        .height(60.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)
+                ) {
+                    Text(
+                        stringResource(R.string.aplicar_filtros),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(Dimens.SpacingS))
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextButton(
+                        onClick = {
+                            selectedFromDate = null
+                            selectedToDate = null
+                            sliderPosition = amountBounds
+                            selectedStatuses.clear()
+
+                            onClearFilters()
+
+                            coroutineScope.launch {
+                                snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar(filtrosEliminadosText)
+                            }
+                        },
+                        contentPadding = PaddingValues(
+                            horizontal = Dimens.SpacingM,
+                            vertical = Dimens.SpacingS
+                        )
+                    ) {
+                        Text(
+                            stringResource(R.string.borrar_filtros),
+                            color = BrandGreen,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    }
+                }
+            }
         }
     ) { padding ->
         Column(
@@ -87,7 +167,6 @@ fun FilterScreen(
                 .fillMaxSize()
                 .background(White)
                 .padding(Dimens.SpacingM)
-                .verticalScroll(rememberScrollState())
         ) {
             // Cabecera Atrás
             Column(modifier = Modifier
@@ -120,252 +199,192 @@ fun FilterScreen(
                 }
             }
 
-            Text(stringResource(R.string.filtrar), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.filtrar), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(Dimens.SpacingL))
 
-            // FILTRO POR FECHA
-            Text(stringResource(R.string.por_fecha), fontWeight = FontWeight.Bold, color = Color(0xFF333333))
-            Spacer(Modifier.height(Dimens.SpacingM))
-
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val density = LocalDensity.current
-
-                // Campo "Desde"
-                var fromFieldFocus by remember { mutableStateOf(false) }
-                val interactionSource = remember { MutableInteractionSource() }
-                val isPressed by interactionSource.collectIsPressedAsState()
-
-                if (isPressed) {
-                    showFromDatePicker = true
-                }
-
-                OutlinedTextField(
-                    value = selectedFromDate ?: "",
-                    onValueChange = {},
-                    readOnly = true,
-                    interactionSource = interactionSource,
-                    label = { Text(stringResource(R.string.desde), fontWeight = FontWeight.Normal) },
-                    trailingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_calendar),
-                            contentDescription = null,
-                            tint = Color.Gray
-                        )
-                    },
+            Box(modifier = Modifier.weight(1f)) {
+                Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .clickable { showFromDatePicker = true }
-                        .onFocusChanged { fromFieldFocus = it.isFocused }
-                        .drawBehind {
-                            val borderColor = if (fromFieldFocus) BrandGreen else Color.Gray
-                            val strokeDp = if (fromFieldFocus) 2.dp else 1.dp
-                            val strokePx = with(density) { strokeDp.toPx() }
-                            drawLine(
-                                color = borderColor,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = strokePx
-                            )
-                        },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    )
-                )
-
-                // Campo "Hasta"
-                var toFieldFocus by remember { mutableStateOf(false) }
-                val interactionSourceTo = remember { MutableInteractionSource() }
-                val isPressedTo by interactionSourceTo.collectIsPressedAsState()
-
-                if (isPressedTo) {
-                    showToDatePicker = true
-                }
-
-                OutlinedTextField(
-                    value = selectedToDate ?: "",
-                    onValueChange = {},
-                    readOnly = true,
-                    interactionSource = interactionSourceTo,
-                    label = { Text(stringResource(R.string.hasta), fontWeight = FontWeight.Normal) },
-                    trailingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_calendar),
-                            contentDescription = null,
-                            tint = Color.Gray
-                        )
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { showToDatePicker = true }
-                        .onFocusChanged { toFieldFocus = it.isFocused }
-                        .drawBehind {
-                            val borderColor = if (toFieldFocus) BrandGreen else Color.Gray
-                            val strokeDp = if (toFieldFocus) 2.dp else 1.dp
-                            val strokePx = with(density) { strokeDp.toPx() }
-                            drawLine(
-                                color = borderColor,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = strokePx
-                            )
-                        },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    )
-                )
-            }
-
-            Spacer(Modifier.height(Dimens.SpacingXL))
-
-            // FILTRO POR IMPORTE
-            Text(stringResource(R.string.por_un_importe), fontWeight = FontWeight.Bold, color = Color(0xFF333333))
-            Spacer(Modifier.height(Dimens.SpacingM))
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                Surface(color = BrandGreenLight, shape = RoundedCornerShape(4.dp)) {
+                        .fillMaxSize()// Importante para no quedar debajo del bottomBar
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    // FILTRO POR FECHA
                     Text(
-                        text = "${sliderPosition.start.roundToInt()} € - ${sliderPosition.endInclusive.roundToInt()} €",
-                        color = TextMain,
+                        stringResource(R.string.por_fecha),
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        color = Color(0xFF333333),
+                        style = MaterialTheme.typography.bodyMedium
                     )
-                }
-                // FILTRO POR IMPORTE
-                RangeSlider(
-                    value = sliderPosition,
-                    onValueChange = { sliderPosition = it },
-                    valueRange = amountBounds,
-                    // Definimos los colores base
-                    colors = SliderDefaults.colors(
-                        thumbColor = BrandGreen,
-                        activeTrackColor = BrandGreen,
-                        inactiveTrackColor = Color.LightGray.copy(alpha = 0.5f)
-                    ),
-                    // Track personalizado
-                    track = { rangeSliderState ->
-                        SliderDefaults.Track(
-                            rangeSliderState = rangeSliderState,
-                            modifier = Modifier.height(4.dp),
-                            thumbTrackGapSize = 0.dp,
-                            drawStopIndicator = null,
+                    Spacer(Modifier.height(Dimens.SpacingS))
+
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        val isDateEnabled = minDateAllowed != null
+
+                        // Refactorizado a Componente Clean & Reusable
+                        DateFilterTextField(
+                            label = if (isDateEnabled) stringResource(R.string.desde) else "Sin facturas",
+                            selectedDate = selectedFromDate,
+                            isEnabled = isDateEnabled,
+                            isPickerOpen = showFromDatePicker,
+                            onDateClick = { showFromDatePicker = true },
+                            onClearClick = { selectedFromDate = null },
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        DateFilterTextField(
+                            label = stringResource(R.string.hasta),
+                            selectedDate = selectedToDate,
+                            isEnabled = isDateEnabled,
+                            isPickerOpen = showToDatePicker,
+                            onDateClick = { showToDatePicker = true },
+                            onClearClick = { selectedToDate = null },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(Modifier.height(Dimens.SpacingXL))
+
+                    // FILTRO POR IMPORTE
+                    Text(
+                        stringResource(R.string.por_un_importe),
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF333333),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.height(Dimens.SpacingS))
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Surface(color = BrandGreenLight, shape = RoundedCornerShape(4.dp)) {
+                            Text(
+                                text = "${sliderPosition.start.roundToInt()} € - ${sliderPosition.endInclusive.roundToInt()} €",
+                                color = TextMain,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        // FILTRO POR IMPORTE
+                        RangeSlider(
+                            value = sliderPosition,
+                            onValueChange = { sliderPosition = it },
+                            valueRange = amountBounds,
                             colors = SliderDefaults.colors(
+                                thumbColor = BrandGreen,
                                 activeTrackColor = BrandGreen,
                                 inactiveTrackColor = Color.LightGray.copy(alpha = 0.5f)
+                            ),
+                            track = { rangeSliderState ->
+                                SliderDefaults.Track(
+                                    rangeSliderState = rangeSliderState,
+                                    modifier = Modifier.height(4.dp),
+                                    thumbTrackGapSize = 0.dp,
+                                    drawStopIndicator = null,
+                                    colors = SliderDefaults.colors(
+                                        activeTrackColor = BrandGreen,
+                                        inactiveTrackColor = Color.LightGray.copy(alpha = 0.5f)
+                                    )
+                                )
+                            },
+                            startThumb = {
+                                Surface(
+                                    modifier = Modifier.size(20.dp),
+                                    shape = RoundedCornerShape(50),
+                                    color = BrandGreen,
+                                ) {}
+                            },
+                            endThumb = {
+                                Surface(
+                                    modifier = Modifier.size(20.dp),
+                                    shape = RoundedCornerShape(50),
+                                    color = BrandGreen,
+                                ) {}
+                            }
+                        )
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                stringResource(R.string.euro_symbol, amountBounds.start.roundToInt()),
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text(
+                                stringResource(
+                                    R.string.euro_symbol,
+                                    amountBounds.endInclusive.roundToInt()
+                                ),
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.height(Dimens.SpacingXL))
+
+                    // FILTRO POR ESTADO
+                    Text(
+                        stringResource(R.string.por_estado),
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF333333),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.height(Dimens.SpacingS))
+
+                    statusOptions.forEach { status ->
+                        val ui = status.toUiModel(usePlural = true)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(Dimens.CornerButtonXL))
+                                .clickable {
+                                    if (selectedStatuses.contains(status)) selectedStatuses.remove(
+                                        status
+                                    )
+                                    else selectedStatuses.add(status)
+                                }
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Checkbox(
+                                checked = selectedStatuses.contains(status),
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) selectedStatuses.add(status)
+                                    else selectedStatuses.remove(status)
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = BrandGreen,
+                                    uncheckedColor = BrandGreen
+                                ),
+                                modifier = Modifier.scale(1.2f),
+                            )
+                            Text(
+                                text = ui.label,
+                                color = Color(0xFF333333),
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(40.dp))
+                }
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, White.copy(alpha = 0.7f))
                             )
                         )
-                    },
-                    startThumb = {
-                        Surface(
-                            modifier = Modifier.size(20.dp),
-                            shape = RoundedCornerShape(50),
-                            color = BrandGreen,
-                        ) {}
-                    },
-                    endThumb = {
-                        Surface(
-                            modifier = Modifier.size(20.dp),
-                            shape = RoundedCornerShape(50),
-                            color = BrandGreen,
-                        ) {}
-                    }
                 )
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.euro_symbol, amountBounds.start.roundToInt()), color = Color.Gray, fontWeight = FontWeight.Normal)
-                    Text(stringResource(R.string.euro_symbol, amountBounds.endInclusive.roundToInt()), color = Color.Gray, fontWeight = FontWeight.Normal)
-                }
             }
-
-            Spacer(Modifier.height(Dimens.SpacingXL))
-
-            // FILTRO POR ESTADO
-            Text(stringResource(R.string.por_estado), fontWeight = FontWeight.Bold, color = Color(0xFF333333))
-            Spacer(Modifier.height(Dimens.SpacingS))
-
-            statusOptions.forEach { status ->
-                val ui = status.toUiModel()
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            if (selectedStatuses.contains(status)) selectedStatuses.remove(status)
-                            else selectedStatuses.add(status)
-                        }
-                        .padding(vertical = 4.dp)
-                ) {
-                    Checkbox(
-                        checked = selectedStatuses.contains(status),
-                        onCheckedChange = { isChecked ->
-                            if (isChecked) selectedStatuses.add(status)
-                            else selectedStatuses.remove(status)
-                        },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = BrandGreen,
-                            uncheckedColor = BrandGreen
-                        )
-                    )
-                    Text(text = ui.label, color = Color(0xFF333333), fontWeight = FontWeight.Normal)
-                }
-            }
-
-            Spacer(Modifier.weight(1f))
-
-            // BOTONES
-            Button(
-                onClick = {
-                    onApplyFilters(InvoiceFilter(
-                        dateFrom = selectedFromDate,
-                        dateTo = selectedToDate,
-                        amountRange = sliderPosition,
-                        statuses = selectedStatuses.toSet()
-                    ))
-                    onBack()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)
-            ) {
-                Text(stringResource(R.string.aplicar_filtros), color = Color.White, fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(Modifier.height(Dimens.SpacingM))
-
-            val filtrosEliminadosText = stringResource(R.string.filtros_eliminados)
-
-            TextButton(
-                onClick = {
-                    // 1. Resetear estados locales para que la UI se limpie inmediatamente
-                    selectedFromDate = null
-                    selectedToDate = null
-                    sliderPosition = amountBounds
-                    selectedStatuses.clear()
-
-                    // 2. Notificar al exterior
-                    onClearFilters()
-
-
-                    coroutineScope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(filtrosEliminadosText)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.borrar_filtros), color = BrandGreen, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
-            }
-
-            Spacer(Modifier.height(Dimens.SpacingM))
+            Spacer(Modifier.height(padding.calculateBottomPadding()))
         }
     }
 
@@ -373,6 +392,7 @@ fun FilterScreen(
     if (showFromDatePicker) {
         DatePickerModal(
             initialDate = selectedFromDate,
+            minDateMillis = minDateAllowed,
             maxDateMillis = System.currentTimeMillis(),
             onDateSelected = {
                 selectedFromDate = it
@@ -403,6 +423,113 @@ fun FilterScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun DateFilterTextField(
+    label: String,
+    selectedDate: String?,
+    isEnabled: Boolean,
+    isPickerOpen: Boolean,
+    onDateClick: () -> Unit,
+    onClearClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+
+    Box(modifier = modifier) {
+        TextField(
+            value = if (isEnabled) (selectedDate ?: "") else "",
+            onValueChange = {},
+            readOnly = true,
+            enabled = isEnabled,
+            label = {
+                Text(
+                    text = label,
+                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Normal,
+                platformStyle = PlatformTextStyle(includeFontPadding = false),
+                lineHeight = 1.sp
+            ),
+            trailingIcon = {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(
+                            enabled = isEnabled,
+                            onClick = {
+                                if (selectedDate != null) onClearClick() else onDateClick()
+                            }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (selectedDate != null && isEnabled) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentDescription = "Borrar fecha",
+                            tint = Color.Gray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_calendar),
+                            contentDescription = null,
+                            tint = if (isEnabled) Color.Gray else Color.LightGray,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .drawBehind {
+                    val borderColor = when {
+                        !isEnabled -> Color.LightGray.copy(alpha = 0.3f)
+                        isPickerOpen -> BrandGreen
+                        else -> Color.Gray
+                    }
+                    val strokeDp = if (isPickerOpen && isEnabled) 2.dp else 1.dp
+                    val strokePx = with(density) { strokeDp.toPx() }
+
+                    drawLine(
+                        color = borderColor,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokePx
+                    )
+                },
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledLabelColor = Color.LightGray,
+                focusedLabelColor = BrandGreen,
+                unfocusedLabelColor = Color.Gray
+            ),
+            singleLine = true
+        )
+
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .padding(end = 48.dp)
+                .clickable(
+                    enabled = isEnabled,
+                    onClick = onDateClick
+                )
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun DatePickerModal(
     initialDate: String?,
     minDateMillis: Long? = null,
@@ -413,7 +540,7 @@ fun DatePickerModal(
     val selectionMillis = initialDate.toEpochMillis()
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = selectionMillis,
-        initialDisplayedMonthMillis = selectionMillis ?: maxDateMillis ?: System.currentTimeMillis(),
+        initialDisplayedMonthMillis = selectionMillis ?: minDateMillis ?: System.currentTimeMillis(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val isBeforeMax = maxDateMillis?.let { utcTimeMillis <= it } ?: true

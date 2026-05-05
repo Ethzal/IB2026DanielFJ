@@ -1,3 +1,4 @@
+// FILE: presentation/src/main/java/com/iberdrola/practicas2026/presentation/ui/invoice/InvoiceViewModel.kt
 package com.iberdrola.practicas2026.presentation.ui.invoice
 
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
+import com.iberdrola.practicas2026.domain.model.InvoiceStatus
+import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -36,7 +40,8 @@ class InvoiceViewModel @Inject constructor(
     private val filterInvoicesUseCase: FilterInvoicesUseCase,
     private val settingsRepository: SettingsRepository,
     private val getFeedbackStatus: GetFeedbackStatusUseCase,
-    private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase
+    private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase,
+    private val getOldestDateUseCase: GetOldestDateUseCase,
 ) : ViewModel() {
 
     sealed class UiState {
@@ -60,6 +65,13 @@ class InvoiceViewModel @Inject constructor(
     // FILTROS
     private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
     val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
+
+    private val _minDateAllowed = MutableStateFlow<Long?>(null)
+    val minDateAllowed = _minDateAllowed.asStateFlow()
+
+    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
+        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
+    }
 
     // Canal de eventos para la UI
     private val _events = MutableSharedFlow<InvoiceEvent>()
@@ -199,14 +211,14 @@ class InvoiceViewModel @Inject constructor(
 
     fun onRatingSelected(rating: Int) {
         viewModelScope.launch {
-            updateFeedbackDecision.setDelay(isRated = true) // Próximo aviso en 10
+            updateFeedbackDecision.setDelay(isRated = true)
             _showThanksMessage.value = true
         }
     }
 
     fun onLaterClicked(onConfirmExit: () -> Unit) {
         viewModelScope.launch {
-            updateFeedbackDecision.setDelay(isRated = false) // Próximo aviso en 3
+            updateFeedbackDecision.setDelay(isRated = false)
             _showFeedbackSheet.value = false
             onConfirmExit()
         }
@@ -221,9 +233,7 @@ class InvoiceViewModel @Inject constructor(
     fun getResultCount(): Int {
         val luz = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, _invoiceFilter.value)
         val gas = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, _invoiceFilter.value)
-        val totalLuz = luz.history.size + (if (luz.lastInvoice != null) 1 else 0)
-        val totalGas = gas.history.size + (if (gas.lastInvoice != null) 1 else 0)
 
-        return totalLuz + totalGas
+        return luz.history.size + gas.history.size
     }
 }

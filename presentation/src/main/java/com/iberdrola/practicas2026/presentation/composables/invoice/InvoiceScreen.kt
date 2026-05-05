@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
@@ -119,10 +120,16 @@ fun InvoiceScreen(
         )
     }
 
+    val minDateAllowed by viewModel.minDateAllowed.collectAsStateWithLifecycle()
+
     if (showFilterScreen) {
         FilterScreen(
             currentFilter = invoiceFilter,
             amountBounds = amountBounds,
+            minDateAllowed = minDateAllowed,
+            onFilterStateChanged = { range, statuses ->
+                viewModel.updateDynamicConstraints(range, statuses)
+            },
             onApplyFilters = {
                 viewModel.applyFilters(it)
                 val count = viewModel.getResultCount()
@@ -158,10 +165,9 @@ fun InvoiceScreen(
         ) { padding ->
             Column(modifier = Modifier.padding(padding)) {
 
-                // TABS (Luz / Gas)
                 SlidingTabsSection(
                     pagerState = pagerState,
-                    tabs = tabs, // Tu lista de nombres ["Luz", "Gas"]
+                    tabs = tabs,
                     coroutineScope = coroutineScope
                 )
 
@@ -231,7 +237,7 @@ fun InvoiceScreen(
                         is InvoiceViewModel.UiState.Error -> {
                             ErrorStateView(
                                 message = pageUiState.msg,
-                                onRetry = { viewModel.fetchFacturas(isLocal = false) } // Fuerza la recarga
+                                onRetry = { viewModel.fetchFacturas(isLocal = false) }
                             )
                         }
                     }
@@ -253,14 +259,52 @@ fun InvoiceList(
         it.date.take(4)
     }
 
-    val hasContent = data.lastInvoice != null || data.history.isNotEmpty()
+    val hasMatches = data.history.isNotEmpty()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(isFiltering) {
+        if (hasMatches) {
+            if (isFiltering) {
+                // Histórico de facturas
+                listState.animateScrollToItem(1)
+            } else {
+                // LastInvoiceCard
+                listState.animateScrollToItem(0)
+            }
+        }
+    }
 
     LazyColumn(
+        state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = Dimens.SpacingM)
     ) {
-        // Tarjeta principal
-        if (data.allInvoices.isNotEmpty()) {
+        if (!hasMatches) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimens.SpacingM),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.historico_de_facturas),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
+                }
+            }
+            item {
+                EmptyStateView(
+                    iconRes = R.drawable.ic_energy_empty,
+                    title = stringResource(R.string.sin_facturas),
+                    message = stringResource(R.string.no_hemos_encontrado_facturas),
+                    onClearFilters = onClearFilters
+                )
+            }
+        } else {
             item {
                 Box(
                     modifier = Modifier
@@ -275,35 +319,24 @@ fun InvoiceList(
                     }
                 }
             }
-        }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimens.SpacingM),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.historico_de_facturas),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
-            }
-        }
-
-        if (data.allInvoices.isEmpty() || !hasContent) {
             item {
-                EmptyStateView(
-                    iconRes = R.drawable.ic_energy_empty,
-                    title = stringResource(R.string.sin_facturas),
-                    message = stringResource(R.string.no_hemos_encontrado_facturas),
-                    onClearFilters = onClearFilters
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimens.SpacingM),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.historico_de_facturas),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
+                }
             }
-        } else {
+
             groupedHistory.forEach { (year, invoices) ->
                 item {
                     Box(
@@ -311,13 +344,13 @@ fun InvoiceList(
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.SpacingM)
                     ) {
-                    Text(
-                        text = year,
-                        modifier = Modifier.padding(vertical = Dimens.SpacingM),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                        }
+                        Text(
+                            text = year,
+                            modifier = Modifier.padding(vertical = Dimens.SpacingM),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
                 items(invoices) { invoice ->
