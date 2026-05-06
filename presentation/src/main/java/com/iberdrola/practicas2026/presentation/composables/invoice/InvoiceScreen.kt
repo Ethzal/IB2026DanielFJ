@@ -259,102 +259,94 @@ fun InvoiceList(
         it.date.take(4)
     }
 
-    val hasMatches = data.history.isNotEmpty()
+    val hasHistoryResults = data.history.isNotEmpty()
     val listState = rememberLazyListState()
 
+    // Scroll automático al histórico cuando se aplican filtros
     LaunchedEffect(isFiltering) {
-        if (hasMatches) {
-            if (isFiltering) {
-                // Histórico de facturas
-                listState.animateScrollToItem(1)
-            } else {
-                // LastInvoiceCard
-                listState.animateScrollToItem(0)
-            }
+        if (isFiltering) {
+            listState.animateScrollToItem(1)
+        } else {
+            listState.animateScrollToItem(0)
         }
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = Dimens.SpacingM)
+        contentPadding = PaddingValues(bottom = Dimens.SpacingXL) // Espacio al final
     ) {
-        if (!hasMatches) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Dimens.SpacingM),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.historico_de_facturas),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+        // ÍNDICE 0: TARJETA PERMANENTE ---
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingM)
+            ) {
+                data.lastInvoice?.let { last ->
+                    LastInvoiceCard(
+                        invoice = last,
+                        onClick = { onInvoiceClick(last) }
                     )
-                    FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
                 }
             }
-            item {
-                EmptyStateView(
-                    iconRes = R.drawable.ic_energy_empty,
-                    title = stringResource(R.string.sin_facturas),
-                    message = stringResource(R.string.no_hemos_encontrado_facturas),
-                    onClearFilters = onClearFilters
+        }
+
+        // ÍNDICE 1: ENCABEZADO + BOTÓN ---
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimens.SpacingM),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.historico_de_facturas),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
+                FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
             }
-        } else {
+        }
+
+        if (!hasHistoryResults) {
             item {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimens.SpacingM)
+                        .fillParentMaxHeight()
+                        .padding(bottom = 100.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    data.lastInvoice?.let { last ->
-                        LastInvoiceCard(
-                            invoice = last,
-                            onClick = { onInvoiceClick(last) }
-                        )
-                    }
-                }
-            }
-
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Dimens.SpacingM),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.historico_de_facturas),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                    EmptyStateView(
+                        iconRes = R.drawable.ic_energy_empty,
+                        title = stringResource(R.string.sin_facturas),
+                        message = stringResource(R.string.no_hemos_encontrado_facturas),
+                        onClearFilters = onClearFilters
                     )
-                    FilterButton(onClick = onFilterClick, isFilterActive = isFiltering)
                 }
             }
-
+        } else {
             groupedHistory.forEach { (year, invoices) ->
                 item {
-                    Box(
+                    Text(
+                        text = year,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = Dimens.SpacingM)
-                    ) {
-                        Text(
-                            text = year,
-                            modifier = Modifier.padding(vertical = Dimens.SpacingM),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                            .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingM),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 items(invoices) { invoice ->
                     InvoiceRow(invoice = invoice, onClick = { onInvoiceClick(invoice) })
+                }
+            }
+
+            if (isFiltering) {
+                item {
+                    Spacer(modifier = Modifier.fillParentMaxHeight())
                 }
             }
         }
