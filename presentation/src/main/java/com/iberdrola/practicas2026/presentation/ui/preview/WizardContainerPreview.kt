@@ -7,6 +7,7 @@ import com.iberdrola.practicas2026.presentation.composables.common.EmailInputScr
 import com.iberdrola.practicas2026.presentation.composables.common.ModifyEmailInfoScreen
 import com.iberdrola.practicas2026.presentation.composables.common.OtpVerificationScreen
 import com.iberdrola.practicas2026.presentation.composables.common.SuccessScreen
+import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.WizardState
 import com.iberdrola.practicas2026.presentation.ui.theme.EnergyAppTheme
 
 @Preview(showBackground = true, name = "Step 1 - Contract List")
@@ -38,15 +39,18 @@ fun ModifyEmailInfoPreview() {
 @Composable
 fun EmailInputActivationPreview() {
     EnergyAppTheme {
-        EmailInputScreen(
+        val dummyState = WizardState(
             isActivation = true,
-            email = "",
-            isEmailValid = false,
-            isLegalChecked = false,
+            draftEmail = "",
+            isLegalChecked = false
+        )
+
+        EmailInputScreen(
+            state = dummyState,
+            progress = 0.5f,
             onEmailChange = {},
             onLegalChange = {},
-            progress = 0.5f,
-            onNext = {},
+            onSubmit = {},
             onBack = {},
             onClose = {}
         )
@@ -57,15 +61,18 @@ fun EmailInputActivationPreview() {
 @Composable
 fun EmailInputModifyPreview() {
     EnergyAppTheme {
-        EmailInputScreen(
+        val dummyState = WizardState(
             isActivation = false,
-            email = "test@email.com",
-            isEmailValid = true,
-            isLegalChecked = true,
+            draftEmail = "test@email.com",
+            isLegalChecked = true
+        )
+
+        EmailInputScreen(
+            state = dummyState,
+            progress = 0.5f,
             onEmailChange = {},
             onLegalChange = {},
-            progress = 0.5f,
-            onNext = {},
+            onSubmit = {},
             onBack = {},
             onClose = {}
         )
@@ -76,21 +83,24 @@ fun EmailInputModifyPreview() {
 @Composable
 fun OtpPreview() {
     EnergyAppTheme {
-        OtpVerificationScreen(
+        val dummyState = WizardState(
             isActivation = true,
             otpCode = "123456",
-            resendState = 0,
+            otpResendState = 0,
+            otpAttemptsLeft = 2,
+            hasRequestedResend = true,
+            verSoporte = false
+        )
+
+        OtpVerificationScreen(
+            state = dummyState,
             progress = 0.75f,
             onOtpChange = {},
             onResendClick = {},
-            otpAttemptsLeft = 2,
-            hasRequestedResend = true,
-            onNext = {},
+            onSubmit = {},
             onBack = {},
             onClose = {},
-            onCloseNotice = {},
-            verSoporte = false,
-            isOtpValid = true,
+            onCloseNotice = {}
         )
     }
 }
@@ -99,24 +109,28 @@ fun OtpPreview() {
 @Composable
 fun OtpResentPreview() {
     EnergyAppTheme {
-        OtpVerificationScreen(
+        val dummyState = WizardState(
             isActivation = true,
             otpCode = "123456",
-            resendState = 2,
+            otpResendState = 2,
+            otpAttemptsLeft = 0,
+            hasRequestedResend = true,
+            verSoporte = true
+        )
+
+        OtpVerificationScreen(
+            state = dummyState,
             progress = 0.75f,
             onOtpChange = {},
             onResendClick = {},
-            otpAttemptsLeft = 0,
-            hasRequestedResend = true,
-            onNext = {},
+            onSubmit = {},
             onBack = {},
             onClose = {},
-            onCloseNotice = {},
-            verSoporte = true,
-            isOtpValid = true,
+            onCloseNotice = {}
         )
     }
 }
+
 @Preview(showBackground = true, name = "Step 4 - Success")
 @Composable
 fun SuccessPreview() {
