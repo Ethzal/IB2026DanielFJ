@@ -94,6 +94,10 @@
     <string name="derechos_acceso">Derechos: Acceso, rectificación, supresión, limitación del tratamiento, portabilidad de datos u oposición, incluída la oposición a decisiones individuales automatizadas.</string>
     <string name="anterior">Anterior</string>
     <string name="siguiente">Siguiente</string>
+    <string name="error_email_vacio">Es necesario completar el correo</string>
+    <string name="error_legal_requerido">Debes aceptar las condiciones para continuar</string>
+    <string name="error_otp_incompleto">Introduce los 6 dígitos del código</string>
+    <string name="error_intentos_agotados">Has agotado el número de intentos permitidos para hoy.</string>
 
     <!-- OTP Verification -->
     <string name="introduce_codigo">Introduce tu código de verificación</string>
@@ -103,6 +107,12 @@
     <string name="si_no_lo_encuentras">Si no lo encuentras, podemos volver a enviar el SMS.</string>
     <string name="volver_a_enviar">Volver a enviar</string>
     <string name="hemos_vuelto_enviar">Hemos vuelto a enviar un SMS con tu código de verificación.</string>
+    <string name="limite_reenvios_titulo">Límite de reenvíos alcanzado</string>
+    <string name="limite_reenvios_detalle">Has sugerido el límite de 3 reenvíos para hoy. Si sigues sin recibir el código, contacta con nosotros.</string>
+    <string name="llamar_atencion_cliente">Llamar a atención al cliente</string>
+    <string name="otp_limite_titulo">Límite de reenvíos alcanzado</string>
+    <string name="otp_limite_descripcion">Has superado el límite de 3 reenvíos para hoy. Si sigues sin recibir el código, contacta con nosotros.</string>
+    <string name="otp_llamar_atencion_cliente">Llamar a atención al cliente</string>
 
     <plurals name="intentos_restantes">
         <item quantity="one">Recuerda que hoy te queda %d intento.</item>
@@ -118,4 +128,8 @@
     <string name="condiciones_generales">Condiciones Generales</string>
     <string name="he_leido_y_acepto_2">"y Particulares de la oferta y la suscripción a Factura Electrónica."</string>
     <string name="no_disponible">No disponible aún esta funcionalidad.</string>
+    <string name="label_email">* Email</string>
+    <string name="label_nuevo_email">* Nuevo email</string>
+    <string name="email_test">pepe2@gmail.com</string>
+    <string name="progress">progress</string>
 </resources>

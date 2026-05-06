@@ -27,3 +27,11 @@ val BgPaid = Color(0xFFB1DEC8)
 val TextPaid = Color(0xFF05582D)
 
 val BgGray = Color(0xFFE0E0E0)
+
+// Loading
+val BgLoading = Color(0xCC000000)
+
+// Info
+val BgInfo = Color(0xFFDDF5FE)
+val BgInfoDisable = Color(0xFFFFF4E5)
+val WarningOrange = Color(0xFFE67E22)

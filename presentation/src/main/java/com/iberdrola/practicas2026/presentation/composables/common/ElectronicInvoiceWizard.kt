@@ -53,9 +53,13 @@ import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.WizardEffe
 import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.WizardEvent
 import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.WizardState
 import com.iberdrola.practicas2026.presentation.ui.electronic_invoice.WizardStep
+import com.iberdrola.practicas2026.presentation.ui.theme.BgInfo
+import com.iberdrola.practicas2026.presentation.ui.theme.BgInfoDisable
+import com.iberdrola.practicas2026.presentation.ui.theme.BgLoading
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import com.iberdrola.practicas2026.presentation.ui.theme.WarningOrange
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
 import kotlinx.coroutines.launch
 
@@ -76,13 +80,13 @@ fun WizardHeader(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 36.dp)
+            .padding(top = Dimens.SpacingHeader)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Dimens.SpacingM)
-                .height(48.dp)
+                .height(Dimens.IconL)
         ) {
             if (showProgress) {
                 IconButton(
@@ -116,7 +120,7 @@ fun WizardHeader(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(5.dp)
+                    .height(Dimens.ProgressBarHeight)
                     .background(BrandGreen.copy(alpha = 0.2f)),
             ) {
                 Box(
@@ -151,7 +155,9 @@ fun ContractListScreen(
                 onClick = onActiveContractClick
             )
 
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM)) { AppDivider() }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.SpacingM)) { AppDivider() }
 
             ContractRow(
                 icon = R.drawable.ic_gas,
@@ -160,7 +166,9 @@ fun ContractListScreen(
                 onClick = onInactiveContractClick
             )
 
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM)) { AppDivider() }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.SpacingM)) { AppDivider() }
         }
     }
 }
@@ -174,7 +182,7 @@ fun ContractRow(icon: Int, title: String, status: ContractStatus, onClick: () ->
             .padding(Dimens.SpacingM),
         verticalAlignment = Alignment.Top
     ) {
-        Icon(painter = painterResource(id = icon), contentDescription = null, tint = BrandGreen, modifier = Modifier.size(32.dp))
+        Icon(painter = painterResource(id = icon), contentDescription = null, tint = BrandGreen, modifier = Modifier.size(Dimens.SpacingXL))
         Spacer(Modifier.width(Dimens.SpacingS))
         Column(modifier = Modifier.weight(1f)) {
             Text(title, fontWeight = FontWeight.Bold, color = TextMain)
@@ -203,14 +211,14 @@ fun ModifyEmailInfoScreen(onModifyClick: () -> Unit, onBack: () -> Unit, email: 
             Spacer(Modifier.height(Dimens.SpacingXL))
             Text(stringResource(R.string.recibes_facturas_en), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(Dimens.SpacingS))
-            Text(text = email.ifEmpty { "pepe2@gmail.com" }, color = TextSecondary, style = MaterialTheme.typography.bodyMedium)
+            Text(text = email.ifEmpty { stringResource(R.string.email_test) }, color = TextSecondary, style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(Dimens.SpacingM))
             AppDivider()
             Spacer(Modifier.height(Dimens.SpacingL))
             Spacer(Modifier.height(Dimens.SpacingXS))
 
             Row {
-                Icon(painter = painterResource(id = R.drawable.ic_info), contentDescription = null, tint = TextSecondary, modifier = Modifier.size(16.dp))
+                Icon(painter = painterResource(id = R.drawable.ic_info), contentDescription = null, tint = TextSecondary, modifier = Modifier.size(Dimens.IconXXS))
                 Spacer(Modifier.width(Dimens.SpacingS))
                 Text(stringResource(R.string.recuerda_requisito), color = TextSecondary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Normal)
             }
@@ -243,7 +251,8 @@ fun EmailInputScreen(
     // Gestión de errores VISUALES (Se queda en la UI)
     var showErrors by remember { mutableStateOf(false) }
     val emailError = if (showErrors || state.draftEmail.isNotEmpty()) {
-        if (showErrors && state.draftEmail.isEmpty()) "Es necesario completar el correo" else getEmailError(state.draftEmail)
+        if (showErrors && state.draftEmail.isEmpty()) stringResource(R.string.error_email_vacio)
+        else getEmailError(state.draftEmail)
     } else null
     val legalError = showErrors && state.isActivation && !state.isLegalChecked
     
@@ -284,7 +293,7 @@ fun EmailInputScreen(
                 Spacer(Modifier.height(Dimens.SpacingS))
                 Text(stringResource(R.string.email_vinculado), color = TextSecondary, style = MaterialTheme.typography.bodySmall, fontSize = Dimens.TextS)
                 Spacer(Modifier.height(Dimens.SpacingXS))
-                Text(text = "pepe2@a.com".maskEmail(), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
+                Text(text = stringResource(R.string.email_test).maskEmail(), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.height(Dimens.SpacingL))
             }
 
@@ -301,17 +310,25 @@ fun EmailInputScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(Dimens.TextFieldHeight)
                     .offset(x = emailShakeOffset.value.dp)
                     .onFocusChanged { isFocused = it.isFocused }
                     .drawBehind {
-                        val strokeWidth = if (isFocused) 2.dp.toPx() else 1.dp.toPx()
-                        val color = if (emailError != null) Color.Red else if (isFocused) BrandGreen else TextSecondary
-                        drawLine(color = color, start = Offset(0f, size.height), end = Offset(size.width, size.height), strokeWidth = strokeWidth)
+                        val strokeWidth = if (isFocused) Dimens.StrokeDefault.toPx() else Dimens.StrokeThick.toPx()
+                        val color =
+                            if (emailError != null) Color.Red else if (isFocused) BrandGreen else TextSecondary
+                        drawLine(
+                            color = color,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = strokeWidth
+                        )
                     },
                 isError = emailError != null,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
-                label = { Text(text = if (state.isActivation) "* Email" else "* Nuevo email", color = if (emailError != null) Color.Red else TextSecondary, fontWeight = FontWeight.Normal) },
+                label = { Text(text = if (state.isActivation) stringResource(R.string.label_email) else stringResource(
+                    R.string.label_nuevo_email
+                ), color = if (emailError != null) Color.Red else TextSecondary, fontWeight = FontWeight.Normal) },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent, unfocusedContainerColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent, errorContainerColor = Color.Transparent,
@@ -321,7 +338,9 @@ fun EmailInputScreen(
                 singleLine = true
             )
 
-            Box(modifier = Modifier.height(Dimens.SpacingM).padding(start = Dimens.SpacingXS, top = Dimens.SpacingXS)) {
+            Box(modifier = Modifier
+                .height(Dimens.SpacingM)
+                .padding(start = Dimens.SpacingXS, top = Dimens.SpacingXS)) {
                 if (emailError != null) {
                     Text(emailError, color = Color.Red, style = MaterialTheme.typography.labelSmall)
                 }
@@ -339,7 +358,9 @@ fun EmailInputScreen(
                             onLegalChange(it)
                             if (showErrors) showErrors = false
                         },
-                        modifier = Modifier.scale(1.2f).offset(x = legalShakeOffset.value.dp),
+                        modifier = Modifier
+                            .scale(1.2f)
+                            .offset(x = legalShakeOffset.value.dp),
                         colors = CheckboxDefaults.colors(checkedColor = BrandGreen, uncheckedColor = if (legalError) Color.Red else BrandGreen)
                     )
 
@@ -356,14 +377,16 @@ fun EmailInputScreen(
                     BasicText(
                         text = checkboxAnnotatedString,
                         style = MaterialTheme.typography.bodyLarge.copy(color = TextMain, fontWeight = FontWeight.Normal),
-                        modifier = Modifier.padding(start = Dimens.SpacingXS, top = 12.dp)
+                        modifier = Modifier.padding(start = Dimens.SpacingXS, top = Dimens.SpacingXM)
                     )
                 }
             }
 
             if (legalError) {
-                Box(modifier = Modifier.padding(start = 52.dp, top = Dimens.SpacingXS).height(24.dp)) {
-                    Text(text = "Debes aceptar las condiciones para continuar", color = Color.Red, style = MaterialTheme.typography.labelSmall)
+                Box(modifier = Modifier
+                    .padding(start = Dimens.SpacingXXXL, top = Dimens.SpacingXS)
+                    .height(Dimens.SpacingL)) {
+                    Text(text = stringResource(R.string.error_legal_requerido), color = Color.Red, style = MaterialTheme.typography.labelSmall)
                 }
             }
 
@@ -408,7 +431,7 @@ fun OtpVerificationScreen(
     val scope = rememberCoroutineScope()
     
     var showErrors by remember { mutableStateOf(false) }
-    val otpError = if (showErrors && !state.isOtpValid) "Introduce los 6 dígitos del código" else null
+    val otpError = if (showErrors && !state.isOtpValid) stringResource(R.string.error_otp_incompleto) else null
 
     val attemptsText = remember(state.otpAttemptsLeft) { getAttemptsRemainingText(context, state.otpAttemptsLeft) }
     var showNotAvailableDialog by remember { mutableStateOf(false) }
@@ -440,7 +463,10 @@ fun OtpVerificationScreen(
         containerColor = Color.White
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(Dimens.SpacingM)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(Dimens.SpacingM)
         ) {
             Text(stringResource(R.string.introduce_codigo), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(Dimens.SpacingM))
@@ -455,13 +481,20 @@ fun OtpVerificationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(Dimens.SpacingXXXXL)
                     .offset(x = otpShakeOffset.value.dp)
                     .onFocusChanged { isFocused = it.isFocused }
                     .drawBehind {
-                        val strokeWidth = if (isFocused) 2.dp.toPx() else 1.dp.toPx()
-                        val color = if (otpError != null) Color.Red else if (isFocused) BrandGreen else TextSecondary
-                        drawLine(color = color, start = Offset(0f, size.height), end = Offset(size.width, size.height), strokeWidth = strokeWidth)
+                        val strokeWidth =
+                            if (isFocused) Dimens.StrokeThick.toPx() else Dimens.StrokeDefault.toPx()
+                        val color =
+                            if (otpError != null) Color.Red else if (isFocused) BrandGreen else TextSecondary
+                        drawLine(
+                            color = color,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = strokeWidth
+                        )
                     },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
                 label = { Text(text = stringResource(R.string.codigo_verificacion), color = if (otpError != null) Color.Red else TextSecondary, fontWeight = FontWeight.Normal) },
@@ -476,7 +509,9 @@ fun OtpVerificationScreen(
                 singleLine = true
             )
 
-            Box(modifier = Modifier.height(24.dp).padding(start = Dimens.SpacingXS, top = Dimens.SpacingXS)) {
+            Box(modifier = Modifier
+                .height(Dimens.SpacingL)
+                .padding(start = Dimens.SpacingXS, top = Dimens.SpacingXS)) {
                 if (otpError != null) {
                     Text(otpError, color = Color.Red, style = MaterialTheme.typography.labelSmall)
                 }
@@ -484,35 +519,56 @@ fun OtpVerificationScreen(
 
             Spacer(Modifier.height(Dimens.SpacingS))
 
-            val boxColor = if (state.verSoporte) Color(0xFFFFF4E5) else Color(0xFFDDF5FE)
+            val boxColor = if (state.verSoporte) BgInfoDisable else BgInfo
 
-            Surface(color = boxColor, shape = RoundedCornerShape(topStart = 0.dp, topEnd = Dimens.SpacingM, bottomEnd = Dimens.SpacingM, bottomStart = Dimens.SpacingM)) {
-                Row(modifier = Modifier.padding(Dimens.SpacingM).fillMaxWidth()) {
-                    Icon(painterResource(R.drawable.ic_info), contentDescription = null, tint = if (state.verSoporte) Color(0xFFE67E22) else TextSecondary)
-                    Spacer(Modifier.width(8.dp))
+            Surface(color = boxColor, shape = RoundedCornerShape(topEnd = Dimens.SpacingM, bottomEnd = Dimens.SpacingM, bottomStart = Dimens.SpacingM)) {
+                Row(modifier = Modifier
+                    .padding(Dimens.SpacingM)
+                    .fillMaxWidth()) {
+                    Icon(painterResource(R.drawable.ic_info), contentDescription = null, tint = if (state.verSoporte) WarningOrange else TextSecondary)
+                    Spacer(Modifier.width(Dimens.SpacingS))
                     Column {
                         if (!state.verSoporte) {
                             Text(stringResource(R.string.no_has_recibido), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
                             Spacer(Modifier.height(Dimens.SpacingXS))
-                            Text(text = stringResource(R.string.si_no_lo_encuentras), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp))
+                            Text(text = stringResource(R.string.si_no_lo_encuentras), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = Dimens.SpacingXS))
                             if (state.hasRequestedResend) {
-                                Text(text = attemptsText, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp))
+                                Text(text = attemptsText, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = Dimens.SpacingXS))
                             }
                             Text(
                                 text = stringResource(R.string.volver_a_enviar),
                                 color = if (state.otpAttemptsLeft > 0) BrandGreen else Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.Underline),
-                                modifier = Modifier.clickable { onResendClick() }.padding(top = 8.dp)
+                                modifier = Modifier
+                                    .clickable { onResendClick() }
+                                    .padding(top = Dimens.SpacingS)
                             )
                         } else {
-                            Text("Límite de reenvíos alcanzado", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
-                            Spacer(Modifier.height(Dimens.SpacingXS))
-                            Text(text = "Has superado el límite de 3 reenvíos para hoy. Si sigues sin recibir el código, contacta con nosotros.", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = Dimens.SpacingXS))
                             Text(
-                                text = "Llamar a atención al cliente", color = Color(0xFFE67E22), fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.Underline),
-                                modifier = Modifier.clickable { showNotAvailableDialog = true }.padding(top = Dimens.SpacingS)
+                                text = stringResource(R.string.otp_limite_titulo),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+
+                            Spacer(Modifier.height(Dimens.SpacingXS))
+
+                            Text(
+                                text = stringResource(R.string.otp_limite_descripcion),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(top = Dimens.SpacingXS)
+                            )
+
+                            Text(
+                                text = stringResource(R.string.otp_llamar_atencion_cliente),
+                                color = WarningOrange,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    textDecoration = TextDecoration.Underline
+                                ),
+                                modifier = Modifier
+                                    .clickable { showNotAvailableDialog = true }
+                                    .padding(top = Dimens.SpacingS)
                             )
                         }
                     }
@@ -524,7 +580,7 @@ fun OtpVerificationScreen(
             if (state.otpResendState == 2) {
                 InlineNotice(message = stringResource(R.string.hemos_vuelto_enviar), onClose = onCloseNotice)
             } else if (state.otpResendState == 3) {
-                InlineNotice(message = "Has agotado el número de intentos permitidos para hoy.", isError = true, onClose = onCloseNotice)
+                InlineNotice(message = stringResource(R.string.error_intentos_agotados), isError = true, onClose = onCloseNotice)
             }
 
             WizardBottomBar(
@@ -552,26 +608,34 @@ fun OtpVerificationScreen(
 
 @Composable
 fun SuccessScreen(isActivation: Boolean, displayEmail: String, onAccept: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize().background(BrandGreen)) {
-        IconButton(onClick = onAccept, modifier = Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(vertical = Dimens.SpacingM, horizontal = 0.dp)) {
-            Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Cerrar", tint = Color.White, modifier = Modifier.size(24.dp))
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(BrandGreen)) {
+        IconButton(onClick = onAccept, modifier = Modifier
+            .align(Alignment.TopEnd)
+            .statusBarsPadding()
+            .padding(vertical = Dimens.SpacingM)) {
+            Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = null, tint = Color.White, modifier = Modifier.size(Dimens.IconS))
         }
-        Column(modifier = Modifier.fillMaxSize().padding(Dimens.SpacingXL).navigationBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimens.SpacingXL)
+            .navigationBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.weight(1f))
-            Icon(painter = painterResource(id = R.drawable.ic_thumbs_up), contentDescription = null, modifier = Modifier.size(210.dp), tint = Color.Unspecified)
+            Icon(painter = painterResource(id = R.drawable.ic_thumbs_up), contentDescription = null, modifier = Modifier.size(Dimens.SuccessIconSize), tint = Color.Unspecified)
             Spacer(Modifier.height(Dimens.SpacingXL))
             Text(text = if (isActivation) stringResource(R.string.has_activado_correctamente) else stringResource(R.string.has_modificado_correctamente), color = Color.White, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(Dimens.SpacingL))
             Text(text = stringResource(R.string.pronto_recibiras_correo) + " " + displayEmail, color = Color.White, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Normal)
             Spacer(Modifier.weight(1f))
-            Button(onClick = onAccept, modifier = Modifier.fillMaxWidth().height(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.White), shape = RoundedCornerShape(Dimens.CornerButtonXL)) {
+            Button(onClick = onAccept, modifier = Modifier
+                .fillMaxWidth()
+                .height(Dimens.ButtonHeight), colors = ButtonDefaults.buttonColors(containerColor = Color.White), shape = RoundedCornerShape(Dimens.CornerButtonXL)) {
                 Text(text = stringResource(R.string.aceptar), color = BrandGreen, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
-
-// ---------------- CONTENEDOR PRINCIPAL MVVM ----------------
 
 @Composable
 fun WizardContainer(
@@ -596,7 +660,7 @@ fun WizardContainer(
     val animatedProgress by animateFloatAsState(
         targetValue = targetProgress,
         animationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow),
-        label = "progress"
+        label = stringResource(R.string.progress)
     )
 
     // Efecto de Navegación de Salida
@@ -669,14 +733,16 @@ fun WizardContainer(
 
         if (state.isLoading) {
             Box(
-                modifier = Modifier.matchParentSize().background(Color(0xCC000000)),
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(BgLoading),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(90.dp),
+                    modifier = Modifier.size(Dimens.LoadingIndicatorSize),
                     color = BrandGreen,
                     trackColor = Color.White.copy(alpha = 0.2f),
-                    strokeWidth = 8.dp
+                    strokeWidth = Dimens.LoadingStrokeWidth
                 )
             }
         }
