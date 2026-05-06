@@ -50,6 +50,7 @@ fun InvoiceScreen(
 
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
     val showThanks by viewModel.showThanksMessage.collectAsStateWithLifecycle()
+    var showNotAvailableDialog by remember { mutableStateOf(false) }
 
     // FILTROS
     val invoiceFilter by viewModel.invoiceFilter.collectAsStateWithLifecycle()
@@ -62,6 +63,31 @@ fun InvoiceScreen(
 
     val context = LocalContext.current
 
+    var isExiting by remember { mutableStateOf(false) }
+
+    val handleBack = {
+        if (!isExiting) {
+            isExiting = true
+            showNotAvailableDialog = false
+            viewModel.onBackClicked(onConfirmExit = onBackClick)
+        }
+    }
+
+    BackHandler {
+        if (showFilterScreen) {
+            showFilterScreen = false
+        } else {
+            handleBack()
+        }
+    }
+
+    LaunchedEffect(showFeedback) {
+        if (!showFeedback && !showThanks) {
+            isExiting = false
+        }
+    }
+
+    // EVENTOS
     LaunchedEffect(pagerState.currentPage) {
         viewModel.updateCurrentTab(pagerState.currentPage)
     }
@@ -79,19 +105,7 @@ fun InvoiceScreen(
     fun showSnackbar(message: String) {
         coroutineScope.launch {
             snackbarHostState.currentSnackbarData?.dismiss()
-            snackbarHostState.showSnackbar(
-                message = message,
-                duration = SnackbarDuration.Short
-            )
-        }
-    }
-
-    // Manejar botón atrás físico
-    BackHandler {
-        if (showFilterScreen) {
-            showFilterScreen = false
-        } else {
-            viewModel.onBackClicked(onConfirmExit = onBackClick)
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
         }
     }
 
@@ -103,8 +117,6 @@ fun InvoiceScreen(
             onDismiss = { viewModel.onSheetDismissed(onBackClick) }
         )
     }
-
-    var showNotAvailableDialog by remember { mutableStateOf(false) }
 
     if (showNotAvailableDialog) {
         AlertDialog(
@@ -137,76 +149,51 @@ fun InvoiceScreen(
                 val message = context.resources.getQuantityString(R.plurals.filtros_aplicados, count, count)
                 showSnackbar(message)
             },
-            onClearFilters = {
-                viewModel.clearFilters()
-            },
+            onClearFilters = { viewModel.clearFilters() },
             onBack = { showFilterScreen = false }
         )
     } else {
         Scaffold(
             topBar = {
                 InvoiceHeader(
-                    onBack = { viewModel.onBackClicked(onConfirmExit = onBackClick) }
+                    onBack = { handleBack() }
                 )
             },
             containerColor = Color.White,
             snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                    snackbar = { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            containerColor = DarkGray.copy(alpha = 0.9f),
-                            contentColor = White
-                        )
-                    }
-                )
+                SnackbarHost(hostState = snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = DarkGray.copy(alpha = 0.9f),
+                        contentColor = White
+                    )
+                }
             }
         ) { padding ->
             Column(modifier = Modifier.padding(padding)) {
-
-                SlidingTabsSection(
-                    pagerState = pagerState,
-                    tabs = tabs,
-                    coroutineScope = coroutineScope
-                )
+                SlidingTabsSection(pagerState, tabs, coroutineScope)
 
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = true,
                     beyondViewportPageCount = 1
                 ) { pageIndex ->
-
                     val type = if (pageIndex == 0) InvoiceType.LIGHT else InvoiceType.GAS
                     val uiStatesMap by viewModel.uiStates.collectAsStateWithLifecycle()
-
-                    // Obtenemos el estado específico de esta página
                     val pageUiState = uiStatesMap[type] ?: InvoiceViewModel.UiState.Loading
 
-                    LaunchedEffect(type) {
-                        viewModel.filterInvoices(type)
-                    }
+                    LaunchedEffect(type) { viewModel.filterInvoices(type) }
 
                     when (pageUiState) {
                         is InvoiceViewModel.UiState.Loading -> {
                             val brush = rememberShimmerBrush()
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(Dimens.SpacingM)
-                            ) {
+                            LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(Dimens.SpacingM)) {
                                 // Tarjeta principal destacada
                                 item { ShimmerLastInvoiceCard(brush) }
 
                                 // Título Histórico + Botón Filtrar
                                 item {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = Dimens.SpacingM, bottom = Dimens.SpacingM),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween) {
                                         // Caja para "Histórico de facturas"
                                         Box(modifier = Modifier.width(180.dp).height(24.dp).background(brush))
 
@@ -227,8 +214,14 @@ fun InvoiceScreen(
                         is InvoiceViewModel.UiState.Success -> {
                             InvoiceList(
                                 data = pageUiState.data,
-                                onInvoiceClick = { showNotAvailableDialog = true },
-                                onFilterClick = { showFilterScreen = true },
+                                onInvoiceClick = {
+                                    if (!isExiting && !showFeedback) {
+                                        showNotAvailableDialog = true
+                                    }
+                                },
+                                onFilterClick = {
+                                    if (!isExiting && !showFeedback) showFilterScreen = true
+                                },
                                 isFiltering = isFiltering,
                                 onClearFilters = { viewModel.clearFilters() }
                             )
@@ -276,7 +269,7 @@ fun InvoiceList(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = Dimens.SpacingXL) // Espacio al final
     ) {
-        // ÍNDICE 0: TARJETA PERMANENTE ---
+        // ÍNDICE 0: TARJETA PERMANENTE
         item {
             Box(
                 modifier = Modifier
@@ -292,7 +285,7 @@ fun InvoiceList(
             }
         }
 
-        // ÍNDICE 1: ENCABEZADO + BOTÓN ---
+        // ÍNDICE 1: ENCABEZADO + BOTÓN
         item {
             Row(
                 modifier = Modifier
