@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +58,12 @@ fun FilterScreen(
     var selectedToDate by rememberSaveable { mutableStateOf(currentFilter.dateTo) }
 
     // Si no hay rango seleccionado, coge los límites
-    var sliderPosition by remember {
+    var sliderPosition by rememberSaveable(stateSaver = RangeSaver) {
         mutableStateOf(currentFilter.amountRange ?: amountBounds)
     }
 
-    val selectedStatuses = remember {
-        mutableStateListOf(*currentFilter.statuses.toTypedArray())
+    var selectedStatuses by rememberSaveable(stateSaver = StatusSetSaver) {
+        mutableStateOf(currentFilter.statuses)
     }
 
     var showFromDatePicker by remember { mutableStateOf(false) }
@@ -137,7 +138,7 @@ fun FilterScreen(
                             selectedFromDate = null
                             selectedToDate = null
                             sliderPosition = amountBounds
-                            selectedStatuses.clear()
+                            selectedStatuses = emptySet()
 
                             onClearFilters()
 
@@ -364,6 +365,7 @@ fun FilterScreen(
 
                     statusOptions.forEach { status ->
                         val ui = status.toUiModel(usePlural = true)
+                        val isChecked = selectedStatuses.contains(status)
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -371,18 +373,14 @@ fun FilterScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(Dimens.CornerButtonXL))
                                 .clickable {
-                                    if (selectedStatuses.contains(status)) selectedStatuses.remove(
-                                        status
-                                    )
-                                    else selectedStatuses.add(status)
+                                    selectedStatuses = if (isChecked) selectedStatuses - status else selectedStatuses + status
                                 }
                                 .padding(vertical = 4.dp)
                         ) {
                             Checkbox(
                                 checked = selectedStatuses.contains(status),
-                                onCheckedChange = { isChecked ->
-                                    if (isChecked) selectedStatuses.add(status)
-                                    else selectedStatuses.remove(status)
+                                onCheckedChange = { checked ->
+                                    selectedStatuses = if (checked) selectedStatuses + status else selectedStatuses - status
                                 },
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = BrandGreen,
@@ -618,3 +616,13 @@ fun DatePickerModal(
         )
     }
 }
+
+val RangeSaver = listSaver<ClosedFloatingPointRange<Float>, Float>(
+    save = { listOf(it.start, it.endInclusive) },
+    restore = { it[0]..it[1] }
+)
+
+val StatusSetSaver = listSaver(
+    save = { it.map { status -> status.id } },
+    restore = { it.map { id -> InvoiceStatus.fromId(id) }.toSet() }
+)

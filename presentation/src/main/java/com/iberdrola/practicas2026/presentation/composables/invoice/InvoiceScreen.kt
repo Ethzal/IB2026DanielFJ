@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,7 +56,7 @@ fun InvoiceScreen(
     // FILTROS
     val invoiceFilter by viewModel.invoiceFilter.collectAsStateWithLifecycle()
     val amountBounds by viewModel.amountBounds.collectAsStateWithLifecycle()
-    var showFilterScreen by remember { mutableStateOf(false) }
+    var showFilterScreen by rememberSaveable { mutableStateOf(false) }
     val isFiltering by viewModel.isFiltering.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -308,7 +309,7 @@ fun InvoiceList(
                 Box(
                     modifier = Modifier
                         .fillParentMaxHeight()
-                        .padding(bottom = 100.dp),
+                        .padding(bottom = Dimens.SpacingXL),
                     contentAlignment = Alignment.Center
                 ) {
                     EmptyStateView(
