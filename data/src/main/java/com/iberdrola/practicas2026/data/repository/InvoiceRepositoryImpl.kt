@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,49 +28,41 @@ class InvoiceRepositoryImpl @Inject constructor(
     private val repositoryScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override suspend fun getInvoices(isLocal: Boolean): Flow<InvoiceResponse> {
-        if (isLocal) {
-            return flow {
-                delay((1000..3000).random().toLong())
-                val dto = apiLocal.getInvoices()
-                emit(mapDtoToDomain(dto))
-            }
-        } else {
-            // Refrescamos en segundo plano sin bloquear el return
-            repositoryScope.launch {
-                try {
-                    val remoteDto = apiRemote.getInvoices()
+        repositoryScope.launch {
+            try {
+                if (isLocal) delay((1000..3000).random().toLong())
+                val api = if (isLocal) apiLocal else apiRemote
+                val responseDto = api.getInvoices()
 
-                    // Mapeamos la lista plana a entidades de Room
-                    val entities = remoteDto.facturas?.mapIndexed { index, item ->
-                        InvoiceEntity(
-                            id = item.id ?: "ID_$index",
-                            date = item.date ?: "",
-                            type = item.type ?: "",
-                            amount = item.amount ?: 0.0,
-                            status = (item.status ?: "").toInvoiceStatus().id,
-                            startDate = item.startDate ?: "",
-                            endDate = item.endDate ?: "",
-                            isLastInvoice = index == 0
-                        )
-                    } ?: emptyList()
+                val entities = responseDto.facturas?.mapIndexed { index, item ->
+                    InvoiceEntity(
+                        id = item.id ?: "ID_$index",
+                        date = item.date ?: "",
+                        type = item.type ?: "",
+                        amount = item.amount ?: 0.0,
+                        status = (item.status ?: "").toInvoiceStatus().id,
+                        startDate = item.startDate ?: "",
+                        endDate = item.endDate ?: "",
+                        isLastInvoice = index == 0
+                    )
+                } ?: emptyList()
 
-                    if (entities.isNotEmpty()) {
-                        dao.clearInvoices()
-                        dao.saveInvoices(entities)
-                    }
-                } catch (_: Exception) {
-                    // Si falla, está Room
+                if (entities.isNotEmpty()) {
+                    dao.clearAndSave(entities) // Función transaccional que comentamos antes
                 }
-            }
-
-            // Devolvemos el flujo de Room
-            return dao.observeAllInvoices().map { entities ->
-                if (entities.isEmpty()) {
-                    throw Exception("Error de conexión y no hay datos offline.")
-                }
-                InvoiceResponse(allInvoices = entities.map { it.toDomain() })
+            } catch (e: Exception) {
+                // Error de red: No hacemos nada, Room emitirá lo que tenga (vacío o viejo)
             }
         }
+
+            // Devolvemos el flujo de Room
+        return dao.observeAllInvoices().map { entities ->
+//                if (entities.isEmpty()) {
+//                    throw Exception("Error de conexión y no hay datos offline.")
+//                }
+            InvoiceResponse(allInvoices = entities.map { it.toDomain() })
+        }
+
     }
 
     private fun mapDtoToDomain(dto: InvoiceResponseDto): InvoiceResponse {

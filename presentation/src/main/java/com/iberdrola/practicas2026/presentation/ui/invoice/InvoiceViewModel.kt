@@ -16,13 +16,13 @@ import com.iberdrola.practicas2026.domain.model.InvoiceStatus
 import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -121,30 +121,25 @@ class InvoiceViewModel @Inject constructor(
                 InvoiceType.GAS to UiState.Loading
             )
 
-            getInvoicesUseCase(isLocal)
-                .catch { e ->
-                    // Si hay error, lo ponemos en ambos para que el usuario se entere
-                    _uiStates.update { currentMap ->
-                        currentMap + (InvoiceType.LIGHT to UiState.Error(e.message ?: "Sin conexión")) +
-                                (InvoiceType.GAS to UiState.Error(e.message ?: "Sin conexión"))
-                    }
-                }
-                .collect { response ->
-                    allInvoicesCached = response.allInvoices
+            delay(3000)
 
-                    // Cálculo dinámico para el slider
-                    if (allInvoicesCached.isNotEmpty()) {
-                        val min = allInvoicesCached.minOf { it.amount.toFloat() }
-                        val max = allInvoicesCached.maxOf { it.amount.toFloat() }
-                        _amountBounds.value = if (min == max) {
-                            (min - 0.5f)..(max + 0.5f)
-                        } else {
-                            min..max
-                        }
-                    }
+            getInvoicesUseCase(isLocal).collect { response ->
+                allInvoicesCached = response.allInvoices
+
+                if (allInvoicesCached.isEmpty()) {
+                    _uiStates.value = mapOf(
+                        InvoiceType.LIGHT to UiState.Error("No se han podido cargar las facturas. Revisa tu conexión."),
+                        InvoiceType.GAS to UiState.Error("No se han podido cargar las facturas. Revisa tu conexión.")
+                    )
+                } else {
+                    val min = allInvoicesCached.minOf { it.amount.toFloat() }
+                    val max = allInvoicesCached.maxOf { it.amount.toFloat() }
+                    _amountBounds.value = if (min == max) (min - 0.5f)..(max + 0.5f) else min..max
+
                     filterInvoices(InvoiceType.LIGHT)
                     filterInvoices(InvoiceType.GAS)
                 }
+            }
         }
     }
 

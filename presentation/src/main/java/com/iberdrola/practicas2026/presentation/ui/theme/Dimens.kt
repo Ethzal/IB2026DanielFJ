@@ -30,6 +30,7 @@ object Dimens {
     val IconXXS = 16.dp
     val IconXS = 20.dp
     val IconS = 24.dp
+    val IconXM = 32.dp
     val IconM = 40.dp
     val IconL = 48.dp
     val SuccessIconSize = 210.dp

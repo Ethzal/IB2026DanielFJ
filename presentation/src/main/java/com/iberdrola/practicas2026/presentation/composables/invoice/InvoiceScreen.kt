@@ -291,7 +291,7 @@ fun InvoiceList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Dimens.SpacingM),
+                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, bottom = Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
