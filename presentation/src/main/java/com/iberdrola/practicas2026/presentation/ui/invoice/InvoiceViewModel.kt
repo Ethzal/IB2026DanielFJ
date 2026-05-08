@@ -112,7 +112,10 @@ class InvoiceViewModel @Inject constructor(
         }
     }
 
+    private val _isRemoteLoading = MutableStateFlow(false)
+
     fun fetchFacturas(isLocal: Boolean) {
+        _isRemoteLoading.value = true
         fetchJob?.cancel() // Cancela la carga anterior si está en curso
         fetchJob = viewModelScope.launch {
             _uiStates.value = mapOf(
@@ -142,6 +145,7 @@ class InvoiceViewModel @Inject constructor(
                     filterInvoices(InvoiceType.LIGHT)
                     filterInvoices(InvoiceType.GAS)
                 }
+            _isRemoteLoading.value = false
         }
     }
 

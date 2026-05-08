@@ -1,5 +1,7 @@
 package com.iberdrola.practicas2026.data.local
 
+import androidx.room.Transaction
+
 @androidx.room.Dao
 interface InvoiceDao {
     @androidx.room.Query("SELECT * FROM invoices")
@@ -13,4 +15,10 @@ interface InvoiceDao {
 
     @androidx.room.Query("DELETE FROM invoices")
     suspend fun clearInvoices()
+
+    @Transaction
+    suspend fun replaceAllInvoices(invoices: List<InvoiceEntity>) {
+        clearInvoices()
+        saveInvoices(invoices)
+    }
 }

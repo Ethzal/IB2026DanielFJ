@@ -54,8 +54,7 @@ class InvoiceRepositoryImpl @Inject constructor(
                     } ?: emptyList()
 
                     if (entities.isNotEmpty()) {
-                        dao.clearInvoices()
-                        dao.saveInvoices(entities)
+                        dao.replaceAllInvoices(entities)
                     }
                 } catch (_: Exception) {
                     // Si falla, está Room
@@ -64,9 +63,9 @@ class InvoiceRepositoryImpl @Inject constructor(
 
             // Devolvemos el flujo de Room
             return dao.observeAllInvoices().map { entities ->
-                if (entities.isEmpty()) {
-                    throw Exception("Error de conexión y no hay datos offline.")
-                }
+//                if (entities.isEmpty()) {
+//                    throw Exception("Error de conexión y no hay datos offline.")
+//                }
                 InvoiceResponse(allInvoices = entities.map { it.toDomain() })
             }
         }
