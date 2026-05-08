@@ -13,10 +13,4 @@ interface InvoiceDao {
 
     @androidx.room.Query("DELETE FROM invoices")
     suspend fun clearInvoices()
-
-    @androidx.room.Transaction
-    suspend fun clearAndSave(invoices: List<InvoiceEntity>) {
-        clearInvoices()
-        saveInvoices(invoices)
-    }
 }

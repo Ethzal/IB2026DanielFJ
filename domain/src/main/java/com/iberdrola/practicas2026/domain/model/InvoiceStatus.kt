@@ -8,10 +8,17 @@ sealed class InvoiceStatus(val id: String) {
     data object FixedQuota : InvoiceStatus("Cuota Fija")
 
     companion object {
-        val all = listOf(Paid, Pending, InProgress, Cancelled, FixedQuota)
+        val all get() = listOf(Paid, Pending, InProgress, Cancelled, FixedQuota)
 
         fun fromId(id: String?): InvoiceStatus {
-            return all.find { it.id == id } ?: Pending // Si es nulo o no existe, por defecto Pendiente
+            return when (id) {
+                "Pagada" -> Paid
+                "Pendiente de Pago" -> Pending
+                "En trámite de cobro" -> InProgress
+                "Anulada" -> Cancelled
+                "Cuota Fija" -> FixedQuota
+                else -> Pending
+            }
         }
     }
 }

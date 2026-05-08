@@ -5,7 +5,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
 import com.iberdrola.practicas2026.presentation.composables.home.HomeScreenContent
-import com.iberdrola.practicas2026.presentation.ui.home.InvoiceState
 import com.iberdrola.practicas2026.presentation.ui.theme.EnergyAppTheme
 
 @Preview(showBackground = true, name = "Home - Cargando")
@@ -14,10 +13,10 @@ fun HomeScreenLoadingPreview() {
     EnergyAppTheme {
         HomeScreenContent(
             isLocal = true,
-            lastInvoiceState = InvoiceState.Loading,
             onToggleMode = {},
             onNavigateToInvoices = {},
-            onNavigateToElectronicInvoice = {}
+            onNavigateToElectronicInvoice = {},
+            isInvoiceLoading = true
         )
     }
 }
@@ -36,10 +35,10 @@ fun HomeScreenSuccessPreview() {
 
         HomeScreenContent(
             isLocal = false,
-            lastInvoiceState = InvoiceState.Success(fakeInvoice),
             onToggleMode = {},
             onNavigateToInvoices = {},
-            onNavigateToElectronicInvoice = {}
+            onNavigateToElectronicInvoice = {},
+            isInvoiceLoading = false
         )
     }
 }

@@ -2,7 +2,6 @@ package com.iberdrola.practicas2026.presentation.composables.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -22,15 +21,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.rememberShimmerBrush
-import com.iberdrola.practicas2026.presentation.ui.home.InvoiceState
 import com.iberdrola.practicas2026.presentation.ui.home.MainViewModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
@@ -44,12 +40,14 @@ fun HomeScreen(
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     val isLocal by mainViewModel.isLocalMode.collectAsStateWithLifecycle()
-    val lastInvoiceState by mainViewModel.lastInvoiceState.collectAsStateWithLifecycle()
+    val isInvoiceLoading by mainViewModel.isInvoiceLoading.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         isLocal = isLocal,
-        lastInvoiceState = lastInvoiceState,
-        onToggleMode = { mainViewModel.toggleMode(it) },
+        isInvoiceLoading = isInvoiceLoading,
+        onToggleMode = { enabled ->
+            mainViewModel.toggleMode(enabled)
+        },
         onNavigateToInvoices = onNavigateToInvoices,
         onNavigateToElectronicInvoice = onNavigateToElectronicInvoice
     )
@@ -58,8 +56,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     isLocal: Boolean,
-    lastInvoiceState: InvoiceState,
     onToggleMode: (Boolean) -> Unit,
+    isInvoiceLoading: Boolean,
     onNavigateToInvoices: () -> Unit,
     onNavigateToElectronicInvoice: () -> Unit
 ) {
@@ -187,14 +185,14 @@ fun HomeScreenContent(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextMain
                                 )
-                                Spacer(Modifier.height(Dimens.SpacingS))
+                                /*Spacer(Modifier.height(Dimens.SpacingS))
                                 Text(
                                     text = "Modificar email",
                                     color = BrandGreen,
                                     fontWeight = FontWeight.Bold,
                                     style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.Underline),
                                     modifier = Modifier.clickable { onNavigateToElectronicInvoice() }
-                                )
+                                )*/
                             }
                         }
                     }
@@ -227,8 +225,9 @@ fun HomeScreenContent(
                     ) {
                         item {
                             LastInvoiceHomeCard(
-                                state = lastInvoiceState,
                                 width = cardWidth,
+                                isLocal = isLocal,
+                                loading = isInvoiceLoading,
                                 onClick = onNavigateToInvoices
                             )
                         }
@@ -264,81 +263,115 @@ fun HomeScreenContent(
 }
 
 @Composable
-fun LastInvoiceHomeCard(state: InvoiceState, width: Dp, onClick: () -> Unit) {
+fun LastInvoiceHomeCard(
+    width: Dp,
+    isLocal: Boolean,
+    loading: Boolean,
+    onClick: () -> Unit
+) {
 
-    val isLoading = state is InvoiceState.Loading
+    val amount = if (isLocal) "110,00 €" else "215,00 €"
 
     Card(
-        onClick = onClick,
-        modifier = Modifier.width(width).height(140.dp),
+        onClick = {
+            if (!loading) {
+                onClick()
+            }
+        },
+        enabled = !loading,
+        modifier = Modifier
+            .width(width)
+            .height(140.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
             disabledContainerColor = Color.White
         ),
-        enabled = !isLoading,
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         elevation = CardDefaults.cardElevation(Dimens.SpacingXS)
     ) {
-        when (state) {
-            is InvoiceState.Loading -> {
-                val brush = rememberShimmerBrush()
-                Column(Modifier.padding(Dimens.SpacingM).fillMaxSize()) {
-                    Box(Modifier.size(32.dp).background(brush, CircleShape))
-                    Spacer(Modifier.height(Dimens.SpacingL))
-                    Box(Modifier.height(16.dp).fillMaxWidth(0.8f).background(brush))
-                    Spacer(Modifier.height(Dimens.SpacingS))
-                    Box(Modifier.height(12.dp).fillMaxWidth(0.6f).background(brush))
-                    Spacer(Modifier.height(4.dp))
-                    Box(Modifier.height(12.dp).fillMaxWidth(0.4f).background(brush))
-                }
+
+        if (loading) {
+
+            val brush = rememberShimmerBrush()
+
+            Column(
+                Modifier
+                    .padding(Dimens.SpacingM)
+                    .fillMaxSize()
+            ) {
+
+                Box(
+                    Modifier
+                        .size(32.dp)
+                        .background(brush, CircleShape)
+                )
+
+                Spacer(Modifier.height(Dimens.SpacingL))
+
+                Box(
+                    Modifier
+                        .height(16.dp)
+                        .fillMaxWidth(0.7f)
+                        .background(brush)
+                )
+
+                Spacer(Modifier.height(Dimens.SpacingS))
+
+                Box(
+                    Modifier
+                        .height(12.dp)
+                        .fillMaxWidth(0.5f)
+                        .background(brush)
+                )
+
+                Spacer(Modifier.height(Dimens.SpacingXS))
+
+                Box(
+                    Modifier
+                        .height(12.dp)
+                        .fillMaxWidth(0.3f)
+                        .background(brush)
+                )
             }
 
-            is InvoiceState.Success, is InvoiceState.Error -> {
+        } else {
 
-                var isGas = false
-                var amountText = "— €"
-                var typeText = "—"
+            Column(
+                Modifier
+                    .padding(Dimens.SpacingM)
+                    .fillMaxSize()
+            ) {
 
-                if (state is InvoiceState.Success && state.invoice != null) {
-                    val invoice = state.invoice
-                    isGas = invoice.type.contains("Gas", ignoreCase = true)
-                    amountText = invoice.amount.formatSpanishCurrency() + " €"
-                    typeText = invoice.type.replace("Factura ", "")
-                }
+                Icon(
+                    painter = painterResource(R.drawable.ic_gas),
+                    contentDescription = null,
+                    tint = BrandGreen,
+                    modifier = Modifier.size(Dimens.IconXM)
+                )
 
-                Column(Modifier.padding(Dimens.SpacingM).fillMaxSize()) {
-                    Icon(
-                        painter = painterResource(if (isGas) R.drawable.ic_gas else R.drawable.ic_lightbulb),
-                        contentDescription = null,
-                        tint = if (state is InvoiceState.Error || (state is InvoiceState.Success && state.invoice == null))
-                            BrandGreen.copy(alpha = 0.5f) else BrandGreen,
-                        modifier = Modifier.size(Dimens.IconXM)
-                    )
+                Spacer(Modifier.height(Dimens.SpacingL))
 
-                    Spacer(Modifier.height(Dimens.SpacingL))
+                Text(
+                    text = amount,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
 
-                    Text(
-                        text = amountText,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                Spacer(Modifier.height(Dimens.SpacingS))
 
-                    Spacer(Modifier.height(Dimens.SpacingS))
+                Text(
+                    text = stringResource(R.string.ultima_factura),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextMain
+                )
 
-                    Text(
-                        text = stringResource(R.string.ultima_factura),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMain
-                    )
+                Spacer(Modifier.height(Dimens.SpacingXS))
 
-                    Spacer(Modifier.height(Dimens.SpacingXS))
-
-                    Text(
-                        text = typeText,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMain
-                    )
-                }
+                Text(
+                    text = "Gas",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextMain
+                )
             }
         }
     }
