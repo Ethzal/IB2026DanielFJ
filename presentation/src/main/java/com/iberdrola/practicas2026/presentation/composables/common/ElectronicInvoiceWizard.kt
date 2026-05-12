@@ -248,15 +248,18 @@ fun EmailInputScreen(
 ) {
     val title = if (state.isActivation) stringResource(R.string.activa_tu_factura) else stringResource(R.string.modificar_email)
     
-    // Gestión de errores VISUALES (Se queda en la UI)
+    // Gestión de errores
     var showErrors by remember { mutableStateOf(false) }
-    val emailError = if (showErrors || state.draftEmail.isNotEmpty()) {
-        if (showErrors && state.draftEmail.isEmpty()) stringResource(R.string.error_email_vacio)
-        else getEmailError(state.draftEmail)
-    } else null
+    val isSameEmail = !state.isActivation &&
+            state.draftEmail.trim().equals(state.lightContractEmail.trim(), ignoreCase = true)
+    val formatError = getEmailError(state.draftEmail)
+    val businessError = if (showErrors && isSameEmail) stringResource(R.string.email_igual) else null
+    val emailError = businessError ?: (if (showErrors && state.draftEmail.isEmpty()) stringResource(R.string.error_email_vacio) else formatError)
     val legalError = showErrors && state.isActivation && !state.isLegalChecked
-    
-    val canAdvance = if (state.isActivation) state.isEmailValid && state.isLegalChecked else state.isEmailValid
+
+    val canAdvance = state.isEmailValid &&
+            (state.isActivation || !isSameEmail) &&
+            (!state.isActivation || state.isLegalChecked)
 
     val emailShakeOffset = rememberShakeOffset()
     val legalShakeOffset = rememberShakeOffset()
@@ -314,7 +317,8 @@ fun EmailInputScreen(
                     .offset(x = emailShakeOffset.value.dp)
                     .onFocusChanged { isFocused = it.isFocused }
                     .drawBehind {
-                        val strokeWidth = if (isFocused) Dimens.StrokeDefault.toPx() else Dimens.StrokeThick.toPx()
+                        val strokeWidth =
+                            if (isFocused) Dimens.StrokeDefault.toPx() else Dimens.StrokeThick.toPx()
                         val color =
                             if (emailError != null) Color.Red else if (isFocused) BrandGreen else TextSecondary
                         drawLine(
@@ -395,12 +399,14 @@ fun EmailInputScreen(
             WizardBottomBar(
                 primaryText = stringResource(R.string.siguiente),
                 onPrimaryClick = {
+                    showErrors = true
+                    val emailInvalid = !state.isEmailValid || isSameEmail
+                    val legalInvalid = state.isActivation && !state.isLegalChecked
+
+                    if (emailInvalid) scope.launch { emailShakeOffset.shake() }
+                    if (legalInvalid) scope.launch { legalShakeOffset.shake() }
                     if (canAdvance) {
                         onSubmit()
-                    } else {
-                        showErrors = true
-                        if (!state.isEmailValid) scope.launch { emailShakeOffset.shake() }
-                        if (state.isActivation && !state.isLegalChecked) scope.launch { legalShakeOffset.shake() }
                     }
                 },
                 primaryEnabled = canAdvance,
