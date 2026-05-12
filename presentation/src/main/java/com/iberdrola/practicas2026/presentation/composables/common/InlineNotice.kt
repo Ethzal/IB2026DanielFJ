@@ -32,11 +32,12 @@ fun InlineNotice(
     isError: Boolean = false,
     onClose: () -> Unit
 ) {
+    if (isError) return
+
     Surface(
-        color = if (isError) Color(0xFFFADBD8) else Color(0xFFB1DEC8),
+        color = Color(0xFFB1DEC8),
         modifier = Modifier
             .fillMaxWidth()
-            .padding()
             .layout { measurable, constraints ->
                 val paddingPx = 16.dp.roundToPx()
                 val extendedWidth = constraints.maxWidth + (paddingPx * 2)
@@ -49,27 +50,33 @@ fun InlineNotice(
             }
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = Dimens.SpacingS, vertical = Dimens.SpacingM),
+            modifier = Modifier.padding(
+                horizontal = Dimens.SpacingS,
+                vertical = Dimens.SpacingM
+            ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = if (isError) R.drawable.ic_error_connection else R.drawable.ic_check),
+                painter = painterResource(id = R.drawable.ic_check),
                 contentDescription = null,
-                tint = if (isError) Color(0xFFB03A2E) else BrandGreen,
-                modifier = Modifier.size(24.dp)
+                tint = BrandGreen,
+                modifier = Modifier.size(Dimens.IconS)
             )
+
             Spacer(Modifier.width(Dimens.SpacingS))
+
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodySmall,
-                color = if (isError) Color(0xFFB03A2E) else TextMain,
+                color = TextMain,
                 modifier = Modifier.padding(top = 1.dp)
             )
-            IconButton(onClick = onClose, modifier = Modifier.size(24.dp)) {
+
+            IconButton(onClick = onClose, modifier = Modifier.size(Dimens.IconS)) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = "Cerrar aviso",
-                    tint = if (isError) Color(0xFFB03A2E) else TextMain,
+                    tint = TextMain,
                     modifier = Modifier.size(18.dp)
                 )
             }
