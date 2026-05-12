@@ -183,13 +183,17 @@ fun FilterScreen(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onBack() }
+                        modifier = Modifier
+                            .sizeIn(minWidth = Dimens.ButtonHeight, minHeight = Dimens.SpacingXL)
+                            .clip(RoundedCornerShape(Dimens.CornerButton))
+                            .clickable { onBack() }
+                            .padding(horizontal = Dimens.SpacingS)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
                             contentDescription = null,
                             tint = BrandGreen,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(Dimens.IconXS)
                         )
                         Text(
                             text = stringResource(R.string.atras),

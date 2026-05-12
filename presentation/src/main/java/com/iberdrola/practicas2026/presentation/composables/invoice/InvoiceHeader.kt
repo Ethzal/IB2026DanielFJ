@@ -3,12 +3,14 @@ package com.iberdrola.practicas2026.presentation.composables.invoice
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,13 +36,17 @@ fun InvoiceHeader(onBack: () -> Unit) {
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onBack() }
+                modifier = Modifier
+                    .sizeIn(minWidth = Dimens.ButtonHeight, minHeight = Dimens.SpacingXL)
+                    .clip(RoundedCornerShape(Dimens.CornerButton))
+                    .clickable { onBack() }
+                    .padding(horizontal = Dimens.SpacingS)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_back),
                     contentDescription = null,
                     tint = BrandGreen,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(Dimens.IconXS)
                 )
                 Text(
                     text = stringResource(R.string.atras),
@@ -50,7 +56,7 @@ fun InvoiceHeader(onBack: () -> Unit) {
             }
         }
 
-        Spacer(Modifier.height(Dimens.SpacingM))
+        Spacer(Modifier.height(Dimens.SpacingS))
         Text(text = stringResource(R.string.mis_facturas), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(Dimens.SpacingS))
         Text(text = stringResource(R.string.direccion).uppercase(), style = MaterialTheme.typography.titleLarge, color = TextMain, fontWeight = FontWeight.Bold)
