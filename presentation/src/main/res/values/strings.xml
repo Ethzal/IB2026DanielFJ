@@ -98,6 +98,7 @@
     <string name="error_legal_requerido">Debes aceptar las condiciones para continuar</string>
     <string name="error_otp_incompleto">Introduce los 6 dígitos del código</string>
     <string name="error_intentos_agotados">Has agotado el número de intentos permitidos para hoy.</string>
+    <string name="email_igual">El email introducido es igual al actual</string>
 
     <!-- OTP Verification -->
     <string name="introduce_codigo">Introduce tu código de verificación</string>

@@ -128,9 +128,7 @@ class ElectronicInvoiceViewModel @Inject constructor(
             is WizardEvent.UpdateLegal -> {
                 _state.update { it.copy(isLegalChecked = event.checked) }
             }
-            is WizardEvent.SubmitEmail -> {
-                _state.update { it.copy(step = WizardStep.OTP, otpCode = "") }
-            }
+            is WizardEvent.SubmitEmail -> handleSubmitEmail()
             is WizardEvent.UpdateOtp -> {
                 if (event.code.length <= 6 && event.code.all { it.isDigit() }) {
                     _state.update { it.copy(otpCode = event.code) }
@@ -193,6 +191,15 @@ class ElectronicInvoiceViewModel @Inject constructor(
             // Activación exitosa del inactivo
             _state.value = cleanState.copy(step = WizardStep.CONTRACT_LIST)
         }
+    }
+
+    private fun handleSubmitEmail() {
+        val currentState = _state.value
+        if (!currentState.isActivation &&
+            currentState.draftEmail.trim().equals(currentState.lightContractEmail.trim(), ignoreCase = true)) {
+            return
+        }
+        _state.update { it.copy(step = WizardStep.OTP, otpCode = "") }
     }
 
     private fun handleBack() {
