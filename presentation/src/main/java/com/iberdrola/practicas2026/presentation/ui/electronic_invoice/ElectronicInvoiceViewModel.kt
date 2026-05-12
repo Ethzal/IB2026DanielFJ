@@ -3,6 +3,7 @@ package com.iberdrola.practicas2026.presentation.ui.electronic_invoice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.core.utils.isEmailValid
+import com.iberdrola.practicas2026.domain.repository.OtpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -68,13 +69,31 @@ sealed class WizardEffect {
 }
 
 @HiltViewModel
-class ElectronicInvoiceViewModel @Inject constructor() : ViewModel() {
+class ElectronicInvoiceViewModel @Inject constructor(
+    private val otpRepository: OtpRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(WizardState())
     val state: StateFlow<WizardState> = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<WizardEffect>()
     val effect = _effect.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            otpRepository.otpAttempts.collect { (savedAttempts, lastTime) ->
+                val currentTime = System.currentTimeMillis()
+                val dayInMillis = 24 * 60 * 60 * 1000L
+
+                if (currentTime - lastTime >= dayInMillis) {
+                    otpRepository.saveOtpAttempts(3, 0L)
+                    _state.update { it.copy(otpAttemptsLeft = 3, verSoporte = false) }
+                } else {
+                    _state.update { it.copy(otpAttemptsLeft = savedAttempts) }
+                }
+            }
+        }
+    }
 
     fun resetState() {
         _state.value = WizardState()
@@ -133,6 +152,9 @@ class ElectronicInvoiceViewModel @Inject constructor() : ViewModel() {
     private fun handleResendOtp() {
         val currentState = _state.value
         if (currentState.otpAttemptsLeft > 0) {
+            val newAttempts = currentState.otpAttemptsLeft - 1
+            val currentTime = if (newAttempts == 0) System.currentTimeMillis() else 0L
+            viewModelScope.launch { otpRepository.saveOtpAttempts(newAttempts, currentTime) }
             _state.update {
                 it.copy(
                     otpAttemptsLeft = it.otpAttemptsLeft - 1,
