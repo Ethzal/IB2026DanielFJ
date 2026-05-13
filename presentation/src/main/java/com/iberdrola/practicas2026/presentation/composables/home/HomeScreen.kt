@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.rememberShimmerBrush
 import com.iberdrola.practicas2026.presentation.ui.home.MainViewModel
@@ -32,6 +33,7 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 
 @Composable
 fun HomeScreen(
@@ -41,10 +43,14 @@ fun HomeScreen(
 ) {
     val isLocal by mainViewModel.isLocalMode.collectAsStateWithLifecycle()
     val isInvoiceLoading by mainViewModel.isInvoiceLoading.collectAsStateWithLifecycle()
+    val lastInvoice by mainViewModel.lastInvoice.collectAsStateWithLifecycle()
+    val hasError by mainViewModel.hasError.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         isLocal = isLocal,
         isInvoiceLoading = isInvoiceLoading,
+        lastInvoice = lastInvoice,
+        hasError = hasError,
         onToggleMode = { enabled ->
             mainViewModel.toggleMode(enabled)
         },
@@ -58,6 +64,8 @@ fun HomeScreenContent(
     isLocal: Boolean,
     onToggleMode: (Boolean) -> Unit,
     isInvoiceLoading: Boolean,
+    lastInvoice: Invoice?,
+    hasError: Boolean,
     onNavigateToInvoices: () -> Unit,
     onNavigateToElectronicInvoice: () -> Unit
 ) {
@@ -185,14 +193,6 @@ fun HomeScreenContent(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextMain
                                 )
-                                /*Spacer(Modifier.height(Dimens.SpacingS))
-                                Text(
-                                    text = "Modificar email",
-                                    color = BrandGreen,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.Underline),
-                                    modifier = Modifier.clickable { onNavigateToElectronicInvoice() }
-                                )*/
                             }
                         }
                     }
@@ -226,8 +226,9 @@ fun HomeScreenContent(
                         item {
                             LastInvoiceHomeCard(
                                 width = cardWidth,
-                                isLocal = isLocal,
                                 loading = isInvoiceLoading,
+                                lastInvoice = lastInvoice,
+                                hasError = hasError,
                                 onClick = onNavigateToInvoices
                             )
                         }
@@ -265,12 +266,23 @@ fun HomeScreenContent(
 @Composable
 fun LastInvoiceHomeCard(
     width: Dp,
-    isLocal: Boolean,
     loading: Boolean,
+    lastInvoice: Invoice?,
+    hasError: Boolean,
     onClick: () -> Unit
 ) {
 
-    val amount = if (isLocal) "110,00 €" else "215,00 €"
+    val amount = when {
+        hasError || lastInvoice == null -> "- €"
+        else -> "${lastInvoice.amount.formatSpanishCurrency()} €"
+    }
+
+    val type = when {
+        hasError || lastInvoice == null -> "No hay datos"
+        else -> lastInvoice.type.replace("Factura ", "")
+    }
+
+    val iconRes = if (type.equals("Gas", ignoreCase = true)) R.drawable.ic_gas else R.drawable.ic_lightbulb
 
     Card(
         onClick = {
@@ -343,7 +355,7 @@ fun LastInvoiceHomeCard(
             ) {
 
                 Icon(
-                    painter = painterResource(R.drawable.ic_gas),
+                    painter = painterResource(iconRes),
                     contentDescription = null,
                     tint = BrandGreen,
                     modifier = Modifier.size(Dimens.IconXM)
@@ -368,7 +380,7 @@ fun LastInvoiceHomeCard(
                 Spacer(Modifier.height(Dimens.SpacingXS))
 
                 Text(
-                    text = "Gas",
+                    text = type,
                     style = MaterialTheme.typography.bodySmall,
                     color = TextMain
                 )
