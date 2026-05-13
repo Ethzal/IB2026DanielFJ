@@ -122,7 +122,7 @@ fun FeedbackBottomSheet(
                             contentDescription = null,
                             modifier = Modifier
                                 .size(Dimens.IconL)
-                                .clip(RoundedCornerShape(Dimens.SpacingS))
+                                .clip(RoundedCornerShape(Dimens.CornerButtonXL))
                                 .clickable { onRatingSelected(index) }
                                 .padding(Dimens.SpacingXS)
                         )
