@@ -12,6 +12,8 @@ import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -41,6 +43,8 @@ class InvoiceViewModel @Inject constructor(
     private val getFeedbackStatus: GetFeedbackStatusUseCase,
     private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase,
     private val getOldestDateUseCase: GetOldestDateUseCase,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) : ViewModel() {
 
     sealed class UiState {
@@ -99,6 +103,12 @@ class InvoiceViewModel @Inject constructor(
     val amountBounds: StateFlow<ClosedFloatingPointRange<Float>> = _amountBounds
 
     private var currentInvoiceType = InvoiceType.LIGHT
+
+    val isGasEnabled: StateFlow<Boolean> = remoteConfigRepository.isGasEnabled
+
+    fun logButtonClick(btnName: String) {
+        analyticsRepository.logButtonClicked(btnName)
+    }
 
     init {
         observeSettings()

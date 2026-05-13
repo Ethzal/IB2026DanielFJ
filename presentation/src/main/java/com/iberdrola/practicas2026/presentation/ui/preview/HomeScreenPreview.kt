@@ -14,12 +14,12 @@ fun HomeScreenLoadingPreview() {
         HomeScreenContent(
             isLocal = true,
             onToggleMode = {},
-            onNavigateToInvoices = {},
-            onNavigateToElectronicInvoice = {},
             isInvoiceLoading = true,
             lastInvoice = null,
-            hasError = false
-        )
+            hasError = false,
+            onNavigateToInvoices = {},
+            onNavigateToElectronicInvoice = {},
+        ) {}
     }
 }
 
@@ -38,11 +38,11 @@ fun HomeScreenSuccessPreview() {
         HomeScreenContent(
             isLocal = false,
             onToggleMode = {},
-            onNavigateToInvoices = {},
-            onNavigateToElectronicInvoice = {},
             isInvoiceLoading = false,
             lastInvoice = fakeInvoice,
-            hasError = false
-        )
+            hasError = false,
+            onNavigateToInvoices = {},
+            onNavigateToElectronicInvoice = {},
+        ) {}
     }
 }

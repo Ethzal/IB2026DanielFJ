@@ -46,7 +46,13 @@ fun InvoiceScreen(
     viewModel: InvoiceViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
-    val tabs = listOf(stringResource(R.string.luz), stringResource(R.string.gas))
+    val isGasEnabled by viewModel.isGasEnabled.collectAsStateWithLifecycle()
+
+    val tabs = if (isGasEnabled) {
+        listOf(stringResource(R.string.luz), stringResource(R.string.gas))
+    } else {
+        listOf(stringResource(R.string.luz))
+    }
     val snackbarHostState = remember { SnackbarHostState() }
 
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
@@ -65,6 +71,7 @@ fun InvoiceScreen(
     val context = LocalContext.current
 
     var isExiting by remember { mutableStateOf(false) }
+
 
     val handleBack = {
         if (!isExiting) {
@@ -215,12 +222,14 @@ fun InvoiceScreen(
                         is InvoiceViewModel.UiState.Success -> {
                             InvoiceList(
                                 data = pageUiState.data,
-                                onInvoiceClick = {
+                                onInvoiceClick = { invoice ->
+                                    viewModel.logButtonClick("btn_factura_${invoice.id}")
                                     if (!isExiting && !showFeedback) {
                                         showNotAvailableDialog = true
                                     }
                                 },
                                 onFilterClick = {
+                                    viewModel.logButtonClick("btn_abrir_filtros")
                                     if (!isExiting && !showFeedback) showFilterScreen = true
                                 },
                                 isFiltering = isFiltering,

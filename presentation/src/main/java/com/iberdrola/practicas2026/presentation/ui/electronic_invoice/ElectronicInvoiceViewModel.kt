@@ -3,7 +3,9 @@ package com.iberdrola.practicas2026.presentation.ui.electronic_invoice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.core.utils.isEmailValid
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
 import com.iberdrola.practicas2026.domain.repository.OtpRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -70,7 +72,9 @@ sealed class WizardEffect {
 
 @HiltViewModel
 class ElectronicInvoiceViewModel @Inject constructor(
-    private val otpRepository: OtpRepository
+    private val otpRepository: OtpRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WizardState())
@@ -78,6 +82,8 @@ class ElectronicInvoiceViewModel @Inject constructor(
 
     private val _effect = MutableSharedFlow<WizardEffect>()
     val effect = _effect.asSharedFlow()
+
+    val isGasEnabled: StateFlow<Boolean> = remoteConfigRepository.isGasEnabled
 
     init {
         viewModelScope.launch {
@@ -93,6 +99,10 @@ class ElectronicInvoiceViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun logButtonClick(btnName: String) {
+        analyticsRepository.logButtonClicked(btnName)
     }
 
     fun resetState() {

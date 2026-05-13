@@ -137,6 +137,7 @@ fun WizardHeader(
 @Composable
 fun ContractListScreen(
     progress: Float,
+    isGasEnabled: Boolean,
     onActiveContractClick: () -> Unit,
     onInactiveContractClick: () -> Unit,
     onBack: () -> Unit
@@ -159,12 +160,16 @@ fun ContractListScreen(
                 .fillMaxWidth()
                 .padding(horizontal = Dimens.SpacingM)) { AppDivider() }
 
-            ContractRow(
-                icon = R.drawable.ic_gas,
-                title = stringResource(R.string.contrato_de_gas),
-                status = ContractStatus.Inactive,
-                onClick = onInactiveContractClick
-            )
+            if (isGasEnabled) {
+                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM)) { AppDivider() }
+
+                ContractRow(
+                    icon = R.drawable.ic_gas,
+                    title = stringResource(R.string.contrato_de_gas),
+                    status = ContractStatus.Inactive,
+                    onClick = onInactiveContractClick
+                )
+            }
 
             Row(modifier = Modifier
                 .fillMaxWidth()
@@ -669,6 +674,8 @@ fun WizardContainer(
         label = stringResource(R.string.progress)
     )
 
+    val isGasEnabled by viewModel.isGasEnabled.collectAsStateWithLifecycle()
+
     // Efecto de Navegación de Salida
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -698,8 +705,15 @@ fun WizardContainer(
         when (state.step) {
             WizardStep.CONTRACT_LIST -> ContractListScreen(
                 progress = animatedProgress,
-                onActiveContractClick = { viewModel.onEvent(WizardEvent.SelectActiveContract) },
-                onInactiveContractClick = { viewModel.onEvent(WizardEvent.SelectInactiveContract) },
+                isGasEnabled = isGasEnabled,
+                onActiveContractClick = {
+                    viewModel.logButtonClick("btn_contrato_luz")
+                    viewModel.onEvent(WizardEvent.SelectActiveContract)
+                },
+                onInactiveContractClick = {
+                    viewModel.logButtonClick("btn_contrato_gas")
+                    viewModel.onEvent(WizardEvent.SelectInactiveContract)
+                },
                 onBack = { viewModel.onEvent(WizardEvent.NavigateBack) }
             )
 

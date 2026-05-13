@@ -18,7 +18,8 @@ fun ContractListPreview() {
             progress = 0.25f,
             onActiveContractClick = {},
             onInactiveContractClick = {},
-            onBack = {}
+            onBack = {},
+            isGasEnabled = true
         )
     }
 }

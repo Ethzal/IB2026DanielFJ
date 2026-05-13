@@ -10,6 +10,8 @@ import javax.inject.Inject
 import com.iberdrola.practicas2026.domain.repository.SettingsRepository
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.model.Invoice
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import com.iberdrola.practicas2026.presentation.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +22,9 @@ import kotlinx.coroutines.flow.catch
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val getInvoicesUseCase: GetInvoicesUseCase
+    private val getInvoicesUseCase: GetInvoicesUseCase,
+    private val analyticsRepository: AnalyticsRepository,
+    private val remoteConfigRepository: RemoteConfigRepository
 ) : ViewModel() {
 
     private val _uiEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
@@ -57,6 +61,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun logCrashButtonClick() {
+        analyticsRepository.logButtonClicked("force_crash_button")
+        throw RuntimeException("Test Crash provocado por el usuario")
+    }
+
     private fun loadInvoices(isLocal: Boolean) {
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
@@ -70,7 +79,14 @@ class MainViewModel @Inject constructor(
                         _isInvoiceLoading.value = false
                     }
                     .collect { response ->
-                        val last = response.allInvoices.maxByOrNull { it.date }
+                        val gasEnabled = remoteConfigRepository.isGasEnabled.value
+
+                        val filteredList = if (!gasEnabled) {
+                            response.allInvoices.filter { it.type != "Factura Gas" }
+                        } else {
+                            response.allInvoices
+                        }
+                        val last = filteredList.maxByOrNull { it.date }
                         _lastInvoice.value = last
                         _hasError.value = false
                         _isInvoiceLoading.value = false

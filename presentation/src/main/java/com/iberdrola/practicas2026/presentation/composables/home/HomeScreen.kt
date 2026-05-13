@@ -55,7 +55,8 @@ fun HomeScreen(
             mainViewModel.toggleMode(enabled)
         },
         onNavigateToInvoices = onNavigateToInvoices,
-        onNavigateToElectronicInvoice = onNavigateToElectronicInvoice
+        onNavigateToElectronicInvoice = onNavigateToElectronicInvoice,
+        onForceCrash = { mainViewModel.logCrashButtonClick() }
     )
 }
 
@@ -67,7 +68,8 @@ fun HomeScreenContent(
     lastInvoice: Invoice?,
     hasError: Boolean,
     onNavigateToInvoices: () -> Unit,
-    onNavigateToElectronicInvoice: () -> Unit
+    onNavigateToElectronicInvoice: () -> Unit,
+    onForceCrash: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val cardWidth = (configuration.screenWidthDp / 3f).dp
@@ -115,6 +117,16 @@ fun HomeScreenContent(
                                     uncheckedTrackColor = Color.White.copy(alpha = 0.4f)
                                 )
                             )
+                        }
+
+                        Spacer(Modifier.width(Dimens.SpacingM))
+
+                        Button(
+                            onClick = { onForceCrash() },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("CRASH", color = Color.White, fontWeight = FontWeight.Bold)
                         }
 
                         Spacer(Modifier.width(Dimens.SpacingM))

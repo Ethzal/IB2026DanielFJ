@@ -21,9 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import com.iberdrola.practicas2026.presentation.composables.common.WizardContainer
 import com.iberdrola.practicas2026.presentation.composables.home.HomeScreen
 import com.iberdrola.practicas2026.presentation.composables.invoice.InvoiceScreen
@@ -34,15 +37,33 @@ import com.iberdrola.practicas2026.presentation.ui.theme.EnergyAppTheme
 import com.iberdrola.practicas2026.presentation.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var analyticsRepository: AnalyticsRepository
+    @Inject
+    lateinit var remoteConfigRepository: RemoteConfigRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        lifecycleScope.launch {
+            remoteConfigRepository.fetchAndActivate()
+        }
+
         setContent {
             EnergyAppTheme {
                 val navController = rememberNavController()
+
+                LaunchedEffect(navController) {
+                    navController.addOnDestinationChangedListener { _, destination, _ ->
+                        analyticsRepository.logScreenView(destination.route ?: "Unknown_Screen")
+                    }
+                }
+
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 // Obtenemos el MainViewModel a nivel de Actividad para que sea global
