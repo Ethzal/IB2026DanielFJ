@@ -9,7 +9,8 @@
     <group
         android:pivotX="9.5"
         android:pivotY="9.5"
-        android:translateX="-9">
+        android:translateX="-9"
+        android:translateY="-0.5">
 
         <path
             android:fillColor="@android:color/white"

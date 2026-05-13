@@ -25,7 +25,7 @@ La interfaz sigue los lineamientos de diseño de la aplicación oficial, garanti
 *   **Arquitectura Multimódulo:** Separación física de capas para garantizar independencia y escalabilidad.
 *   **Gestión Híbrida de Datos (Dual-Source):**
     *   **Modo Local:** Uso de `Retromock` para servir datos desde archivos JSON locales (`assets`) con simulación de latencia aleatoria (1-3s).
-    *   **Modo Remoto:** Integración con `Retrofit` para consumo de APIs reales o simuladas mediante **Mockoon**. Se incluye el archivo de environment en ``app/src/main/assets/invoiceMockoonEnvironment.json``, para reproducir fácilmente las peticiones de red utilizadas en la app.
+    *   **Modo Remoto:** Integración con `Retrofit` para consumo de APIs reales o simuladas mediante **Mockoon**. Se incluye el archivo de environment en ``app/src/main/res/raw/mockoon_iberdrola.json``, para reproducir fácilmente las peticiones de red utilizadas en la app.
 *   **Caché Offline:** Implementación de `Room Database` para persistencia de datos y consulta sin conexión.
 *   **UI Reactiva y Fluida:** Uso de `StateFlow` y estados de Compose (`mutableStateOf`) para reflejar cambios de estado de forma instantánea y segura ante cambios de configuración.
 *   **Skeleton Loading:** Implementación de Shimmer animado nativo en Compose.

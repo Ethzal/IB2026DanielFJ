@@ -1,0 +1,113 @@
+{
+  "uuid": "7149b32a-7bd4-43b7-b056-e667d04c567b",
+  "lastMigration": 33,
+  "name": "Iberdola API",
+  "endpointPrefix": "",
+  "latency": 3000,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "7500b1d7-e300-406f-afec-d5c3e9b21103",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "getInvoices",
+      "responses": [
+        {
+          "uuid": "97a129ac-ed13-48dd-930c-25c31489d5b0",
+          "body": "{\r\n  \"facturas\": [\r\n    { \"id\": \"F002\", \"fecha\": \"2024-03-08\", \"fecha_inicio\": \"2024-02-02\", \"fecha_fin\": \"2024-03-04\", \"tipo\": \"Factura Luz\", \"importe\": 73.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F003\", \"fecha\": \"2024-02-06\", \"fecha_inicio\": \"2024-01-01\", \"fecha_fin\": \"2024-02-01\", \"tipo\": \"Factura Luz\", \"importe\": 31.10, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F004\", \"fecha\": \"2024-02-03\", \"fecha_inicio\": \"2024-01-01\", \"fecha_fin\": \"2024-02-01\", \"tipo\": \"Factura Luz\", \"importe\": 191.10, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F005\", \"fecha\": \"2024-02-03\", \"fecha_inicio\": \"2024-01-01\", \"fecha_fin\": \"2024-02-01\", \"tipo\": \"Factura Gas\", \"importe\": 419.10, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F006\", \"fecha\": \"2024-02-03\", \"fecha_inicio\": \"2024-01-01\", \"fecha_fin\": \"2024-02-01\", \"tipo\": \"Factura Gas\", \"importe\": 19.10, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F007\", \"fecha\": \"2024-01-15\", \"fecha_inicio\": \"2023-12-01\", \"fecha_fin\": \"2024-01-01\", \"tipo\": \"Factura Gas\", \"importe\": 151.00, \"estado\": \"En trámite de cobro\" },\r\n    { \"id\": \"F008\", \"fecha\": \"2023-12-03\", \"fecha_inicio\": \"2023-11-01\", \"fecha_fin\": \"2023-12-01\", \"tipo\": \"Factura Luz\", \"importe\": 45.50, \"estado\": \"Anulada\" },\r\n    { \"id\": \"F009\", \"fecha\": \"2023-11-01\", \"fecha_inicio\": \"2023-10-01\", \"fecha_fin\": \"2023-11-01\", \"tipo\": \"Factura Gas\", \"importe\": 60.00, \"estado\": \"Cuota Fija\" },\r\n    { \"id\": \"F010\", \"fecha\": \"2023-03-13\", \"fecha_inicio\": \"2023-02-01\", \"fecha_fin\": \"2023-03-01\", \"tipo\": \"Factura Luz\", \"importe\": 777.00, \"estado\": \"Anulada\" },\r\n    { \"id\": \"F011\", \"fecha\": \"2024-04-10\", \"fecha_inicio\": \"2024-03-01\", \"fecha_fin\": \"2024-04-01\", \"tipo\": \"Factura Luz\", \"importe\": 85.20, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F012\", \"fecha\": \"2024-04-12\", \"fecha_inicio\": \"2024-03-01\", \"fecha_fin\": \"2024-04-01\", \"tipo\": \"Factura Gas\", \"importe\": 112.30, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F013\", \"fecha\": \"2024-05-05\", \"fecha_inicio\": \"2024-04-01\", \"fecha_fin\": \"2024-05-01\", \"tipo\": \"Factura Luz\", \"importe\": 66.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F014\", \"fecha\": \"2024-06-08\", \"fecha_inicio\": \"2024-05-01\", \"fecha_fin\": \"2024-06-01\", \"tipo\": \"Factura Luz\", \"importe\": 94.15, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F015\", \"fecha\": \"2024-06-15\", \"fecha_inicio\": \"2024-05-01\", \"fecha_fin\": \"2024-06-01\", \"tipo\": \"Factura Gas\", \"importe\": 25.00, \"estado\": \"Cuota Fija\" },\r\n    { \"id\": \"F016\", \"fecha\": \"2024-07-12\", \"fecha_inicio\": \"2024-06-01\", \"fecha_fin\": \"2024-07-01\", \"tipo\": \"Factura Luz\", \"importe\": 145.80, \"estado\": \"Pagada\" },\r\n    { \"id\": \"id017\", \"fecha\": \"2024-08-04\", \"fecha_inicio\": \"2024-07-01\", \"fecha_fin\": \"2024-08-01\", \"tipo\": \"Factura Luz\", \"importe\": 210.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F018\", \"fecha\": \"2024-08-10\", \"fecha_inicio\": \"2024-07-01\", \"fecha_fin\": \"2024-08-01\", \"tipo\": \"Factura Gas\", \"importe\": 18.50, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F019\", \"fecha\": \"2024-09-07\", \"fecha_inicio\": \"2024-08-01\", \"fecha_fin\": \"2024-09-01\", \"tipo\": \"Factura Luz\", \"importe\": 188.20, \"estado\": \"En trámite de cobro\" },\r\n    { \"id\": \"F020\", \"fecha\": \"2024-10-05\", \"fecha_inicio\": \"2024-09-01\", \"fecha_fin\": \"2024-10-01\", \"tipo\": \"Factura Gas\", \"importe\": 55.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F021\", \"fecha\": \"2024-11-12\", \"fecha_inicio\": \"2024-10-01\", \"fecha_fin\": \"2024-11-01\", \"tipo\": \"Factura Luz\", \"importe\": 72.40, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F022\", \"fecha\": \"2024-12-03\", \"fecha_inicio\": \"2024-11-01\", \"fecha_fin\": \"2024-12-01\", \"tipo\": \"Factura Gas\", \"importe\": 290.10, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F023\", \"fecha\": \"2024-12-15\", \"fecha_inicio\": \"2024-11-01\", \"fecha_fin\": \"2024-12-01\", \"tipo\": \"Factura Luz\", \"importe\": 105.00, \"estado\": \"Anulada\" },\r\n    { \"id\": \"F024\", \"fecha\": \"2025-01-08\", \"fecha_inicio\": \"2024-12-01\", \"fecha_fin\": \"2025-01-01\", \"tipo\": \"Factura Luz\", \"importe\": 130.45, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F025\", \"fecha\": \"2025-01-12\", \"fecha_inicio\": \"2024-12-01\", \"fecha_fin\": \"2025-01-01\", \"tipo\": \"Factura Gas\", \"importe\": 380.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F026\", \"fecha\": \"2025-02-05\", \"fecha_inicio\": \"2025-01-01\", \"fecha_fin\": \"2025-02-01\", \"tipo\": \"Factura Luz\", \"importe\": 115.20, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F027\", \"fecha\": \"2025-02-14\", \"fecha_inicio\": \"2025-01-01\", \"fecha_fin\": \"2025-02-01\", \"tipo\": \"Factura Gas\", \"importe\": 520.40, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F028\", \"fecha\": \"2025-03-07\", \"fecha_inicio\": \"2025-02-01\", \"fecha_fin\": \"2025-03-01\", \"tipo\": \"Factura Luz\", \"importe\": 90.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F029\", \"fecha\": \"2025-03-10\", \"fecha_inicio\": \"2025-02-01\", \"fecha_fin\": \"2025-03-01\", \"tipo\": \"Factura Gas\", \"importe\": 410.00, \"estado\": \"En trámite de cobro\" },\r\n    { \"id\": \"F030\", \"fecha\": \"2025-04-05\", \"fecha_inicio\": \"2025-03-01\", \"fecha_fin\": \"2025-04-01\", \"tipo\": \"Factura Luz\", \"importe\": 60.00, \"estado\": \"Cuota Fija\" },\r\n    { \"id\": \"F031\", \"fecha\": \"2025-05-12\", \"fecha_inicio\": \"2025-04-01\", \"fecha_fin\": \"2025-05-01\", \"tipo\": \"Factura Gas\", \"importe\": 95.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F032\", \"fecha\": \"2025-06-02\", \"fecha_inicio\": \"2025-05-01\", \"fecha_fin\": \"2025-06-01\", \"tipo\": \"Factura Luz\", \"importe\": 120.30, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F033\", \"fecha\": \"2025-07-08\", \"fecha_inicio\": \"2025-06-01\", \"fecha_fin\": \"2025-07-01\", \"tipo\": \"Factura Luz\", \"importe\": 250.00, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F034\", \"fecha\": \"2025-07-15\", \"fecha_inicio\": \"2025-06-01\", \"fecha_fin\": \"2025-07-01\", \"tipo\": \"Factura Gas\", \"importe\": 22.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F035\", \"fecha\": \"2025-08-04\", \"fecha_inicio\": \"2025-07-01\", \"fecha_fin\": \"2025-08-01\", \"tipo\": \"Factura Luz\", \"importe\": 295.10, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F036\", \"fecha\": \"2025-09-10\", \"fecha_inicio\": \"2025-08-01\", \"fecha_fin\": \"2025-09-01\", \"tipo\": \"Factura Gas\", \"importe\": 28.40, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F037\", \"fecha\": \"2025-10-05\", \"fecha_inicio\": \"2025-09-01\", \"fecha_fin\": \"2025-10-01\", \"tipo\": \"Factura Luz\", \"importe\": 88.00, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F038\", \"fecha\": \"2025-11-12\", \"fecha_inicio\": \"2025-10-01\", \"fecha_fin\": \"2025-11-01\", \"tipo\": \"Factura Gas\", \"importe\": 140.20, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F039\", \"fecha\": \"2025-12-06\", \"fecha_inicio\": \"2025-11-01\", \"fecha_fin\": \"2025-12-01\", \"tipo\": \"Factura Luz\", \"importe\": 115.00, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F040\", \"fecha\": \"2025-12-14\", \"fecha_inicio\": \"2025-11-01\", \"fecha_fin\": \"2025-12-01\", \"tipo\": \"Factura Gas\", \"importe\": 310.50, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F041\", \"fecha\": \"2026-01-05\", \"fecha_inicio\": \"2025-12-01\", \"fecha_fin\": \"2026-01-01\", \"tipo\": \"Factura Luz\", \"importe\": 140.00, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F042\", \"fecha\": \"2026-01-10\", \"fecha_inicio\": \"2025-12-01\", \"fecha_fin\": \"2026-01-01\", \"tipo\": \"Factura Gas\", \"importe\": 485.20, \"estado\": \"En trámite de cobro\" },\r\n    { \"id\": \"F043\", \"fecha\": \"2026-01-20\", \"fecha_inicio\": \"2026-01-01\", \"fecha_fin\": \"2026-01-15\", \"tipo\": \"Factura Luz\", \"importe\": 55.30, \"estado\": \"Pagada\" },\r\n    { \"id\": \"F044\", \"fecha\": \"2026-02-04\", \"fecha_inicio\": \"2026-01-01\", \"fecha_fin\": \"2026-02-01\", \"tipo\": \"Factura Luz\", \"importe\": 128.00, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F045\", \"fecha\": \"2026-02-11\", \"fecha_inicio\": \"2026-01-01\", \"fecha_fin\": \"2026-02-01\", \"tipo\": \"Factura Gas\", \"importe\": 512.10, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F046\", \"fecha\": \"2026-02-28\", \"fecha_inicio\": \"2026-02-01\", \"fecha_fin\": \"2026-02-25\", \"tipo\": \"Factura Luz\", \"importe\": 42.00, \"estado\": \"Anulada\" },\r\n    { \"id\": \"F047\", \"fecha\": \"2026-03-05\", \"fecha_inicio\": \"2026-02-01\", \"fecha_fin\": \"2026-03-01\", \"tipo\": \"Factura Luz\", \"importe\": 92.45, \"estado\": \"En trámite de cobro\" },\r\n    { \"id\": \"F048\", \"fecha\": \"2026-03-08\", \"fecha_inicio\": \"2026-02-01\", \"fecha_fin\": \"2026-03-01\", \"tipo\": \"Factura Gas\", \"importe\": 390.00, \"estado\": \"Pendiente de Pago\" },\r\n    { \"id\": \"F049\", \"fecha\": \"2026-03-12\", \"fecha_inicio\": \"2026-03-01\", \"fecha_fin\": \"2026-03-10\", \"tipo\": \"Factura Luz\", \"importe\": 25.10, \"estado\": \"Cuota Fija\" },\r\n    { \"id\": \"F050\", \"fecha\": \"2026-03-15\", \"fecha_inicio\": \"2026-02-01\", \"fecha_fin\": \"2026-03-01\", \"tipo\": \"Factura Gas\", \"importe\": 215.00, \"estado\": \"Pagada\" }\r\n  ]\r\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "77244846-1993-4302-8620-978cb4b96d83",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "7500b1d7-e300-406f-afec-d5c3e9b21103"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": true,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": ".\\certificado_iberdrola.crt",
+    "keyPath": ".\\clave.key",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}

@@ -1,85 +1,41 @@
 {
   "facturas": [
-    {
-      "id": "F002",
-      "fecha": "2024-03-08",
-      "fecha_inicio": "2024-02-01",
-      "fecha_fin": "2024-03-04",
-      "tipo": "Factura Luz",
-      "importe": 20.00,
-      "estado": "Pendiente de Pago"
-    },
-    {
-      "id": "F003",
-      "fecha": "2024-02-06",
-      "fecha_inicio": "2024-01-01",
-      "fecha_fin": "2024-02-01",
-      "tipo": "Factura Luz",
-      "importe": 20.10,
-      "estado": "Pendiente de Pago"
-    },
-    {
-      "id": "F004",
-      "fecha": "2023-11-06",
-      "fecha_inicio": "2023-10-01",
-      "fecha_fin": "2023-11-01",
-      "tipo": "Factura Luz",
-      "importe": 150.43,
-      "estado": "Pagada"
-    },
-    {
-      "id": "F005",
-      "fecha": "2024-02-03",
-      "fecha_inicio": "2024-01-01",
-      "fecha_fin": "2024-02-01",
-      "tipo": "Factura Gas",
-      "importe": 13.10,
-      "estado": "Pendiente de Pago"
-    },
-    {
-      "id": "F006",
-      "fecha": "2023-11-16",
-      "fecha_inicio": "2023-10-01",
-      "fecha_fin": "2023-11-01",
-      "tipo": "Factura Gas",
-      "importe": 69.69,
-      "estado": "Pagada"
-    },
-    {
-      "id": "F007",
-      "fecha": "2024-01-15",
-      "fecha_inicio": "2023-12-01",
-      "fecha_fin": "2024-01-01",
-      "tipo": "Factura Gas",
-      "importe": 151.00,
-      "estado": "En trámite de cobro"
-    },
-    {
-      "id": "F008",
-      "fecha": "2023-12-03",
-      "fecha_inicio": "2023-11-01",
-      "fecha_fin": "2023-12-01",
-      "tipo": "Factura Luz",
-      "importe": 45.50,
-      "estado": "Anulada"
-    },
-    {
-      "id": "F009",
-      "fecha": "2023-11-01",
-      "fecha_inicio": "2023-10-01",
-      "fecha_fin": "2023-11-01",
-      "tipo": "Factura Gas",
-      "importe": 60.00,
-      "estado": "Cuota Fija"
-    },
-    {
-      "id": "F010",
-      "fecha": "2023-03-13",
-      "fecha_inicio": "2023-02-01",
-      "fecha_fin": "2023-03-01",
-      "tipo": "Factura Luz",
-      "importe": 777.00,
-      "estado": "Anulada"
-    }
+    { "id": "F002", "fecha": "2024-03-08", "fecha_inicio": "2024-02-01", "fecha_fin": "2024-03-04", "tipo": "Factura Luz", "importe": 20.00, "estado": "Pendiente de Pago" },
+    { "id": "F003", "fecha": "2024-02-06", "fecha_inicio": "2024-01-01", "fecha_fin": "2024-02-01", "tipo": "Factura Luz", "importe": 20.10, "estado": "Pendiente de Pago" },
+    { "id": "F004", "fecha": "2023-11-06", "fecha_inicio": "2023-10-01", "fecha_fin": "2023-11-01", "tipo": "Factura Luz", "importe": 150.43, "estado": "Pagada" },
+    { "id": "F005", "fecha": "2024-02-03", "fecha_inicio": "2024-01-01", "fecha_fin": "2024-02-01", "tipo": "Factura Gas", "importe": 13.10, "estado": "Pendiente de Pago" },
+    { "id": "F006", "fecha": "2023-11-16", "fecha_inicio": "2023-10-01", "fecha_fin": "2023-11-01", "tipo": "Factura Gas", "importe": 69.69, "estado": "Pagada" },
+    { "id": "F007", "fecha": "2024-01-15", "fecha_inicio": "2023-12-01", "fecha_fin": "2024-01-01", "tipo": "Factura Gas", "importe": 151.00, "estado": "En trámite de cobro" },
+    { "id": "F008", "fecha": "2023-12-03", "fecha_inicio": "2023-11-01", "fecha_fin": "2023-12-01", "tipo": "Factura Luz", "importe": 45.50, "estado": "Anulada" },
+    { "id": "F009", "fecha": "2023-11-01", "fecha_inicio": "2023-10-01", "fecha_fin": "2023-11-01", "tipo": "Factura Gas", "importe": 60.00, "estado": "Cuota Fija" },
+    { "id": "F010", "fecha": "2023-03-13", "fecha_inicio": "2023-02-01", "fecha_fin": "2023-03-01", "tipo": "Factura Luz", "importe": 777.00, "estado": "Anulada" },
+    { "id": "F011", "fecha": "2024-04-05", "fecha_inicio": "2024-03-01", "fecha_fin": "2024-04-01", "tipo": "Factura Luz", "importe": 42.15, "estado": "Pagada" },
+    { "id": "F012", "fecha": "2024-05-12", "fecha_inicio": "2024-04-01", "fecha_fin": "2024-05-01", "tipo": "Factura Gas", "importe": 35.00, "estado": "Pagada" },
+    { "id": "F013", "fecha": "2024-06-10", "fecha_inicio": "2024-05-01", "fecha_fin": "2024-06-01", "tipo": "Factura Luz", "importe": 88.20, "estado": "Pagada" },
+    { "id": "F014", "fecha": "2024-07-08", "fecha_inicio": "2024-06-01", "fecha_fin": "2024-07-01", "tipo": "Factura Luz", "importe": 110.45, "estado": "Pagada" },
+    { "id": "F015", "fecha": "2024-08-14", "fecha_inicio": "2024-07-01", "fecha_fin": "2024-08-01", "tipo": "Factura Gas", "importe": 12.00, "estado": "Cuota Fija" },
+    { "id": "F016", "fecha": "2024-09-02", "fecha_inicio": "2024-08-01", "fecha_fin": "2024-09-01", "tipo": "Factura Luz", "importe": 95.30, "estado": "Pagada" },
+    { "id": "F017", "fecha": "2024-10-05", "fecha_inicio": "2024-09-01", "fecha_fin": "2024-10-01", "tipo": "Factura Gas", "importe": 45.60, "estado": "En trámite de cobro" },
+    { "id": "F018", "fecha": "2024-11-12", "fecha_inicio": "2024-10-01", "fecha_fin": "2024-11-01", "tipo": "Factura Luz", "importe": 55.00, "estado": "Pendiente de Pago" },
+    { "id": "F019", "fecha": "2024-12-20", "fecha_inicio": "2024-11-01", "fecha_fin": "2024-12-01", "tipo": "Factura Gas", "importe": 180.25, "estado": "Pagada" },
+    { "id": "F020", "fecha": "2025-01-10", "fecha_inicio": "2024-12-01", "fecha_fin": "2025-01-01", "tipo": "Factura Luz", "importe": 65.40, "estado": "Pagada" },
+    { "id": "F021", "fecha": "2025-02-05", "fecha_inicio": "2025-01-01", "fecha_fin": "2025-02-01", "tipo": "Factura Gas", "importe": 210.00, "estado": "Pagada" },
+    { "id": "F022", "fecha": "2025-03-15", "fecha_inicio": "2025-02-01", "fecha_fin": "2025-03-01", "tipo": "Factura Luz", "importe": 40.00, "estado": "Anulada" },
+    { "id": "F023", "fecha": "2025-03-16", "fecha_inicio": "2025-02-01", "fecha_fin": "2025-03-01", "tipo": "Factura Luz", "importe": 38.50, "estado": "Pagada" },
+    { "id": "F024", "fecha": "2025-04-04", "fecha_inicio": "2025-03-01", "fecha_fin": "2025-04-01", "tipo": "Factura Gas", "importe": 85.00, "estado": "Cuota Fija" },
+    { "id": "F025", "fecha": "2025-05-11", "fecha_inicio": "2025-04-01", "fecha_fin": "2025-05-01", "tipo": "Factura Luz", "importe": 52.10, "estado": "Pagada" },
+    { "id": "F026", "fecha": "2025-06-08", "fecha_inicio": "2025-05-01", "fecha_fin": "2025-06-01", "tipo": "Factura Gas", "importe": 22.30, "estado": "Pagada" },
+    { "id": "F027", "fecha": "2025-07-14", "fecha_inicio": "2025-06-01", "fecha_fin": "2025-07-01", "tipo": "Factura Luz", "importe": 140.00, "estado": "Pagada" },
+    { "id": "F028", "fecha": "2025-08-03", "fecha_inicio": "2025-07-01", "fecha_fin": "2025-08-01", "tipo": "Factura Luz", "importe": 155.20, "estado": "Pendiente de Pago" },
+    { "id": "F029", "fecha": "2025-09-18", "fecha_inicio": "2025-08-01", "fecha_fin": "2025-09-01", "tipo": "Factura Gas", "importe": 15.00, "estado": "Pagada" },
+    { "id": "F030", "fecha": "2025-10-10", "fecha_inicio": "2025-09-01", "fecha_fin": "2025-10-01", "tipo": "Factura Luz", "importe": 70.00, "estado": "En trámite de cobro" },
+    { "id": "F031", "fecha": "2025-11-05", "fecha_inicio": "2025-10-01", "fecha_fin": "2025-11-01", "tipo": "Factura Gas", "importe": 92.45, "estado": "Pagada" },
+    { "id": "F032", "fecha": "2025-12-12", "fecha_inicio": "2025-11-01", "fecha_fin": "2025-12-01", "tipo": "Factura Luz", "importe": 85.00, "estado": "Cuota Fija" },
+    { "id": "F033", "fecha": "2026-01-08", "fecha_inicio": "2025-12-01", "fecha_fin": "2026-01-01", "tipo": "Factura Gas", "importe": 230.15, "estado": "Pendiente de Pago" },
+    { "id": "F034", "fecha": "2026-01-15", "fecha_inicio": "2025-12-01", "fecha_fin": "2026-01-01", "tipo": "Factura Luz", "importe": 78.90, "estado": "En trámite de cobro" },
+    { "id": "F035", "fecha": "2026-02-04", "fecha_inicio": "2026-01-01", "fecha_fin": "2026-02-01", "tipo": "Factura Luz", "importe": 62.00, "estado": "Pendiente de Pago" },
+    { "id": "F036", "fecha": "2026-02-18", "fecha_inicio": "2026-01-01", "fecha_fin": "2026-02-01", "tipo": "Factura Gas", "importe": 195.00, "estado": "Pagada" },
+    { "id": "F037", "fecha": "2026-03-02", "fecha_inicio": "2026-02-01", "fecha_fin": "2026-03-01", "tipo": "Factura Luz", "importe": 45.25, "estado": "Pendiente de Pago" },
+    { "id": "F038", "fecha": "2026-03-10", "fecha_inicio": "2026-02-01", "fecha_fin": "2026-03-01", "tipo": "Factura Gas", "importe": 110.00, "estado": "Cuota Fija" }
   ]
 }

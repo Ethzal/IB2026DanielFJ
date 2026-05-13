@@ -3,20 +3,31 @@ package com.iberdrola.practicas2026.presentation.composables.common
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
+import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
+import com.iberdrola.practicas2026.presentation.ui.theme.White
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,14 +37,37 @@ fun FeedbackBottomSheet(
     onLaterSelected: () -> Unit,
     onDismiss: () -> Unit
 ) {
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Autocierre
+    LaunchedEffect(showThanks) {
+        if (showThanks) {
+            delay(2500L)
+            sheetState.hide()
+            onDismiss()
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = White,
         dragHandle = { BottomSheetDefaults.DragHandle(color = Color.LightGray) }
     ) {
+
+        val view = LocalView.current
+        // Buscamos el "padre" del BottomSheet que es quien tiene la ventana del Diálogo
+        val window = (view.parent as? DialogWindowProvider)?.window
+
+        if (window != null) {
+            SideEffect {
+                val insetsController = WindowCompat.getInsetsController(window, view)
+
+                insetsController.isAppearanceLightStatusBars = true
+                insetsController.isAppearanceLightNavigationBars = true
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -54,16 +88,17 @@ fun FeedbackBottomSheet(
 
                 Text(
                     text = stringResource(R.string.recomiendes_esta_app),
-                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
+                    color = TextMain,
                     modifier = Modifier.padding(horizontal = Dimens.SpacingS)
                 )
 
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = Dimens.SpacingL),
                     thickness = Dimens.StrokeDefault,
-                    color = Color.LightGray.copy(alpha = 0.5f)
+                    color = DividerColor
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.SpacingM))
@@ -86,9 +121,10 @@ fun FeedbackBottomSheet(
                             painter = painterResource(id = drawableRes),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(38.dp)
+                                .size(Dimens.IconL)
+                                .clip(RoundedCornerShape(Dimens.CornerButtonXL))
                                 .clickable { onRatingSelected(index) }
-                                .padding(1.dp)
+                                .padding(Dimens.SpacingXS)
                         )
                     }
                 }
@@ -113,33 +149,20 @@ fun FeedbackBottomSheet(
                     painter = painterResource(id = R.drawable.ic_happy),
                     contentDescription = null,
                     tint = BrandGreen,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(64.dp)
                 )
-                
                 Spacer(modifier = Modifier.height(Dimens.SpacingM))
-                
                 Text(
                     text = stringResource(R.string.muchas_gracias),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = BrandGreen
                 )
-                
                 Text(
                     text = stringResource(R.string.tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = Dimens.SpacingS)
                 )
-
-                Spacer(modifier = Modifier.height(Dimens.SpacingXL))
-
-                Button(
-                    onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(containerColor = BrandGreen),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.cerrar), color = Color.White)
-                }
             }
         }
     }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,36 +22,48 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 import com.iberdrola.practicas2026.core.utils.toUiDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 import com.iberdrola.practicas2026.presentation.R
+import com.iberdrola.practicas2026.presentation.mapper.toUiModel
+import com.iberdrola.practicas2026.presentation.ui.theme.BgGray
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPaid
 import com.iberdrola.practicas2026.presentation.ui.theme.BgPending
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.presentation.ui.theme.TextPending
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
-import java.util.Locale
+
+data class StatusUiModel(
+    val label: String,
+    val style: StatusStyle
+)
+
+enum class StatusStyle {
+    SUCCESS,
+    WARNING,
+    NEUTRAL,
+    INFO
+}
 
 @Composable
-fun StatusPill(status: String) {
-    val (backgroundColor, textColor) = when(status) {
-        "Pagada" -> Pair(BgPaid, TextPaid)
-        "Pendiente de Pago" -> Pair(BgPending, TextPending)
-        "En trámite de cobro" -> Pair(BgPending, TextPending)
-        "Anulada" -> Pair(Color(0xFFEAEAEA), Color(0xFF757575))
-        "Cuota Fija" -> Pair(Color(0xFFD4E6F1), Color(0xFF2874A6))
-        else -> Pair(BgPending, TextPending)
+fun StatusPill(model: StatusUiModel) {
+    val (backgroundColor, textColor) = when (model.style) {
+        StatusStyle.SUCCESS -> BgPaid to TextPaid
+        StatusStyle.WARNING -> BgPending to TextPending
+        StatusStyle.NEUTRAL -> BgGray to TextMain
+        StatusStyle.INFO -> Color(0xFFD4E6F1) to Color(0xFF2874A6)
     }
 
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(Dimens.SpacingS),
-        modifier = Modifier.padding(top = Dimens.SpacingS)
+        shape = RoundedCornerShape(Dimens.SpacingS)
     ) {
         Text(
-            text = status,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = Dimens.SpacingXS),
+            text = model.label,
+            modifier = Modifier.padding(horizontal = Dimens.SpacingS, vertical = 6.dp),
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = textColor
         )
@@ -68,7 +79,7 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
             .padding(top = Dimens.SpacingM)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -77,21 +88,24 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
                     text = invoice.date.toUiDate(),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
+                Spacer(Modifier.height(Dimens.SpacingXS))
                 Text(
                     text = invoice.type,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
                 )
-                StatusPill(status = invoice.status)
+                Spacer(modifier = Modifier.height(Dimens.SpacingS))
+                StatusPill(
+                    model = invoice.status.toUiModel()
+                )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
-                    style = MaterialTheme.typography.bodyLarge,
+                    text = "${invoice.amount.formatSpanishCurrency()} €",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
                     color = TextSecondary
                 )
-                Spacer(Modifier.width(Dimens.SpacingS))
+                Spacer(Modifier.width(Dimens.SpacingM))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_info),
                     contentDescription = null,
@@ -101,6 +115,12 @@ fun InvoiceRow(invoice: Invoice, onClick: () -> Unit) {
             }
         }
         Spacer(Modifier.height(Dimens.SpacingM))
-        HorizontalDivider(thickness = Dimens.StrokeDefault, color = Color(0xFFEEEEEE))
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.SpacingM)
+    ){
+        AppDivider()
     }
 }

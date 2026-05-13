@@ -25,16 +25,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
 import com.iberdrola.practicas2026.core.utils.toLastInvoiceDate
 import com.iberdrola.practicas2026.domain.model.Invoice
 
 import com.iberdrola.practicas2026.presentation.R
 import com.iberdrola.practicas2026.presentation.composables.common.StatusPill
+import com.iberdrola.practicas2026.presentation.mapper.toUiModel
 import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreen
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
+import com.iberdrola.practicas2026.presentation.ui.theme.DividerColor
 import com.iberdrola.practicas2026.presentation.ui.theme.TextSecondary
-import java.util.Locale
 
 @Composable
 fun LastInvoiceCard(
@@ -51,7 +55,7 @@ fun LastInvoiceCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = Dimens.SpacingM),
+            .padding(bottom = Dimens.SpacingXL),
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
@@ -69,11 +73,11 @@ fun LastInvoiceCard(
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.height(Dimens.SpacingS))
                     // Invoice type
                     Text(
                         text = invoice.type,
                         style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary
                     )
                 }
                 Icon(
@@ -88,9 +92,28 @@ fun LastInvoiceCard(
 
             // Amount
             Text(
-                text = "${String.format(Locale.getDefault(), "%.2f", invoice.amount)} €",
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
+                text = buildAnnotatedString {
+                    val amountText = invoice.amount.formatSpanishCurrency()
+
+                    withStyle(
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ).toSpanStyle()
+                    ) {
+                        append(amountText)
+                    }
+
+                    withStyle(
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ).toSpanStyle()
+                    ) {
+                        append(" €")
+                    }
+                }
             )
+
+            Spacer(modifier = Modifier.height(Dimens.SpacingXS))
 
             // Date range
             Text(
@@ -99,9 +122,13 @@ fun LastInvoiceCard(
                 color = TextSecondary
             )
             
-            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.SpacingM), color = Color(0xFFE0E0E0))
+            HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = DividerColor)
 
-            StatusPill(status = invoice.status)
+            Spacer(modifier = Modifier.height(Dimens.SpacingS))
+
+            StatusPill(
+                model = invoice.status.toUiModel()
+            )
         }
     }
 }

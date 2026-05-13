@@ -11,11 +11,16 @@ import com.iberdrola.practicas2026.domain.usecase.GetFeedbackStatusUseCase
 import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
+import com.iberdrola.practicas2026.domain.model.InvoiceStatus
+import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -24,13 +29,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class InvoiceEvent {
+    data class SwitchToTab(val index: Int) : InvoiceEvent()
+}
+
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(
     private val getInvoicesUseCase: GetInvoicesUseCase,
     private val filterInvoicesUseCase: FilterInvoicesUseCase,
     private val settingsRepository: SettingsRepository,
     private val getFeedbackStatus: GetFeedbackStatusUseCase,
-    private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase
+    private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase,
+    private val getOldestDateUseCase: GetOldestDateUseCase,
 ) : ViewModel() {
 
     sealed class UiState {
@@ -54,6 +64,23 @@ class InvoiceViewModel @Inject constructor(
     // FILTROS
     private val _invoiceFilter = MutableStateFlow(InvoiceFilter())
     val invoiceFilter: StateFlow<InvoiceFilter> = _invoiceFilter
+
+    private val _minDateAllowed = MutableStateFlow<Long?>(null)
+    val minDateAllowed = _minDateAllowed.asStateFlow()
+
+    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
+        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
+    }
+
+    // Canal de eventos para la UI
+    private val _events = MutableSharedFlow<InvoiceEvent>()
+    val events = _events.asSharedFlow()
+
+    private var currentTabIndex = 0
+
+    fun updateCurrentTab(index: Int) {
+        currentTabIndex = index
+    }
 
     private var fetchJob: Job? = null
 
@@ -85,7 +112,10 @@ class InvoiceViewModel @Inject constructor(
         }
     }
 
+    private val _isRemoteLoading = MutableStateFlow(false)
+
     fun fetchFacturas(isLocal: Boolean) {
+        _isRemoteLoading.value = true
         fetchJob?.cancel() // Cancela la carga anterior si está en curso
         fetchJob = viewModelScope.launch {
             _uiStates.value = mapOf(
@@ -95,7 +125,6 @@ class InvoiceViewModel @Inject constructor(
 
             getInvoicesUseCase(isLocal)
                 .catch { e ->
-                    // Si hay error, lo ponemos en ambos para que el usuario se entere
                     _uiStates.update { currentMap ->
                         currentMap + (InvoiceType.LIGHT to UiState.Error(e.message ?: "Sin conexión")) +
                                 (InvoiceType.GAS to UiState.Error(e.message ?: "Sin conexión"))
@@ -104,15 +133,19 @@ class InvoiceViewModel @Inject constructor(
                 .collect { response ->
                     allInvoicesCached = response.allInvoices
 
-                    // Cálculo dinámico para el slider
                     if (allInvoicesCached.isNotEmpty()) {
                         val min = allInvoicesCached.minOf { it.amount.toFloat() }
                         val max = allInvoicesCached.maxOf { it.amount.toFloat() }
-                        _amountBounds.value = if (min == max) 0f..(max + 1f) else min..max
+                        _amountBounds.value = if (min == max) {
+                            (min - 0.5f)..(max + 0.5f)
+                        } else {
+                            min..max
+                        }
                     }
                     filterInvoices(InvoiceType.LIGHT)
                     filterInvoices(InvoiceType.GAS)
                 }
+            _isRemoteLoading.value = false
         }
     }
 
@@ -135,8 +168,28 @@ class InvoiceViewModel @Inject constructor(
 
     fun applyFilters(newFilter: InvoiceFilter) {
         _invoiceFilter.value = newFilter
-        filterInvoices(InvoiceType.LIGHT)
-        filterInvoices(InvoiceType.GAS)
+
+        // 2. Calculamos los resultados de AMBAS pestañas inmediatamente
+        val luzRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, newFilter)
+        val gasRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, newFilter)
+
+        // Actualizamos los estados de la UI
+        _uiStates.update { it + (InvoiceType.LIGHT to UiState.Success(luzRes)) }
+        _uiStates.update { it + (InvoiceType.GAS to UiState.Success(gasRes)) }
+
+        // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
+        viewModelScope.launch {
+            val hasLuz = luzRes.history.isNotEmpty()
+            val hasGas = gasRes.history.isNotEmpty()
+
+            if (currentTabIndex == 0 && !hasLuz && hasGas) {
+                // Estoy en LUZ, no hay nada, pero en GAS sí -> Ir a GAS (index 1)
+                _events.emit(InvoiceEvent.SwitchToTab(1))
+            } else if (currentTabIndex == 1 && !hasGas && hasLuz) {
+                // Estoy en GAS, no hay nada, pero en LUZ sí -> Ir a LUZ (index 0)
+                _events.emit(InvoiceEvent.SwitchToTab(0))
+            }
+        }
     }
 
     fun clearFilters() {
@@ -163,14 +216,14 @@ class InvoiceViewModel @Inject constructor(
 
     fun onRatingSelected(rating: Int) {
         viewModelScope.launch {
-            updateFeedbackDecision.setDelay(isRated = true) // Próximo aviso en 10
+            updateFeedbackDecision.setDelay(isRated = true)
             _showThanksMessage.value = true
         }
     }
 
     fun onLaterClicked(onConfirmExit: () -> Unit) {
         viewModelScope.launch {
-            updateFeedbackDecision.setDelay(isRated = false) // Próximo aviso en 3
+            updateFeedbackDecision.setDelay(isRated = false)
             _showFeedbackSheet.value = false
             onConfirmExit()
         }
@@ -185,9 +238,7 @@ class InvoiceViewModel @Inject constructor(
     fun getResultCount(): Int {
         val luz = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, _invoiceFilter.value)
         val gas = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, _invoiceFilter.value)
-        val totalLuz = luz.history.size + (if (luz.lastInvoice != null) 1 else 0)
-        val totalGas = gas.history.size + (if (gas.lastInvoice != null) 1 else 0)
 
-        return totalLuz + totalGas
+        return luz.history.size + gas.history.size
     }
 }

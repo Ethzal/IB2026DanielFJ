@@ -13,16 +13,21 @@ class FilterInvoicesUseCase {
         type: InvoiceType,
         criteria: InvoiceFilter? = null
     ): InvoiceResponse {
-        // 1. Filtramos primero por tipo
-        var filtered = allInvoices.filter { it.type == type.value }
+        // 1. Filtramos primero por tipo (todos los de Luz o Gas)
+        val invoicesForType = allInvoices.filter { it.type == type.value }
 
-        // Si no hay filtros, el criterio es nulo o vacío
-        val isFiltering = criteria?.let {
-            it.dateFrom != null || it.dateTo != null ||
-                    it.amountRange != null || it.statuses.isNotEmpty()
-        } ?: false
+        // 2. Calculamos la Última Factura (Permanente, independiente de filtros)
+        val absoluteLastInvoice = invoicesForType.maxByOrNull {
+            try {
+                LocalDate.parse(it.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            } catch (_: Exception) {
+                LocalDate.MIN // Si falla el formato, asume fecha mínima
+            }
+        }
 
-        // 2. Aplicamos criterios de filtro (fecha, importe, estado)
+        var filtered = invoicesForType
+
+        // 3. Aplicamos criterios de filtro (fecha, importe, estado) a la lista histórica
         criteria?.let { filter ->
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -47,7 +52,7 @@ class FilterInvoicesUseCase {
             }
         }
 
-        // 3. Ordenar de más nueva a más antigua
+        // 4. Ordenar el histórico de más nueva a más antigua
         val sortedList = filtered.sortedByDescending {
             try {
                 LocalDate.parse(it.date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -56,10 +61,10 @@ class FilterInvoicesUseCase {
             }
         }
 
-        // 4. Devolvemos el response con la lista ordenada
+        // 5. Devolvemos el response con la card permanente y la lista histórica filtrada
         return InvoiceResponse(
-            lastInvoice = if (isFiltering) null else sortedList.firstOrNull(),
-            history = if (isFiltering) sortedList else sortedList.drop(1),
+            lastInvoice = absoluteLastInvoice,
+            history = sortedList,
             allInvoices = allInvoices
         )
     }
