@@ -133,4 +133,5 @@
     <string name="label_nuevo_email">* Nuevo email</string>
     <string name="email_test">pepe2@gmail.com</string>
     <string name="progress">progress</string>
+    <string name="crash">CRASH</string>
 </resources>

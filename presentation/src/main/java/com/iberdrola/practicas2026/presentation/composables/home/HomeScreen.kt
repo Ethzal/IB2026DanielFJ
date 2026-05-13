@@ -34,6 +34,7 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
+import com.iberdrola.practicas2026.presentation.ui.theme.White
 
 @Composable
 fun HomeScreen(
@@ -74,14 +75,50 @@ fun HomeScreenContent(
     val configuration = LocalConfiguration.current
     val cardWidth = (configuration.screenWidthDp / 3f).dp
 
-    Scaffold(containerColor = Color.White) { padding ->
+    Scaffold(
+        containerColor = Color.White,
+        bottomBar = {
+            Surface(
+                color = Color.Transparent,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(Dimens.SpacingM),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = { onForceCrash() },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                        shape = RoundedCornerShape(Dimens.CornerButtonXL),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_crash),
+                            contentDescription = null,
+                            tint = White,
+                            modifier = Modifier.size(Dimens.IconS)
+                        )
+                        Spacer(Modifier.width(Dimens.SpacingS))
+                        Text(
+                            stringResource(R.string.crash),
+                            color = White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -117,16 +154,6 @@ fun HomeScreenContent(
                                     uncheckedTrackColor = Color.White.copy(alpha = 0.4f)
                                 )
                             )
-                        }
-
-                        Spacer(Modifier.width(Dimens.SpacingM))
-
-                        Button(
-                            onClick = { onForceCrash() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text("CRASH", color = Color.White, fontWeight = FontWeight.Bold)
                         }
 
                         Spacer(Modifier.width(Dimens.SpacingM))
@@ -185,7 +212,9 @@ fun HomeScreenContent(
                         colors = CardDefaults.cardColors(containerColor = BrandGreenLight),
                         shape = RoundedCornerShape(Dimens.CornerDefault)
                     ) {
-                        Row(modifier = Modifier.padding(Dimens.SpacingM).fillMaxWidth()) {
+                        Row(modifier = Modifier
+                            .padding(Dimens.SpacingM)
+                            .fillMaxWidth()) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_electronic_invoice),
                                 contentDescription = null,
@@ -212,7 +241,9 @@ fun HomeScreenContent(
             }
 
             // Body
-            Box(modifier = Modifier.fillMaxWidth().background(BrandGreen)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .background(BrandGreen)) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -267,8 +298,6 @@ fun HomeScreenContent(
                             )
                         }
                     }
-
-                    Spacer(Modifier.height(Dimens.SpacingXL))
                 }
             }
         }
@@ -405,12 +434,16 @@ fun LastInvoiceHomeCard(
 fun ElectronicInvoiceHomeCard(width: Dp, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        modifier = Modifier.width(width).height(180.dp),
+        modifier = Modifier
+            .width(width)
+            .height(180.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         elevation = CardDefaults.cardElevation(Dimens.SpacingXS)
     ) {
-        Column(Modifier.padding(Dimens.SpacingM).fillMaxSize()) {
+        Column(Modifier
+            .padding(Dimens.SpacingM)
+            .fillMaxSize()) {
             Icon(
                 painter = painterResource(R.drawable.ic_electronic_invoice),
                 contentDescription = null,

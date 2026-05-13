@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class FirebaseModule {
+abstract class FirebaseModule { // adb shell setprop debug.firebase.analytics.app com.iberdrola.practicas2026.DanielFJ
     @Binds
     @Singleton
     abstract fun bindAnalyticsRepository(impl: AnalyticsRepositoryImpl): AnalyticsRepository
