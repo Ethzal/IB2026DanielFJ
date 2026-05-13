@@ -3,12 +3,14 @@ package com.iberdrola.practicas2026.presentation.composables.common
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -119,9 +121,10 @@ fun FeedbackBottomSheet(
                             painter = painterResource(id = drawableRes),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(38.dp)
+                                .size(Dimens.IconL)
+                                .clip(RoundedCornerShape(Dimens.SpacingS))
                                 .clickable { onRatingSelected(index) }
-                                .padding(1.dp)
+                                .padding(Dimens.SpacingXS)
                         )
                     }
                 }
@@ -148,16 +151,13 @@ fun FeedbackBottomSheet(
                     tint = BrandGreen,
                     modifier = Modifier.size(64.dp)
                 )
-                
                 Spacer(modifier = Modifier.height(Dimens.SpacingM))
-                
                 Text(
                     text = stringResource(R.string.muchas_gracias),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = BrandGreen
                 )
-                
                 Text(
                     text = stringResource(R.string.tu_valoracion_nos_ayuda_a_mejorar_dia_a_dia),
                     textAlign = TextAlign.Center,
