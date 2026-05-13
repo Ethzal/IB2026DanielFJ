@@ -149,10 +149,8 @@ class ElectronicInvoiceViewModel @Inject constructor(
 
     private fun handleResendOtp() {
         val currentState = _state.value
+        if (currentState.isLoading) return
         if (currentState.otpAttemptsLeft > 0) {
-            val newAttempts = currentState.otpAttemptsLeft - 1
-            val currentTime = if (newAttempts == 0) System.currentTimeMillis() else 0L
-            viewModelScope.launch { otpRepository.saveOtpAttempts(newAttempts, currentTime) }
             _state.update {
                 it.copy(
                     otpAttemptsLeft = it.otpAttemptsLeft - 1,

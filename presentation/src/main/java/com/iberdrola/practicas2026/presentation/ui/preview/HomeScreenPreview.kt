@@ -16,7 +16,9 @@ fun HomeScreenLoadingPreview() {
             onToggleMode = {},
             onNavigateToInvoices = {},
             onNavigateToElectronicInvoice = {},
-            isInvoiceLoading = true
+            isInvoiceLoading = true,
+            lastInvoice = null,
+            hasError = false
         )
     }
 }
@@ -38,7 +40,9 @@ fun HomeScreenSuccessPreview() {
             onToggleMode = {},
             onNavigateToInvoices = {},
             onNavigateToElectronicInvoice = {},
-            isInvoiceLoading = false
+            isInvoiceLoading = false,
+            lastInvoice = fakeInvoice,
+            hasError = false
         )
     }
 }
