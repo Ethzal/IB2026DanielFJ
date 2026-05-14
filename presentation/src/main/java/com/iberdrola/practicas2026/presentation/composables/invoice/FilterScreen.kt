@@ -98,7 +98,12 @@ fun FilterScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(White)
-                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, top = 0.dp, bottom = Dimens.SpacingS)
+                    .padding(
+                        start = Dimens.SpacingM,
+                        end = Dimens.SpacingM,
+                        top = 0.dp,
+                        bottom = Dimens.SpacingS
+                    )
                     .navigationBarsPadding()
             ) {
 
@@ -230,7 +235,7 @@ fun FilterScreen(
 
                         // Refactorizado a Componente Clean & Reusable
                         DateFilterTextField(
-                            label = if (isDateEnabled) stringResource(R.string.desde) else "Sin facturas",
+                            label = if (isDateEnabled) stringResource(R.string.desde) else stringResource(R.string.sin_facturas),
                             selectedDate = selectedFromDate,
                             isEnabled = isDateEnabled,
                             isPickerOpen = showFromDatePicker,
@@ -377,7 +382,8 @@ fun FilterScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(Dimens.CornerButtonXL))
                                 .clickable {
-                                    selectedStatuses = if (isChecked) selectedStatuses - status else selectedStatuses + status
+                                    selectedStatuses =
+                                        if (isChecked) selectedStatuses - status else selectedStatuses + status
                                 }
                                 .padding(vertical = 4.dp)
                         ) {
@@ -400,7 +406,7 @@ fun FilterScreen(
                             )
                         }
                     }
-                    Spacer(Modifier.height(40.dp))
+                    Spacer(Modifier.height(Dimens.SpacingXXL))
                 }
                 Box(
                     modifier = Modifier
@@ -499,7 +505,7 @@ fun DateFilterTextField(
                     if (selectedDate != null && isEnabled) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = "Borrar fecha",
+                            contentDescription = stringResource(R.string.borrar_fecha),
                             tint = Color.Gray,
                             modifier = Modifier.size(24.dp)
                         )

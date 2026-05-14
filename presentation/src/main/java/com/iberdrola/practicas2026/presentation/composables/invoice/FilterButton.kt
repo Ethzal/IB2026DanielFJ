@@ -32,7 +32,7 @@ fun FilterButton(onClick: () -> Unit, isFilterActive: Boolean = false) {
 
     OutlinedButton(
         onClick = onClick,
-        modifier = Modifier.height(40.dp),
+        modifier = Modifier.height(Dimens.SpacingXXL),
         shape = RoundedCornerShape(Dimens.CornerButton),
         border = BorderStroke(Dimens.StrokeDefault, borderColor),
         colors = ButtonDefaults.outlinedButtonColors(

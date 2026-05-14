@@ -281,7 +281,7 @@ fun HomeScreenContent(
 
                     // Mis accesos
                     Text(
-                        text = "Mis accesos",
+                        text = stringResource(R.string.mis_accesos),
                         modifier = Modifier.padding(horizontal = Dimens.SpacingM),
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -319,11 +319,11 @@ fun LastInvoiceHomeCard(
     }
 
     val type = when {
-        hasError || lastInvoice == null -> "No hay datos"
+        hasError || lastInvoice == null -> stringResource(R.string.no_hay_datos)
         else -> lastInvoice.type.replace("Factura ", "")
     }
 
-    val iconRes = if (type.equals("Gas", ignoreCase = true)) R.drawable.ic_gas else R.drawable.ic_lightbulb
+    val iconRes = if (type.equals(stringResource(R.string.gas), ignoreCase = true)) R.drawable.ic_gas else R.drawable.ic_lightbulb
 
     Card(
         onClick = {
@@ -436,7 +436,7 @@ fun ElectronicInvoiceHomeCard(width: Dp, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .width(width)
-            .height(180.dp),
+            .height(Dimens.ShimmerCardHeight),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         elevation = CardDefaults.cardElevation(Dimens.SpacingXS)

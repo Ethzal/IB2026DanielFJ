@@ -134,4 +134,8 @@
     <string name="email_test">pepe2@gmail.com</string>
     <string name="progress">progress</string>
     <string name="crash">CRASH</string>
+    <string name="cerrar_aviso">Cerrar aviso</string>
+    <string name="mis_accesos">Mis accesos</string>
+    <string name="borrar_fecha">Borrar fecha</string>
+    <string name="no_hay_datos">No hay datos</string>
 </resources>
