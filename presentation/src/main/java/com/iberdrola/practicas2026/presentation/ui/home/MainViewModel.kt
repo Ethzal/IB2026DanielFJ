@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
@@ -74,19 +75,21 @@ class MainViewModel @Inject constructor(
             _hasError.value = false
 
             try {
-                getInvoicesUseCase(isLocal)
+                combine(
+                    getInvoicesUseCase(isLocal),
+                    remoteConfigRepository.isGasEnabled
+                ) { response, gasEnabled ->
+                    if (!gasEnabled) {
+                        response.allInvoices.filter { it.type != "Factura Gas" }
+                    } else {
+                        response.allInvoices
+                    }
+                }
                     .catch {
                         _hasError.value = true
                         _isInvoiceLoading.value = false
                     }
-                    .collect { response ->
-                        val gasEnabled = remoteConfigRepository.isGasEnabled.value
-
-                        val filteredList = if (!gasEnabled) {
-                            response.allInvoices.filter { it.type != "Factura Gas" }
-                        } else {
-                            response.allInvoices
-                        }
+                    .collect { filteredList ->
                         val last = filteredList.maxByOrNull { it.date }
                         _lastInvoice.value = last
                         _hasError.value = false

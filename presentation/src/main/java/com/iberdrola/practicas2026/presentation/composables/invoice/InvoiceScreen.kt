@@ -110,6 +110,12 @@ fun InvoiceScreen(
         }
     }
 
+    LaunchedEffect(tabs.size) {
+        if (pagerState.currentPage >= tabs.size) {
+            pagerState.scrollToPage(0)
+        }
+    }
+
     fun showSnackbar(message: String) {
         coroutineScope.launch {
             snackbarHostState.currentSnackbarData?.dismiss()
@@ -203,7 +209,7 @@ fun InvoiceScreen(
                                 item {
                                     Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween) {
                                         // Caja para "Histórico de facturas"
-                                        Box(modifier = Modifier.width(180.dp).height(24.dp).background(brush))
+                                        Box(modifier = Modifier.width(Dimens.ShimmerCardHeight).height(24.dp).background(brush))
 
                                         // Botón de filtrar
                                         ShimmerFilterButton(brush)
