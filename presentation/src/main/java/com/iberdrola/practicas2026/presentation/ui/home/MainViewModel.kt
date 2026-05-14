@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -91,6 +92,8 @@ class MainViewModel @Inject constructor(
                         _hasError.value = false
                         _isInvoiceLoading.value = false
                     }
+            } catch (e: CancellationException) {
+                throw e
             } catch (_: Exception) {
                 _hasError.value = true
                 _isInvoiceLoading.value = false
