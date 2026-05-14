@@ -85,7 +85,7 @@ fun HomeScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(Dimens.SpacingM),
+                        .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingXS),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(
