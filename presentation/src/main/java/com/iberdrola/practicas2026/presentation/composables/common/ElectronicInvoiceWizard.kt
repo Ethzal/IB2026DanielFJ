@@ -19,6 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
@@ -137,6 +138,7 @@ fun WizardHeader(
 @Composable
 fun ContractListScreen(
     progress: Float,
+    isGasEnabled: Boolean,
     onActiveContractClick: () -> Unit,
     onInactiveContractClick: () -> Unit,
     onBack: () -> Unit
@@ -159,12 +161,16 @@ fun ContractListScreen(
                 .fillMaxWidth()
                 .padding(horizontal = Dimens.SpacingM)) { AppDivider() }
 
-            ContractRow(
-                icon = R.drawable.ic_gas,
-                title = stringResource(R.string.contrato_de_gas),
-                status = ContractStatus.Inactive,
-                onClick = onInactiveContractClick
-            )
+            if (isGasEnabled) {
+                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.SpacingM)) { AppDivider() }
+
+                ContractRow(
+                    icon = R.drawable.ic_gas,
+                    title = stringResource(R.string.contrato_de_gas),
+                    status = ContractStatus.Inactive,
+                    onClick = onInactiveContractClick
+                )
+            }
 
             Row(modifier = Modifier
                 .fillMaxWidth()
@@ -533,7 +539,7 @@ fun OtpVerificationScreen(
                     .fillMaxWidth()) {
                     Icon(painterResource(R.drawable.ic_info), contentDescription = null, tint = if (state.verSoporte) WarningOrange else TextSecondary)
                     Spacer(Modifier.width(Dimens.SpacingS))
-                    Column {
+                    Column(horizontalAlignment = Alignment.Start) {
                         if (!state.verSoporte) {
                             Text(stringResource(R.string.no_has_recibido), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
                             Spacer(Modifier.height(Dimens.SpacingXS))
@@ -543,12 +549,14 @@ fun OtpVerificationScreen(
                             }
                             Text(
                                 text = stringResource(R.string.volver_a_enviar),
-                                color = if (state.otpAttemptsLeft > 0) BrandGreen else Color.Gray,
+                                color = if (state.otpAttemptsLeft > 0) TextMain else Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.Underline),
                                 modifier = Modifier
+                                    .offset(x = -Dimens.SpacingS)
+                                    .clip(RoundedCornerShape(Dimens.CornerButton))
                                     .clickable { onResendClick() }
-                                    .padding(top = Dimens.SpacingS)
+                                    .padding(Dimens.SpacingS)
                             )
                         } else {
                             Text(
@@ -573,8 +581,10 @@ fun OtpVerificationScreen(
                                     textDecoration = TextDecoration.Underline
                                 ),
                                 modifier = Modifier
+                                    .offset(x = -Dimens.SpacingS)
+                                    .clip(RoundedCornerShape(Dimens.CornerButton))
                                     .clickable { showNotAvailableDialog = true }
-                                    .padding(top = Dimens.SpacingS)
+                                    .padding(Dimens.SpacingS)
                             )
                         }
                     }
@@ -669,6 +679,8 @@ fun WizardContainer(
         label = stringResource(R.string.progress)
     )
 
+    val isGasEnabled by viewModel.isGasEnabled.collectAsStateWithLifecycle()
+
     // Efecto de Navegación de Salida
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -698,8 +710,15 @@ fun WizardContainer(
         when (state.step) {
             WizardStep.CONTRACT_LIST -> ContractListScreen(
                 progress = animatedProgress,
-                onActiveContractClick = { viewModel.onEvent(WizardEvent.SelectActiveContract) },
-                onInactiveContractClick = { viewModel.onEvent(WizardEvent.SelectInactiveContract) },
+                isGasEnabled = isGasEnabled,
+                onActiveContractClick = {
+                    viewModel.logButtonClick("btn_contrato_luz")
+                    viewModel.onEvent(WizardEvent.SelectActiveContract)
+                },
+                onInactiveContractClick = {
+                    viewModel.logButtonClick("btn_contrato_gas")
+                    viewModel.onEvent(WizardEvent.SelectInactiveContract)
+                },
                 onBack = { viewModel.onEvent(WizardEvent.NavigateBack) }
             )
 

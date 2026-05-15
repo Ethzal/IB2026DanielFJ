@@ -76,13 +76,13 @@ fun ShimmerLastInvoiceCard(brush: Brush) {
             Box(modifier = Modifier.width(120.dp).height(24.dp).background(brush))
             Spacer(Modifier.height(Dimens.SpacingXS))
             // Dates
-            Box(modifier = Modifier.width(150.dp).height(12.dp).background(brush))
+            Box(modifier = Modifier.width(Dimens.ShimmerTitleWidth).height(12.dp).background(brush))
 
             HorizontalDivider(modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingS), color = Color(0xFFF2F2F2))
 
             Spacer(Modifier.height(Dimens.SpacingS))
             // Status Pill
-            Box(modifier = Modifier.width(90.dp).height(24.dp).background(brush, RoundedCornerShape(8.dp)))
+            Box(modifier = Modifier.width(Dimens.LoadingIndicatorSize).height(24.dp).background(brush, RoundedCornerShape(8.dp)))
         }
     }
 }
@@ -94,12 +94,12 @@ fun ShimmerInvoiceRow(brush: Brush) {
             Column(modifier = Modifier.weight(1f)) {
                 // Fecha
                 Box(modifier = Modifier.width(100.dp).height(18.dp).background(brush))
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(Dimens.SpacingXS))
                 // Tipo
                 Box(modifier = Modifier.width(70.dp).height(12.dp).background(brush))
                 Spacer(Modifier.height(Dimens.SpacingS))
                 // Status Pill
-                Box(modifier = Modifier.width(90.dp).height(24.dp).background(brush, RoundedCornerShape(8.dp)))
+                Box(modifier = Modifier.width(Dimens.LoadingIndicatorSize).height(24.dp).background(brush, RoundedCornerShape(8.dp)))
             }
             // Amount + Arrow
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -116,7 +116,7 @@ fun ShimmerInvoiceRow(brush: Brush) {
 // El Botón de Filtrar Shimmer (Outline + Icono + Texto)
 @Composable
 fun ShimmerFilterButton(brush: Brush) {
-    Box(modifier = Modifier.width(95.dp).height(40.dp).background(brush, RoundedCornerShape(Dimens.CornerButton)))
+    Box(modifier = Modifier.width(95.dp).height(Dimens.SpacingXXL).background(brush, RoundedCornerShape(Dimens.CornerButton)))
 }
 
 // Año
@@ -125,7 +125,7 @@ fun ShimmerYearHeader(brush: Brush) {
     Box(
         modifier = Modifier
             .padding(vertical = Dimens.SpacingM)
-            .width(40.dp)
+            .width(Dimens.SpacingXXL)
             .height(16.dp)
             .background(brush)
     )

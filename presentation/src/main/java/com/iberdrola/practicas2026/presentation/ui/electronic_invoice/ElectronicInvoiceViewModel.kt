@@ -3,7 +3,9 @@ package com.iberdrola.practicas2026.presentation.ui.electronic_invoice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iberdrola.practicas2026.core.utils.isEmailValid
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
 import com.iberdrola.practicas2026.domain.repository.OtpRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +21,6 @@ enum class WizardStep {
     CONTRACT_LIST, MODIFY_INFO, EMAIL_INPUT, OTP, SUCCESS
 }
 
-// 1. ESTADO: Representa toda la información necesaria para pintar la UI
 data class WizardState(
     val step: WizardStep = WizardStep.CONTRACT_LIST,
     val isActivation: Boolean = true,
@@ -43,7 +44,6 @@ data class WizardState(
     val isOtpValid get() = otpCode.length == 6
 }
 
-// 2. EVENTOS: Intenciones del usuario que la UI manda al ViewModel
 sealed class WizardEvent {
     object SelectActiveContract : WizardEvent()
     object SelectInactiveContract : WizardEvent()
@@ -63,14 +63,15 @@ sealed class WizardEvent {
     object CloseWizard : WizardEvent()
 }
 
-// 3. EFECTOS: Acciones de un solo uso (One-shot events) hacia la UI
 sealed class WizardEffect {
     object ExitWizard : WizardEffect()
 }
 
 @HiltViewModel
 class ElectronicInvoiceViewModel @Inject constructor(
-    private val otpRepository: OtpRepository
+    private val otpRepository: OtpRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WizardState())
@@ -78,6 +79,8 @@ class ElectronicInvoiceViewModel @Inject constructor(
 
     private val _effect = MutableSharedFlow<WizardEffect>()
     val effect = _effect.asSharedFlow()
+
+    val isGasEnabled: StateFlow<Boolean> = remoteConfigRepository.isGasEnabled
 
     init {
         viewModelScope.launch {
@@ -93,6 +96,10 @@ class ElectronicInvoiceViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun logButtonClick(btnName: String) {
+        analyticsRepository.logButtonClicked(btnName)
     }
 
     fun resetState() {
@@ -155,22 +162,21 @@ class ElectronicInvoiceViewModel @Inject constructor(
                 it.copy(
                     otpAttemptsLeft = it.otpAttemptsLeft - 1,
                     hasRequestedResend = true,
-                    otpResendState = 1 // Loading
+                    otpResendState = 1
                 )
             }
             viewModelScope.launch {
-                delay(2000) // Simulación de API
-                _state.update { it.copy(otpResendState = 2) } // Sent
+                delay(2000)
+                _state.update { it.copy(otpResendState = 2) }
             }
         } else {
-            _state.update { it.copy(verSoporte = true, otpResendState = 3) } // Limit Reached
+            _state.update { it.copy(verSoporte = true, otpResendState = 3) }
         }
     }
 
     private fun handleSuccessAccept() {
         val currentState = _state.value
 
-        // Limpiamos los estados de formularios
         val cleanState = currentState.copy(
             otpCode = "",
             isLegalChecked = false,
@@ -180,13 +186,11 @@ class ElectronicInvoiceViewModel @Inject constructor(
         )
 
         if (!currentState.isActivation) {
-            // Modificación exitosa del contrato activo
             _state.value = cleanState.copy(
                 lightContractEmail = currentState.draftEmail,
                 step = WizardStep.MODIFY_INFO
             )
         } else {
-            // Activación exitosa del inactivo
             _state.value = cleanState.copy(step = WizardStep.CONTRACT_LIST)
         }
     }
@@ -210,7 +214,7 @@ class ElectronicInvoiceViewModel @Inject constructor(
             }
             WizardStep.MODIFY_INFO -> _state.update { it.copy(step = WizardStep.CONTRACT_LIST) }
             WizardStep.CONTRACT_LIST -> exit()
-            WizardStep.SUCCESS -> { /* No se puede volver atrás desde éxito */ }
+            WizardStep.SUCCESS -> { }
         }
     }
 

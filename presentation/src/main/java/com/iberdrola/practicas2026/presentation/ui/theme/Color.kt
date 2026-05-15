@@ -35,3 +35,8 @@ val BgLoading = Color(0xCC000000)
 val BgInfo = Color(0xFFDDF5FE)
 val BgInfoDisable = Color(0xFFFFF4E5)
 val WarningOrange = Color(0xFFE67E22)
+
+// Crash
+val BtCrash = Color(0xFFC93636)
+
+

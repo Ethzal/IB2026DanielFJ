@@ -46,7 +46,13 @@ fun InvoiceScreen(
     viewModel: InvoiceViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
-    val tabs = listOf(stringResource(R.string.luz), stringResource(R.string.gas))
+    val isGasEnabled by viewModel.isGasEnabled.collectAsStateWithLifecycle()
+
+    val tabs = if (isGasEnabled) {
+        listOf(stringResource(R.string.luz), stringResource(R.string.gas))
+    } else {
+        listOf(stringResource(R.string.luz))
+    }
     val snackbarHostState = remember { SnackbarHostState() }
 
     val showFeedback by viewModel.showFeedbackSheet.collectAsStateWithLifecycle()
@@ -65,6 +71,7 @@ fun InvoiceScreen(
     val context = LocalContext.current
 
     var isExiting by remember { mutableStateOf(false) }
+
 
     val handleBack = {
         if (!isExiting) {
@@ -100,6 +107,12 @@ fun InvoiceScreen(
                     pagerState.animateScrollToPage(event.index)
                 }
             }
+        }
+    }
+
+    LaunchedEffect(tabs.size) {
+        if (pagerState.currentPage >= tabs.size) {
+            pagerState.scrollToPage(0)
         }
     }
 
@@ -194,9 +207,9 @@ fun InvoiceScreen(
 
                                 // Título Histórico + Botón Filtrar
                                 item {
-                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         // Caja para "Histórico de facturas"
-                                        Box(modifier = Modifier.width(180.dp).height(24.dp).background(brush))
+                                        Box(modifier = Modifier.width(Dimens.ShimmerCardHeight).height(24.dp).background(brush))
 
                                         // Botón de filtrar
                                         ShimmerFilterButton(brush)
@@ -215,12 +228,14 @@ fun InvoiceScreen(
                         is InvoiceViewModel.UiState.Success -> {
                             InvoiceList(
                                 data = pageUiState.data,
-                                onInvoiceClick = {
+                                onInvoiceClick = { invoice ->
+                                    viewModel.logButtonClick("btn_factura_${invoice.id}")
                                     if (!isExiting && !showFeedback) {
                                         showNotAvailableDialog = true
                                     }
                                 },
                                 onFilterClick = {
+                                    viewModel.logButtonClick("btn_abrir_filtros")
                                     if (!isExiting && !showFeedback) showFilterScreen = true
                                 },
                                 isFiltering = isFiltering,
@@ -268,14 +283,14 @@ fun InvoiceList(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = Dimens.SpacingXL) // Espacio al final
+        contentPadding = PaddingValues(bottom = Dimens.SpacingXL)
     ) {
         // ÍNDICE 0: TARJETA PERMANENTE
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingM)
+                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, top = Dimens.SpacingM)
             ) {
                 data.lastInvoice?.let { last ->
                     LastInvoiceCard(
@@ -291,7 +306,7 @@ fun InvoiceList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, bottom = Dimens.SpacingM),
+                    .padding(Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

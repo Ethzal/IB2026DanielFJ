@@ -12,6 +12,8 @@ import com.iberdrola.practicas2026.domain.usecase.GetInvoicesUseCase
 import com.iberdrola.practicas2026.domain.usecase.UpdateFeedbackDecisionUseCase
 import com.iberdrola.practicas2026.domain.model.InvoiceFilter
 import com.iberdrola.practicas2026.domain.model.InvoiceStatus
+import com.iberdrola.practicas2026.domain.repository.AnalyticsRepository
+import com.iberdrola.practicas2026.domain.repository.RemoteConfigRepository
 import com.iberdrola.practicas2026.domain.usecase.GetOldestDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -41,6 +43,8 @@ class InvoiceViewModel @Inject constructor(
     private val getFeedbackStatus: GetFeedbackStatusUseCase,
     private val updateFeedbackDecision: UpdateFeedbackDecisionUseCase,
     private val getOldestDateUseCase: GetOldestDateUseCase,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) : ViewModel() {
 
     sealed class UiState {
@@ -68,19 +72,11 @@ class InvoiceViewModel @Inject constructor(
     private val _minDateAllowed = MutableStateFlow<Long?>(null)
     val minDateAllowed = _minDateAllowed.asStateFlow()
 
-    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
-        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
-    }
-
     // Canal de eventos para la UI
     private val _events = MutableSharedFlow<InvoiceEvent>()
     val events = _events.asSharedFlow()
 
     private var currentTabIndex = 0
-
-    fun updateCurrentTab(index: Int) {
-        currentTabIndex = index
-    }
 
     private var fetchJob: Job? = null
 
@@ -100,6 +96,10 @@ class InvoiceViewModel @Inject constructor(
 
     private var currentInvoiceType = InvoiceType.LIGHT
 
+    val isGasEnabled: StateFlow<Boolean> = remoteConfigRepository.isGasEnabled
+
+    private val _isRemoteLoading = MutableStateFlow(false)
+
     init {
         observeSettings()
     }
@@ -112,7 +112,17 @@ class InvoiceViewModel @Inject constructor(
         }
     }
 
-    private val _isRemoteLoading = MutableStateFlow(false)
+    fun logButtonClick(btnName: String) {
+        analyticsRepository.logButtonClicked(btnName)
+    }
+
+    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
+        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
+    }
+
+    fun updateCurrentTab(index: Int) {
+        currentTabIndex = index
+    }
 
     fun fetchFacturas(isLocal: Boolean) {
         _isRemoteLoading.value = true
@@ -169,7 +179,7 @@ class InvoiceViewModel @Inject constructor(
     fun applyFilters(newFilter: InvoiceFilter) {
         _invoiceFilter.value = newFilter
 
-        // 2. Calculamos los resultados de AMBAS pestañas inmediatamente
+        // Calculamos los resultados de AMBAS pestañas inmediatamente
         val luzRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, newFilter)
         val gasRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, newFilter)
 
@@ -177,16 +187,14 @@ class InvoiceViewModel @Inject constructor(
         _uiStates.update { it + (InvoiceType.LIGHT to UiState.Success(luzRes)) }
         _uiStates.update { it + (InvoiceType.GAS to UiState.Success(gasRes)) }
 
-        // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
+        // LÓGICA DE REDIRECCIÓN INTELIGENTE
         viewModelScope.launch {
             val hasLuz = luzRes.history.isNotEmpty()
             val hasGas = gasRes.history.isNotEmpty()
 
             if (currentTabIndex == 0 && !hasLuz && hasGas) {
-                // Estoy en LUZ, no hay nada, pero en GAS sí -> Ir a GAS (index 1)
                 _events.emit(InvoiceEvent.SwitchToTab(1))
             } else if (currentTabIndex == 1 && !hasGas && hasLuz) {
-                // Estoy en GAS, no hay nada, pero en LUZ sí -> Ir a LUZ (index 0)
                 _events.emit(InvoiceEvent.SwitchToTab(0))
             }
         }
@@ -201,10 +209,8 @@ class InvoiceViewModel @Inject constructor(
     // FEEDBACK
     fun onBackClicked(onConfirmExit: () -> Unit) {
         viewModelScope.launch {
-            // 1. Siempre incrementamos el contador de intentos de salida
             updateFeedbackDecision.incrementExit()
 
-            // 2. Consultamos si toca mostrar el diálogo (lógica 10, 3, 0)
             val shouldShow = getFeedbackStatus().first()
             if (shouldShow) {
                 _showFeedbackSheet.value = true

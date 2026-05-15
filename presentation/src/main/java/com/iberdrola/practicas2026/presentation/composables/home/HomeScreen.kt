@@ -34,6 +34,8 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
+import com.iberdrola.practicas2026.presentation.ui.theme.BtCrash
+import com.iberdrola.practicas2026.presentation.ui.theme.White
 
 @Composable
 fun HomeScreen(
@@ -55,7 +57,8 @@ fun HomeScreen(
             mainViewModel.toggleMode(enabled)
         },
         onNavigateToInvoices = onNavigateToInvoices,
-        onNavigateToElectronicInvoice = onNavigateToElectronicInvoice
+        onNavigateToElectronicInvoice = onNavigateToElectronicInvoice,
+        onForceCrash = { mainViewModel.logCrashButtonClick() }
     )
 }
 
@@ -67,19 +70,57 @@ fun HomeScreenContent(
     lastInvoice: Invoice?,
     hasError: Boolean,
     onNavigateToInvoices: () -> Unit,
-    onNavigateToElectronicInvoice: () -> Unit
+    onNavigateToElectronicInvoice: () -> Unit,
+    onForceCrash: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val cardWidth = (configuration.screenWidthDp / 3f).dp
 
-    Scaffold(containerColor = Color.White) { padding ->
+    Scaffold(
+        containerColor = Color.White,
+        bottomBar = {
+            Surface(
+                color = Color.Transparent,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingXS),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = { onForceCrash() },
+                        colors = ButtonDefaults.buttonColors(containerColor = BtCrash, contentColor = White),
+                        shape = RoundedCornerShape(Dimens.CornerButtonXL),
+                        modifier = Modifier.defaultMinSize(minWidth = 64.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_crash),
+                            contentDescription = null,
+                            tint = White,
+                            modifier = Modifier.size(Dimens.IconS)
+                        )
+                        Spacer(Modifier.width(Dimens.SpacingS))
+                        Text(
+                            stringResource(R.string.crash),
+                            color = White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,7 +214,9 @@ fun HomeScreenContent(
                         colors = CardDefaults.cardColors(containerColor = BrandGreenLight),
                         shape = RoundedCornerShape(Dimens.CornerDefault)
                     ) {
-                        Row(modifier = Modifier.padding(Dimens.SpacingM).fillMaxWidth()) {
+                        Row(modifier = Modifier
+                            .padding(Dimens.SpacingM)
+                            .fillMaxWidth()) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_electronic_invoice),
                                 contentDescription = null,
@@ -200,7 +243,9 @@ fun HomeScreenContent(
             }
 
             // Body
-            Box(modifier = Modifier.fillMaxWidth().background(BrandGreen)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .background(BrandGreen)) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -238,7 +283,7 @@ fun HomeScreenContent(
 
                     // Mis accesos
                     Text(
-                        text = "Mis accesos",
+                        text = stringResource(R.string.mis_accesos),
                         modifier = Modifier.padding(horizontal = Dimens.SpacingM),
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -255,8 +300,6 @@ fun HomeScreenContent(
                             )
                         }
                     }
-
-                    Spacer(Modifier.height(Dimens.SpacingXL))
                 }
             }
         }
@@ -278,11 +321,11 @@ fun LastInvoiceHomeCard(
     }
 
     val type = when {
-        hasError || lastInvoice == null -> "No hay datos"
+        hasError || lastInvoice == null -> stringResource(R.string.no_hay_datos)
         else -> lastInvoice.type.replace("Factura ", "")
     }
 
-    val iconRes = if (type.equals("Gas", ignoreCase = true)) R.drawable.ic_gas else R.drawable.ic_lightbulb
+    val iconRes = if (type.equals(stringResource(R.string.gas), ignoreCase = true)) R.drawable.ic_gas else R.drawable.ic_lightbulb
 
     Card(
         onClick = {
@@ -393,12 +436,16 @@ fun LastInvoiceHomeCard(
 fun ElectronicInvoiceHomeCard(width: Dp, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        modifier = Modifier.width(width).height(180.dp),
+        modifier = Modifier
+            .width(width)
+            .height(Dimens.ShimmerCardHeight),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(Dimens.StrokeDefault, BrandGreen),
         elevation = CardDefaults.cardElevation(Dimens.SpacingXS)
     ) {
-        Column(Modifier.padding(Dimens.SpacingM).fillMaxSize()) {
+        Column(Modifier
+            .padding(Dimens.SpacingM)
+            .fillMaxSize()) {
             Icon(
                 painter = painterResource(R.drawable.ic_electronic_invoice),
                 contentDescription = null,

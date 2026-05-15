@@ -25,12 +25,6 @@ val AppTypography = Typography(
         letterSpacing = 0.4.sp
     ),
 
-//    headlineSmall = TextStyle(
-//        fontFamily = AppFontFamily,
-//        fontSize = Dimens.TextXL,
-//        fontWeight = FontWeight.Bold,
-//    ),
-
     titleLarge = TextStyle(
         fontFamily = AppFontFamily,
         fontSize = Dimens.TextXL,
@@ -46,12 +40,6 @@ val AppTypography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.4.sp
     ),
-
-//    bodyMedium = TextStyle(
-//        fontFamily = AppFontFamily,
-//        fontSize = Dimens.TextM,
-//        fontWeight = FontWeight.Normal,
-//    ),
 
     bodySmall = TextStyle(
         fontFamily = AppFontFamily,

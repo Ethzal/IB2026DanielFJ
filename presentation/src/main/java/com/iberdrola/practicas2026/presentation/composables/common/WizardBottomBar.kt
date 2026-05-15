@@ -73,7 +73,7 @@ fun WizardBottomBar(
                 OutlinedButton(
                     onClick = onSecondaryClick,
                     enabled = secondaryEnabled && interactionEnabled,
-                    modifier = Modifier.weight(1f).height(50.dp),
+                    modifier = Modifier.weight(1f).height(Dimens.ButtonHeight),
                     border = BorderStroke(Dimens.StrokeThick, BrandGreen),
                     shape = RoundedCornerShape(Dimens.CornerButtonXL)
                 ) {
@@ -85,7 +85,7 @@ fun WizardBottomBar(
             Button(
                 onClick = onPrimaryClick,
                 enabled = interactionEnabled,
-                modifier = Modifier.weight(1f).height(50.dp),
+                modifier = Modifier.weight(1f).height(Dimens.ButtonHeight),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (primaryEnabled) BrandGreen else BrandGreen.copy(alpha = 0.17f),
                     contentColor = if (primaryEnabled) White else BrandGreen.copy(alpha = 0.4f),

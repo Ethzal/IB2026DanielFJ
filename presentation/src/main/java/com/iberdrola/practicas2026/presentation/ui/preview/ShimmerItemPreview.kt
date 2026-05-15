@@ -44,7 +44,7 @@ fun InvoiceLoadingShimmerPreview() {
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(180.dp)
+                            .width(Dimens.ShimmerCardHeight)
                             .height(24.dp)
                             .background(brush)
                     )

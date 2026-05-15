@@ -135,6 +135,7 @@ fun FeedbackBottomSheet(
                 Text(
                     text = stringResource(R.string.responder_mas_tarde),
                     modifier = Modifier
+                        .clip(RoundedCornerShape(Dimens.CornerButton))
                         .clickable { onLaterSelected() }
                         .padding(Dimens.SpacingS),
                     style = MaterialTheme.typography.bodyLarge.copy(

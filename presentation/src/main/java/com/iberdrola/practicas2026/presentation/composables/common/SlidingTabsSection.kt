@@ -30,11 +30,7 @@ fun SlidingTabsSection(
     coroutineScope: kotlinx.coroutines.CoroutineScope
 ) {
     val density = LocalDensity.current
-    val tabPositions = remember { mutableStateListOf<Pair<Dp, Dp>>() }
-
-    if (tabPositions.isEmpty()) {
-        repeat(tabs.size) { tabPositions.add(0.dp to 0.dp) }
-    }
+    val tabPositions = remember(tabs.size) { mutableStateMapOf<Int, Pair<Dp, Dp>>() }
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -84,8 +80,7 @@ fun SlidingTabsSection(
                 }
             }
 
-            if (tabPositions.size > pagerState.currentPage) {
-                val currentPos = tabPositions[pagerState.currentPage]
+            tabPositions[pagerState.currentPage]?.let { currentPos ->
 
                 val animatedWidth by animateDpAsState(
                     targetValue = currentPos.first,
