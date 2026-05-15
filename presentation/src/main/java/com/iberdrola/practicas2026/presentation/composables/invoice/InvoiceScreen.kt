@@ -207,7 +207,7 @@ fun InvoiceScreen(
 
                                 // Título Histórico + Botón Filtrar
                                 item {
-                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         // Caja para "Histórico de facturas"
                                         Box(modifier = Modifier.width(Dimens.ShimmerCardHeight).height(24.dp).background(brush))
 
@@ -283,14 +283,14 @@ fun InvoiceList(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = Dimens.SpacingXL) // Espacio al final
+        contentPadding = PaddingValues(bottom = Dimens.SpacingXL)
     ) {
         // ÍNDICE 0: TARJETA PERMANENTE
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingM)
+                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, top = Dimens.SpacingM)
             ) {
                 data.lastInvoice?.let { last ->
                     LastInvoiceCard(
@@ -306,7 +306,7 @@ fun InvoiceList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = Dimens.SpacingM, end = Dimens.SpacingM, bottom = Dimens.SpacingM),
+                    .padding(Dimens.SpacingM),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

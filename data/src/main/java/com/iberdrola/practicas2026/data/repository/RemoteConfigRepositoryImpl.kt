@@ -31,7 +31,6 @@ class RemoteConfigRepositoryImpl @Inject constructor() : RemoteConfigRepository 
 
         firebaseRemoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
             override fun onUpdate(configUpdate: ConfigUpdate) {
-                Log.d("RemoteConfig", "¡Cambio detectado en tiempo real! Keys: ${configUpdate.updatedKeys}")
                 if (configUpdate.updatedKeys.contains("is_gas_enabled")) {
                     firebaseRemoteConfig.activate().addOnCompleteListener {
                         _isGasEnabled.value = firebaseRemoteConfig.getBoolean("is_gas_enabled")

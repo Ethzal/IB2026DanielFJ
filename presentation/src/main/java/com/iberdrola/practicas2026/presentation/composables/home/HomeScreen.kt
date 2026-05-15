@@ -34,6 +34,7 @@ import com.iberdrola.practicas2026.presentation.ui.theme.BrandGreenLight
 import com.iberdrola.practicas2026.presentation.ui.theme.Dimens
 import com.iberdrola.practicas2026.presentation.ui.theme.TextMain
 import com.iberdrola.practicas2026.core.utils.formatSpanishCurrency
+import com.iberdrola.practicas2026.presentation.ui.theme.BtCrash
 import com.iberdrola.practicas2026.presentation.ui.theme.White
 
 @Composable
@@ -90,8 +91,9 @@ fun HomeScreenContent(
                 ) {
                     Button(
                         onClick = { onForceCrash() },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                        colors = ButtonDefaults.buttonColors(containerColor = BtCrash, contentColor = White),
                         shape = RoundedCornerShape(Dimens.CornerButtonXL),
+                        modifier = Modifier.defaultMinSize(minWidth = 64.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_crash),
