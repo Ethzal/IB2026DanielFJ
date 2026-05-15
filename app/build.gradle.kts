@@ -78,7 +78,8 @@ dependencies {
     implementation(libs.firebase.config)
 }
 
-abstract class AdbReversePhysicalTask @Inject constructor(
+
+abstract class AdbDebugSetupTask @Inject constructor(
     private val execOperations: ExecOperations
 ) : DefaultTask() {
 
@@ -104,11 +105,22 @@ abstract class AdbReversePhysicalTask @Inject constructor(
                 .filter { it.isNotBlank() && it.endsWith("device") }
                 .map { it.split("\\s+".toRegex())[0] }
 
-            var foundPhysical = false
+            if (devices.isEmpty()) {
+                logger.lifecycle("No hay dispositivos conectados para configurar ADB.")
+                return
+            }
+
+            val packageName = "com.iberdrola.practicas2026.DanielFJ"
 
             devices.forEach { serial ->
-                if (!serial.startsWith("emulator-")) {
-                    foundPhysical = true
+                val isEmulator = serial.startsWith("emulator-")
+
+                execOperations.exec {
+                    commandLine(executable, "-s", serial, "shell", "setprop", "debug.firebase.analytics.app", packageName)
+                }
+                logger.lifecycle("Firebase DebugView habilitado en: $serial")
+
+                if (!isEmulator) {
                     execOperations.exec {
                         commandLine(executable, "-s", serial, "reverse", "tcp:3000", "tcp:3000")
                     }
@@ -116,18 +128,14 @@ abstract class AdbReversePhysicalTask @Inject constructor(
                 }
             }
 
-            if (!foundPhysical) {
-                logger.lifecycle("No hay dispositivos físicos conectados. Se omite ADB Reverse.")
-            }
-
         } catch (e: Exception) {
-            logger.error("Error ejecutando ADB Reverse: ${e.message}")
+            logger.error("Error en la configuración ADB: ${e.message}")
         }
     }
 }
 
-val adbReversePhysicalTask = tasks.register<AdbReversePhysicalTask>("adbReversePhysical")
+val adbDebugSetupTask = tasks.register<AdbDebugSetupTask>("adbDebugSetup")
 
 tasks.matching { it.name == "assembleDebug" }.configureEach {
-    dependsOn(adbReversePhysicalTask)
+    dependsOn(adbDebugSetupTask)
 }
