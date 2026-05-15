@@ -72,19 +72,11 @@ class InvoiceViewModel @Inject constructor(
     private val _minDateAllowed = MutableStateFlow<Long?>(null)
     val minDateAllowed = _minDateAllowed.asStateFlow()
 
-    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
-        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
-    }
-
     // Canal de eventos para la UI
     private val _events = MutableSharedFlow<InvoiceEvent>()
     val events = _events.asSharedFlow()
 
     private var currentTabIndex = 0
-
-    fun updateCurrentTab(index: Int) {
-        currentTabIndex = index
-    }
 
     private var fetchJob: Job? = null
 
@@ -106,9 +98,7 @@ class InvoiceViewModel @Inject constructor(
 
     val isGasEnabled: StateFlow<Boolean> = remoteConfigRepository.isGasEnabled
 
-    fun logButtonClick(btnName: String) {
-        analyticsRepository.logButtonClicked(btnName)
-    }
+    private val _isRemoteLoading = MutableStateFlow(false)
 
     init {
         observeSettings()
@@ -122,7 +112,17 @@ class InvoiceViewModel @Inject constructor(
         }
     }
 
-    private val _isRemoteLoading = MutableStateFlow(false)
+    fun logButtonClick(btnName: String) {
+        analyticsRepository.logButtonClicked(btnName)
+    }
+
+    fun updateDynamicConstraints(range: ClosedFloatingPointRange<Float>, statuses: Set<InvoiceStatus>) {
+        _minDateAllowed.value = getOldestDateUseCase(allInvoicesCached, range, statuses)
+    }
+
+    fun updateCurrentTab(index: Int) {
+        currentTabIndex = index
+    }
 
     fun fetchFacturas(isLocal: Boolean) {
         _isRemoteLoading.value = true
