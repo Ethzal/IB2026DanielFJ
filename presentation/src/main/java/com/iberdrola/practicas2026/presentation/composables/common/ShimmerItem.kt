@@ -94,7 +94,7 @@ fun ShimmerInvoiceRow(brush: Brush) {
             Column(modifier = Modifier.weight(1f)) {
                 // Fecha
                 Box(modifier = Modifier.width(100.dp).height(18.dp).background(brush))
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(Dimens.SpacingXS))
                 // Tipo
                 Box(modifier = Modifier.width(70.dp).height(12.dp).background(brush))
                 Spacer(Modifier.height(Dimens.SpacingS))
