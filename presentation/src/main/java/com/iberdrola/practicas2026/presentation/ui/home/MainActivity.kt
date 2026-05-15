@@ -66,14 +66,9 @@ class MainActivity : ComponentActivity() {
 
                 val snackbarHostState = remember { SnackbarHostState() }
 
-                // Obtenemos el MainViewModel a nivel de Actividad para que sea global
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val electronicInvoiceViewModel: ElectronicInvoiceViewModel = hiltViewModel()
-
-                // Escuchamos los eventos de mensaje
                 val context = LocalContext.current
-
-                // Función para volver atrás de forma segura
                 var lastBackClickTime by remember { mutableLongStateOf(0L) }
 
                 val navigateBackSafe: () -> Unit = {

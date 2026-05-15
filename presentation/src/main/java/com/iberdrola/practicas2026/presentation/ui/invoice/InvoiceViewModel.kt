@@ -179,7 +179,7 @@ class InvoiceViewModel @Inject constructor(
     fun applyFilters(newFilter: InvoiceFilter) {
         _invoiceFilter.value = newFilter
 
-        // 2. Calculamos los resultados de AMBAS pestañas inmediatamente
+        // Calculamos los resultados de AMBAS pestañas inmediatamente
         val luzRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.LIGHT, newFilter)
         val gasRes = filterInvoicesUseCase(allInvoicesCached, InvoiceType.GAS, newFilter)
 
@@ -187,16 +187,14 @@ class InvoiceViewModel @Inject constructor(
         _uiStates.update { it + (InvoiceType.LIGHT to UiState.Success(luzRes)) }
         _uiStates.update { it + (InvoiceType.GAS to UiState.Success(gasRes)) }
 
-        // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
+        // LÓGICA DE REDIRECCIÓN INTELIGENTE
         viewModelScope.launch {
             val hasLuz = luzRes.history.isNotEmpty()
             val hasGas = gasRes.history.isNotEmpty()
 
             if (currentTabIndex == 0 && !hasLuz && hasGas) {
-                // Estoy en LUZ, no hay nada, pero en GAS sí -> Ir a GAS (index 1)
                 _events.emit(InvoiceEvent.SwitchToTab(1))
             } else if (currentTabIndex == 1 && !hasGas && hasLuz) {
-                // Estoy en GAS, no hay nada, pero en LUZ sí -> Ir a LUZ (index 0)
                 _events.emit(InvoiceEvent.SwitchToTab(0))
             }
         }
@@ -211,10 +209,8 @@ class InvoiceViewModel @Inject constructor(
     // FEEDBACK
     fun onBackClicked(onConfirmExit: () -> Unit) {
         viewModelScope.launch {
-            // 1. Siempre incrementamos el contador de intentos de salida
             updateFeedbackDecision.incrementExit()
 
-            // 2. Consultamos si toca mostrar el diálogo (lógica 10, 3, 0)
             val shouldShow = getFeedbackStatus().first()
             if (shouldShow) {
                 _showFeedbackSheet.value = true
