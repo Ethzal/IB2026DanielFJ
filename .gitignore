@@ -43,8 +43,5 @@ captures/
 *.keystore
 *.p12
 
-# Google Services
-google-services.json
-
 # Firebase
 .env
