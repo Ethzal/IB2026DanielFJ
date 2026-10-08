@@ -4,6 +4,16 @@ Aplicación Android nativa para la consulta y gestión de facturas energéticas,
 
 El proyecto está construido con **Kotlin** y **Jetpack Compose**, siguiendo **Clean Architecture** y **MVVM**, con una arquitectura multimódulo orientada a separar la lógica de negocio, los datos y la interfaz de usuario.
 
+---
+
+## 📱 Probar la aplicación
+
+Puedes descargar e instalar la última versión Release de la aplicación para probarla directamente en un dispositivo Android.
+
+➡️ **[Descargar la última versión desde Releases](https://github.com/Ethzal/IB2026DanielFJ/releases/latest)**
+
+La aplicación está firmada y preparada para instalación manual. No es necesario compilar el proyecto para probar las funcionalidades principales.
+
 ## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" alt="Camera with Flash" width="25" height="25" /> Showcase Visual
 
 La interfaz está basada en los lineamientos de diseño de la aplicación de referencia, adaptándolos a una implementación moderna con **Jetpack Compose** y **Material 3**.
