@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373034172696",
+    "project_id": "ib2026danielfj",
+    "storage_bucket": "ib2026danielfj.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373034172696:android:117d957f0b6b40c7195e6d",
+        "android_client_info": {
+          "package_name": "com.iberdrola.practicas2026.DanielFJ"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeAmpager0iqqvMSETOWeLAYh4IME5kd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
